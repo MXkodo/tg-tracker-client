@@ -13,55 +13,41 @@ function MainContent() {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    // Функция для загрузки задач с API
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
-        setTasks(response.data); // Устанавливаем полученные задачи в состояние
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks(); // Вызываем функцию загрузки при монтировании компонента
+    fetchTasks(); // Вызываем функцию загрузки задач при монтировании компонента
   }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
 
   useEffect(() => {
-    // Функция для загрузки всех групп с API
-    const fetchGroups = async () => {
-      try {
-        const response = await axios.get(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
-        setGroups(response.data); // Устанавливаем полученные группы в состояние
-      } catch (error) {
-        console.error("Error fetching groups:", error);
-      }
-    };
-
-    fetchGroups(); // Вызываем функцию загрузки при монтировании компонента
+    fetchGroups(); // Вызываем функцию загрузки групп при монтировании компонента
   }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
-  // Функция для форматирования времени
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
+
+  const fetchTasks = async (statusId) => {
+    try {
+      const response = await axios.get(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+          params: {
+            status_id: statusId, // Передаем активный статус фильтра как параметр запроса
+          },
+        }
+      );
+      setTasks(response.data); // Устанавливаем полученные задачи в состояние
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups"
+      );
+      setGroups(response.data); // Устанавливаем полученные группы в состояние
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -77,10 +63,14 @@ function MainContent() {
     return group ? group.name : "Unknown Group";
   };
 
+  const handleFilterChange = (statusId) => {
+    fetchTasks(statusId); // Вызываем функцию загрузки задач с новым статусом фильтра
+  };
+
   return (
     <div className="main-content">
       <header className="header">
-        <ScrollContainer />
+        <ScrollContainer onFilterChange={handleFilterChange} />
       </header>
       <div className="content">
         <div className="search-container">
@@ -105,7 +95,7 @@ function MainContent() {
         <div className="task-tiles">
           {tasks.map((task) => (
             <div key={task.id} className="task-tile">
-              <h3>{task.name}</h3>
+              <h3>{task.title}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
@@ -115,5 +105,16 @@ function MainContent() {
     </div>
   );
 }
+
+// Функция для форматирования времени
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+};
 
 export default MainContent;
