@@ -1,11 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Add.css";
 
 const AddTaskPage = () => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [executor, setExecutor] = useState("");
+  const [executorsList, setExecutorsList] = useState([]);
   const [sendTime, setSendTime] = useState("");
+
+  useEffect(() => {
+    const fetchExecutors = async () => {
+      try {
+        const response = await fetch(
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups"
+        );
+        if (!response.ok) {
+          throw new Error("Ошибка при загрузке исполнителей!");
+        }
+        const data = await response.json();
+        // Assuming data is an array of objects with properties like uuid and name
+        setExecutorsList(data); // Assuming data is an array of executors
+      } catch (error) {
+        console.error("Ошибка при загрузке исполнителей:", error.message);
+        // Handle error as needed, e.g., show an alert
+        alert("Ошибка при загрузке исполнителей:", error.message);
+      }
+    };
+
+    fetchExecutors();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,7 +41,7 @@ const AddTaskPage = () => {
       description: taskDescription,
       status_id: 1,
       apperance_timestamp: formattedSendTime,
-      group_uuid: "123e4567-e89b-12d3-a456-426614174002",
+      group_uuid: executor, // Use executor's UUID here
     };
 
     try {
@@ -38,8 +61,10 @@ const AddTaskPage = () => {
       }
 
       console.log("Задача сохранена!");
+      alert("Задача успешно создана");
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
+      alert("Ошибка при сохранении задачи:", error.message);
     }
   };
 
@@ -84,9 +109,11 @@ const AddTaskPage = () => {
             className="input-field select-field"
           >
             <option value="">Выберите исполнителя</option>
-            <option value="Исполнитель 1">Исполнитель 1</option>
-            <option value="Исполнитель 2">Исполнитель 2</option>
-            <option value="Исполнитель 3">Исполнитель 3</option>
+            {executorsList.map((executor) => (
+              <option key={executor.uuid} value={executor.uuid}>
+                {executor.name}
+              </option>
+            ))}
           </select>
         </label>
         <label>
