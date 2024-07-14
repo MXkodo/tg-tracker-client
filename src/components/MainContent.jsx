@@ -95,8 +95,8 @@ function MainContent() {
         <div className="task-tiles">
           {tasks.map((task) => (
             <div key={task.id} className="task-tile">
-              <h3>{task.title}</h3>
-              <p>Время отправки: {task.timestamp}</p>
+              <h3>{task.name}</h3>
+              <p>Время отправки: {task.apperance_timestamp}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
           ))}
