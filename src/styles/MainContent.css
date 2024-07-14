@@ -67,28 +67,32 @@
 }
 
 .modal {
-  background-color: white;
+  background-color: #1c1d20;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   max-width: 90%;
   max-height: 90%;
   overflow: auto;
+  color: #fff;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .modal-button {
   margin-left: 10px;
   padding: 10px 20px;
-  background-color: #66f96b;
+  background-color: #22c55e;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: #fff;
   transition: background-color 0.3s ease;
 }
 
