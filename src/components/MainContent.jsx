@@ -38,7 +38,12 @@ function MainContent() {
     const fetchGroups = async () => {
       try {
         const response = await axios.get(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups"
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
         );
         setGroups(response.data); // Устанавливаем полученные группы в состояние
       } catch (error) {
