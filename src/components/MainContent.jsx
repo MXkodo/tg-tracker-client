@@ -146,37 +146,17 @@ function MainContent() {
 }
 
 const Modal = ({ task, onClose, groups }) => {
-  const [editedTask, setEditedTask] = useState({
-    name: task.name,
-    description: task.description,
-    assignee: task.assignee,
-    apperance_timestamp: task.apperance_timestamp,
-    group_uuid: task.group_uuid,
-  });
+  // Remove unused variables and functions
+  const [taskName, setTaskName] = useState(task.name);
+  const [taskDescription, setTaskDescription] = useState(task.description);
+  const [executor, setExecutor] = useState(task.executor);
+  const [sendTime, setSendTime] = useState(formatDateTime(task.sendTime));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Implement your submit logic here
     alert("Form submitted!");
   };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTask((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSendTimeChange = (e) => {
-    // Handle time change if needed
-    console.log("Send time changed:", e.target.value);
-  };
-
-  const [taskName, setTaskName] = useState(task.name);
-  const [taskDescription, setTaskDescription] = useState(task.description);
-  const [executor, setExecutor] = useState(task.executor);
-  const [sendTime, setSendTime] = useState(formatDateTime(task.sendTime));
 
   const handleExecutorChange = (e) => {
     setExecutor(e.target.value);
