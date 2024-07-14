@@ -21,7 +21,7 @@
 }
 
 #search {
-  width: 5vh;
+  width: 35vh;
   height: 5vh;
   padding: 5px;
 }
@@ -76,9 +76,10 @@
 }
 
 .search-button {
-  background-color: #4caf50;
+  background-color: #66f96b;
   border: none;
   padding: 5px;
+  height: 5vh;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -88,7 +89,8 @@
 }
 
 .icon-button {
-  background-color: #4caf50;
+  height: 5vh;
+  background-color: #66f96b;
   border: none;
   padding: 5px;
   cursor: pointer;
