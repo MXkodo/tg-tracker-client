@@ -28,8 +28,10 @@ footer button {
 footer button:hover {
   background-color: #15803d;
 }
-
-.home {
+.keyboard-open .footer {
+  display: none;
+}
+/* .home {
   padding-top: 10px;
   padding-bottom: 13px;
-}
+} */
