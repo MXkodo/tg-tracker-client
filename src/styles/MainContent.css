@@ -47,13 +47,13 @@
   border-radius: 17px;
   padding: 10px;
   margin-bottom: 20px;
-  background-color: #737373; /* Цвет фона для задач */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень для блока */
-  transition: transform 0.2s ease-in-out; /* Анимация при наведении */
+  background-color: #737373;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
 .task-tile:hover {
-  transform: translateY(-5px); /* Эффект при наведении */
+  transform: translateY(-5px);
 }
 
 html,

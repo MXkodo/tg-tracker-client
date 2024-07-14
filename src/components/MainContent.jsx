@@ -12,7 +12,7 @@ function MainContent() {
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [activeStatusId, setActiveStatusId] = useState(1); // Default to status_id 1 (Новые)
+  const [activeStatusId, setActiveStatusId] = useState(1);
 
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -25,16 +25,16 @@ function MainContent() {
             },
           }
         );
-        setAllTasks(response.data); // Store all tasks in state
-        filterTasksByStatus(response.data, activeStatusId); // Filter tasks by initial activeStatusId
+        setAllTasks(response.data);
+        filterTasksByStatus(response.data, activeStatusId);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     };
 
-    fetchAllTasks(); // Fetch all tasks once during component mount
-    fetchGroups(); // Fetch groups on component mount
-  }, [activeStatusId]); // Include activeStatusId in the dependency array
+    fetchAllTasks();
+    fetchGroups();
+  }, [activeStatusId]);
 
   const fetchGroups = async () => {
     try {
@@ -46,14 +46,14 @@ function MainContent() {
           },
         }
       );
-      setGroups(response.data); // Set groups in state
+      setGroups(response.data);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
   };
 
   useEffect(() => {
-    filterTasksByStatus(allTasks, activeStatusId); // Filter tasks whenever activeStatusId changes
+    filterTasksByStatus(allTasks, activeStatusId);
   }, [activeStatusId, allTasks]);
 
   const filterTasksByStatus = (tasksArray, statusId) => {
@@ -77,7 +77,7 @@ function MainContent() {
   };
 
   const handleFilterChange = (statusId) => {
-    setActiveStatusId(statusId); // Update activeStatusId based on clicked button
+    setActiveStatusId(statusId);
   };
 
   return (

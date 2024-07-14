@@ -14,7 +14,7 @@ function ScrollContainer({ onFilterChange, activeStatusId }) {
   ];
 
   const handleButtonClick = (statusId) => {
-    onFilterChange(statusId); // Call parent component's function with statusId
+    onFilterChange(statusId);
   };
 
   return (

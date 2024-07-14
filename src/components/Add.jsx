@@ -25,11 +25,10 @@ const AddTaskPage = () => {
         }
 
         const data = await response.json();
-        // Assuming data is an array of objects with properties like uuid and name
-        setExecutorsList(data); // Assuming data is an array of executors
+
+        setExecutorsList(data);
       } catch (error) {
         console.error("Ошибка при загрузке исполнителей:", error.message);
-        // Handle error as needed, e.g., show an alert
         alert("Ошибка при загрузке исполнителей: " + error.message);
       }
     };
@@ -40,7 +39,6 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Преобразование sendTime в ISO 8601 формат
     const formattedSendTime = new Date(sendTime).toISOString();
 
     const taskData = {
@@ -48,7 +46,7 @@ const AddTaskPage = () => {
       description: taskDescription,
       status_id: 1,
       apperance_timestamp: formattedSendTime,
-      group_uuid: executor, // Use executor's UUID here
+      group_uuid: executor,
     };
 
     try {
