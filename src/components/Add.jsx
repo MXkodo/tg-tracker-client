@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/Add.css";
+import moment from "moment"; // Импортируем moment
 
 const AddTaskPage = () => {
   const [taskName, setTaskName] = useState("");
@@ -10,7 +10,8 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formattedSendTime = new Date(sendTime).toISOString(); // Format to ISO string
+    // Форматируем sendTime с помощью moment.js в нужный формат
+    const formattedSendTime = moment(sendTime).format("YYYY-MM-DDTHH:mm:ssZ");
 
     const taskData = {
       name: taskName,
