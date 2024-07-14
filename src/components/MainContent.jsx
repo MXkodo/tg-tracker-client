@@ -15,26 +15,26 @@ function MainContent() {
   const [activeStatusId, setActiveStatusId] = useState(1); // Default to status_id 1 (Новые)
 
   useEffect(() => {
+    const fetchAllTasks = async () => {
+      try {
+        const response = await axios.get(
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
+        );
+        setAllTasks(response.data); // Store all tasks in state
+        filterTasksByStatus(response.data, activeStatusId); // Filter tasks by initial activeStatusId
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
     fetchAllTasks(); // Fetch all tasks once during component mount
     fetchGroups(); // Fetch groups on component mount
-  }, []);
-
-  const fetchAllTasks = async () => {
-    try {
-      const response = await axios.get(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
-      setAllTasks(response.data); // Store all tasks in state
-      filterTasksByStatus(response.data, activeStatusId); // Filter tasks by initial activeStatusId
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
+  }, [activeStatusId]); // Include activeStatusId in the dependency array
 
   const fetchGroups = async () => {
     try {
