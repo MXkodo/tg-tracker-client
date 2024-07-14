@@ -10,11 +10,13 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const formattedSendTime = new Date(sendTime).toISOString(); // Format to ISO string
+
     const taskData = {
       name: taskName,
       description: taskDescription,
       status_id: 1,
-      apperance_timestamp: sendTime,
+      apperance_timestamp: formattedSendTime,
       group_uuid: "123e4567-e89b-12d3-a456-426614174002",
     };
 
@@ -45,7 +47,7 @@ const AddTaskPage = () => {
   };
 
   const handleSendTimeChange = (event) => {
-    setSendTime(event.target.value);
+    setSendTime(event.target.value); // Update sendTime state with user input
   };
 
   return (
@@ -89,13 +91,13 @@ const AddTaskPage = () => {
         <label>
           Время отправки:
           <input
-            type="datetime-local"
+            type="text"
             name="sendTime"
             value={sendTime}
             onChange={handleSendTimeChange}
             required
             className="input-field"
-            placeholder="Выберите время отправки"
+            placeholder="Введите время отправки в формате YYYY-MM-DDTHH:mm:ssZ"
           />
         </label>
         <button type="submit">Сохранить</button>
