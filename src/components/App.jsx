@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
 import AddTaskPage from "./Add";
+import "../styles/App.css";
 
 function App() {
   const [keyboardOpen, setKeyboardOpen] = useState(false);
@@ -24,8 +25,14 @@ function App() {
       }
     });
 
+    // Дополнительный обработчик события для мобильных устройств
+    window.addEventListener("focusin", handleKeyboardOpen);
+    window.addEventListener("focusout", handleKeyboardClose);
+
     return () => {
       window.removeEventListener("resize", () => {});
+      window.removeEventListener("focusin", handleKeyboardOpen);
+      window.removeEventListener("focusout", handleKeyboardClose);
     };
   }, []);
 
