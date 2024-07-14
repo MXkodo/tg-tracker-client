@@ -19,13 +19,16 @@ const AddTaskPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(taskData),
-      });
+      const response = await fetch(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(taskData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Ошибка при сохранении задачи");
