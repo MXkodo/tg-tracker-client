@@ -79,6 +79,11 @@
   overflow: auto;
 }
 
+#icon-button,
+#search-button {
+  background-color: #4caf50;
+}
+
 html,
 body,
 #root {
