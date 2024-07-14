@@ -9,19 +9,17 @@ import UpdateIcon from "../img/Update.png";
 
 function MainContent() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
   const [activeStatusId, setActiveStatusId] = useState(1); // Default to status_id 1 (Новые)
 
   useEffect(() => {
-    fetchTasks(activeStatusId); // Fetch tasks based on initial activeStatusId
-  }, [activeStatusId]); // Fetch tasks whenever activeStatusId changes
-
-  useEffect(() => {
+    fetchAllTasks(); // Fetch all tasks once during component mount
     fetchGroups(); // Fetch groups on component mount
   }, []);
 
-  const fetchTasks = async (statusId) => {
+  const fetchAllTasks = async () => {
     try {
       const response = await axios.get(
         "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
@@ -29,12 +27,10 @@ function MainContent() {
           headers: {
             "ngrok-skip-browser-warning": "1",
           },
-          params: {
-            status_id: statusId,
-          },
         }
       );
-      setTasks(response.data);
+      setAllTasks(response.data); // Store all tasks in state
+      filterTasksByStatus(response.data, activeStatusId); // Filter tasks by initial activeStatusId
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -50,10 +46,21 @@ function MainContent() {
           },
         }
       );
-      setGroups(response.data);
+      setGroups(response.data); // Set groups in state
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
+  };
+
+  useEffect(() => {
+    filterTasksByStatus(allTasks, activeStatusId); // Filter tasks whenever activeStatusId changes
+  }, [activeStatusId, allTasks]);
+
+  const filterTasksByStatus = (tasksArray, statusId) => {
+    const filteredTasks = tasksArray.filter(
+      (task) => task.status_id === statusId
+    );
+    setTasks(filteredTasks);
   };
 
   const handleInputChange = (e) => {
@@ -104,7 +111,7 @@ function MainContent() {
         <div className="task-tiles">
           {tasks.map((task) => (
             <div key={task.id} className="task-tile">
-              <h3>{task.title}</h3>
+              <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
