@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/Add.css";
-import moment from "moment"; // Импортируем moment
+
 const AddTaskPage = () => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -10,7 +10,8 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formattedSendTime = moment(sendTime).format("YYYY-MM-DDTHH:mm:ssZ"); // Format to ISO string
+    // Преобразование sendTime в ISO 8601 формат
+    const formattedSendTime = new Date(sendTime).toISOString();
 
     const taskData = {
       name: taskName,
@@ -47,7 +48,7 @@ const AddTaskPage = () => {
   };
 
   const handleSendTimeChange = (event) => {
-    setSendTime(event.target.value); // Update sendTime state with user input
+    setSendTime(event.target.value);
   };
 
   return (
@@ -91,13 +92,13 @@ const AddTaskPage = () => {
         <label>
           Время отправки:
           <input
-            type="text"
+            type="datetime-local"
             name="sendTime"
             value={sendTime}
             onChange={handleSendTimeChange}
             required
             className="input-field"
-            placeholder="Введите время отправки в формате YYYY-MM-DDTHH:mm:ssZ"
+            placeholder="Выберите время отправки"
           />
         </label>
         <button type="submit">Сохранить</button>
