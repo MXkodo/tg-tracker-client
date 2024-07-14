@@ -10,6 +10,7 @@ import UpdateIcon from "../img/Update.png";
 function MainContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     // Функция для загрузки задач с API
@@ -32,12 +33,33 @@ function MainContent() {
     fetchTasks(); // Вызываем функцию загрузки при монтировании компонента
   }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
 
+  useEffect(() => {
+    // Функция для загрузки всех групп с API
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get(
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups"
+        );
+        setGroups(response.data); // Устанавливаем полученные группы в состояние
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      }
+    };
+
+    fetchGroups(); // Вызываем функцию загрузки при монтировании компонента
+  }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
+
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
   const clearSearch = () => {
     setSearchTerm("");
+  };
+
+  const getGroupNameByUUID = (groupUUID) => {
+    const group = groups.find((g) => g.uuid === groupUUID);
+    return group ? group.name : "Unknown Group";
   };
 
   return (
@@ -70,7 +92,7 @@ function MainContent() {
             <div key={task.id} className="task-tile">
               <h3>{task.title}</h3>
               <p>Время отправки: {task.timestamp}</p>
-              <p>Имя группы: {task.groupName}</p>
+              <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
           ))}
         </div>
