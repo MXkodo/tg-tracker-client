@@ -22,10 +22,10 @@
 
 #search {
   border-radius: 15px;
-  width: 250px; /* Фиксированная ширина для поискового поля */
+  width: 250px;
   height: 5vh;
-  padding: 10px; /* Подходящий отступ внутри поля */
-  box-sizing: border-box; /* Учет отступов и внутренних размеров */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .content {
@@ -81,8 +81,9 @@
   border-radius: 10px;
   background-color: #66f96b;
   border: none;
-  padding: 10px; /* Фиксированный размер кнопки */
-  height: 5vh;
+  padding: 10px;
+  height: 40px;
+  width: 40px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -93,10 +94,11 @@
 
 .icon-button {
   border-radius: 10px;
-  height: 5vh;
   background-color: #66f96b;
   border: none;
-  padding: 10px; /* Фиксированный размер кнопки */
+  padding: 10px;
+  height: 40px;
+  width: 40px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-left: 5px;
