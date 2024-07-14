@@ -1,7 +1,3 @@
-* {
-  position: fixed;
-}
-
 .main-content {
   display: flex;
   flex-direction: column;
@@ -26,9 +22,10 @@
 
 #search {
   border-radius: 15px;
-  width: 35vh;
+  width: 250px; /* Фиксированная ширина для поискового поля */
   height: 5vh;
-  padding: 5px;
+  padding: 10px; /* Подходящий отступ внутри поля */
+  box-sizing: border-box; /* Учет отступов и внутренних размеров */
 }
 
 .content {
@@ -84,7 +81,7 @@
   border-radius: 10px;
   background-color: #66f96b;
   border: none;
-  padding: 1px;
+  padding: 10px; /* Фиксированный размер кнопки */
   height: 5vh;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -99,7 +96,7 @@
   height: 5vh;
   background-color: #66f96b;
   border: none;
-  padding: 1px;
+  padding: 10px; /* Фиксированный размер кнопки */
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-left: 5px;
