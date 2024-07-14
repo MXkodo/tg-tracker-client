@@ -1,49 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
 import AddTaskPage from "./Add";
 
 function App() {
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
-
-  useEffect(() => {
-    const handleKeyboardOpen = () => {
-      setKeyboardOpen(true);
-    };
-
-    const handleKeyboardClose = () => {
-      setKeyboardOpen(false);
-    };
-
-    window.addEventListener("resize", () => {
-      if (window.innerHeight < window.screen.height) {
-        handleKeyboardOpen();
-      } else {
-        handleKeyboardClose();
-      }
-    });
-
-    window.addEventListener("focusin", handleKeyboardOpen);
-    window.addEventListener("focusout", handleKeyboardClose);
-
-    return () => {
-      window.removeEventListener("resize", () => {});
-      window.removeEventListener("focusin", handleKeyboardOpen);
-      window.removeEventListener("focusout", handleKeyboardClose);
-    };
-  }, []);
-
   return (
     <Router>
-      <div className={`app ${keyboardOpen ? "keyboard-open" : ""}`}>
+      <div className="app">
         <main>
           <Routes>
             <Route path="/" element={<MainContent />} />
             <Route path="/add" element={<AddTaskPage />} />
           </Routes>
         </main>
-        {!keyboardOpen && <Footer />}
+        <Footer />
       </div>
     </Router>
   );
