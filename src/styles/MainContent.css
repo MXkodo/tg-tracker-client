@@ -15,13 +15,15 @@
 
 .search-container {
   display: flex;
+  align-items: center;
   margin-top: 0;
   margin-left: 0;
 }
 
 #search {
-  width: 35vh;
+  width: 5vh;
   height: 5vh;
+  padding: 5px;
 }
 
 .content {
@@ -30,15 +32,9 @@
   border-radius: 17px;
   display: flex;
   flex-direction: column;
-
   overflow-y: auto;
   padding: 20px;
   box-sizing: border-box;
-}
-
-#back {
-  padding: 20px;
-  color: #fff;
 }
 
 .task-tile {
@@ -82,7 +78,6 @@
 .search-button {
   background-color: #4caf50;
   border: none;
-  border-radius: 5px;
   padding: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -95,7 +90,6 @@
 .icon-button {
   background-color: #4caf50;
   border: none;
-  border-radius: 50%;
   padding: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
