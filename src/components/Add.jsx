@@ -31,7 +31,7 @@ const AddTaskPage = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Ошибка при сохранении задачи");
+        throw new Error("Ошибка при сохранении задачи!");
       }
 
       console.log("Задача сохранена!");
