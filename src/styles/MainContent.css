@@ -22,10 +22,9 @@
 
 #search {
   border-radius: 15px;
-  width: 250px;
+  width: 35vh;
   height: 5vh;
-  padding: 10px;
-  box-sizing: border-box;
+  padding: 5px;
 }
 
 .content {
@@ -81,9 +80,8 @@
   border-radius: 10px;
   background-color: #66f96b;
   border: none;
-  padding: 10px;
-  height: 40px;
-  width: 40px;
+  padding: 1px;
+  height: 5vh;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -94,11 +92,10 @@
 
 .icon-button {
   border-radius: 10px;
+  height: 5vh;
   background-color: #66f96b;
   border: none;
-  padding: 10px;
-  height: 40px;
-  width: 40px;
+  padding: 1px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-left: 5px;
