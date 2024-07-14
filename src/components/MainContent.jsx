@@ -53,6 +53,16 @@ function MainContent() {
 
     fetchGroups(); // Вызываем функцию загрузки при монтировании компонента
   }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
+  // Функция для форматирования времени
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  };
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -96,7 +106,7 @@ function MainContent() {
           {tasks.map((task) => (
             <div key={task.id} className="task-tile">
               <h3>{task.name}</h3>
-              <p>Время отправки: {task.apperance_timestamp}</p>
+              <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
           ))}
