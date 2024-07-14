@@ -42,11 +42,12 @@
 }
 
 .task-tile {
+  margin-top: 10px;
   border: 1px solid rgba(115, 115, 115, 0.31);
   border-radius: 17px;
   padding: 10px;
   margin-bottom: 20px;
-  background-color: #ffffff; /* Цвет фона для задач */
+  background-color: #737373; /* Цвет фона для задач */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень для блока */
   transition: transform 0.2s ease-in-out; /* Анимация при наведении */
 }
