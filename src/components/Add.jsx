@@ -12,18 +12,25 @@ const AddTaskPage = () => {
     const fetchExecutors = async () => {
       try {
         const response = await fetch(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups"
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
         );
+
         if (!response.ok) {
           throw new Error("Ошибка при загрузке исполнителей!");
         }
+
         const data = await response.json();
         // Assuming data is an array of objects with properties like uuid and name
         setExecutorsList(data); // Assuming data is an array of executors
       } catch (error) {
         console.error("Ошибка при загрузке исполнителей:", error.message);
         // Handle error as needed, e.g., show an alert
-        alert("Ошибка при загрузке исполнителей:", error.message);
+        alert("Ошибка при загрузке исполнителей: " + error.message);
       }
     };
 
