@@ -15,7 +15,14 @@ function MainContent() {
     // Функция для загрузки задач с API
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("/api/v1/tasks");
+        const response = await axios.get(
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
+        );
         setTasks(response.data); // Устанавливаем полученные задачи в состояние
       } catch (error) {
         console.error("Error fetching tasks:", error);
