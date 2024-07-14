@@ -34,25 +34,25 @@ function MainContent() {
       }
     };
 
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get(
+          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
+        );
+        setGroups(response.data);
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      }
+    };
+
     fetchAllTasks();
     fetchGroups();
   }, [activeStatusId]);
-
-  const fetchGroups = async () => {
-    try {
-      const response = await axios.get(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
-      setGroups(response.data);
-    } catch (error) {
-      console.error("Error fetching groups:", error);
-    }
-  };
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
@@ -139,13 +139,13 @@ function MainContent() {
         </div>
       </div>
       {modalOpen && selectedTask && (
-        <Modal task={selectedTask} onClose={closeModal} />
+        <Modal task={selectedTask} onClose={closeModal} groups={groups} />
       )}
     </div>
   );
 }
 
-const Modal = ({ task, onClose }) => {
+const Modal = ({ task, onClose, groups }) => {
   const [editedTask, setEditedTask] = useState({
     name: task.name,
     description: task.description,
@@ -153,6 +153,12 @@ const Modal = ({ task, onClose }) => {
     apperance_timestamp: task.apperance_timestamp,
     group_uuid: task.group_uuid,
   });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Implement your submit logic here
+    alert("Form submitted!");
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -162,37 +168,95 @@ const Modal = ({ task, onClose }) => {
     }));
   };
 
-  const handleSaveChanges = () => {
-    alert("Изменения сохранены");
+  const handleSendTimeChange = (e) => {
+    // Handle time change if needed
+    console.log("Send time changed:", e.target.value);
+  };
+
+  const [taskName, setTaskName] = useState(task.name);
+  const [taskDescription, setTaskDescription] = useState(task.description);
+  const [executor, setExecutor] = useState(task.executor);
+  const [sendTime, setSendTime] = useState(formatDateTime(task.sendTime));
+
+  const handleExecutorChange = (e) => {
+    setExecutor(e.target.value);
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>{task.name}</h2>
-        <input
-          type="text"
-          name="description"
-          value={editedTask.description}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="assignee"
-          value={editedTask.assignee}
-          onChange={handleInputChange}
-        />
-        <div className="modal-buttons">
-          <button className="modal-button" onClick={handleSaveChanges}>
-            Сохранить изменения
-          </button>
-          <button className="modal-button" onClick={onClose}>
-            Закрыть
-          </button>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Заголовок задачи:
+            <input
+              type="text"
+              name="taskName"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              required
+              className="input-field"
+              placeholder="Введите заголовок задачи"
+            />
+          </label>
+          <label>
+            Описание задачи:
+            <textarea
+              name="taskDescription"
+              value={taskDescription}
+              onChange={(e) => setTaskDescription(e.target.value)}
+              rows="4"
+              required
+              className="input-field"
+              placeholder="Введите описание задачи"
+            ></textarea>
+          </label>
+          <label>
+            Исполнитель:
+            <select
+              value={executor}
+              onChange={handleExecutorChange}
+              required
+              className="input-field select-field"
+            >
+              <option value="">Выберите исполнителя</option>
+              {groups.map((group) => (
+                <option key={group.uuid} value={group.uuid}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Время отправки:
+            <input
+              type="datetime-local"
+              name="sendTime"
+              value={sendTime}
+              onChange={(e) => setSendTime(e.target.value)}
+              required
+              className="input-field"
+              placeholder="Выберите время отправки"
+            />
+          </label>
+          <div className="modal-buttons">
+            <button type="submit" className="modal-button">
+              Сохранить изменения
+            </button>
+            <button className="modal-button" onClick={onClose}>
+              Закрыть
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
+};
+
+// Helper function to format date-time in the required format for datetime-local input
+const formatDateTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const isoDateTime = date.toISOString().slice(0, 16);
+  return isoDateTime;
 };
 
 const formatTimestamp = (timestamp) => {
