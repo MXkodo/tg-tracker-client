@@ -13,6 +13,8 @@ function MainContent() {
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
   const [activeStatusId, setActiveStatusId] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -80,6 +82,16 @@ function MainContent() {
     setActiveStatusId(statusId);
   };
 
+  const handleTaskClick = (task) => {
+    setSelectedTask(task);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedTask(null);
+  };
+
   return (
     <div className="main-content">
       <header className="header">
@@ -114,7 +126,11 @@ function MainContent() {
         </div>
         <div className="task-tiles">
           {tasks.map((task) => (
-            <div key={task.id} className="task-tile">
+            <div
+              key={task.id}
+              className="task-tile"
+              onClick={() => handleTaskClick(task)}
+            >
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
@@ -122,9 +138,57 @@ function MainContent() {
           ))}
         </div>
       </div>
+      {modalOpen && selectedTask && (
+        <Modal task={selectedTask} onClose={closeModal} />
+      )}
     </div>
   );
 }
+
+const Modal = ({ task, onClose }) => {
+  const [editedTask, setEditedTask] = useState({
+    name: task.name,
+    description: task.description,
+    assignee: task.assignee,
+    apperance_timestamp: task.apperance_timestamp,
+    group_uuid: task.group_uuid,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedTask((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveChanges = () => {
+    alert("Изменения сохранены");
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>{task.name}</h2>
+        <input
+          type="text"
+          name="description"
+          value={editedTask.description}
+          onChange={handleInputChange}
+        />
+        <input
+          type="text"
+          name="assignee"
+          value={editedTask.assignee}
+          onChange={handleInputChange}
+        />
+
+        <button onClick={handleSaveChanges}>Сохранить изменения</button>
+        <button onClick={onClose}>Закрыть</button>
+      </div>
+    </div>
+  );
+};
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -135,6 +199,7 @@ const formatTimestamp = (timestamp) => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
+
 const handleSettingsClick = () => {
   alert("Кнопка Setting нажата");
 };
