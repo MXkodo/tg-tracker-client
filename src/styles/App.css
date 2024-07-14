@@ -1,0 +1,19 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+header {
+  background: #1c1d20;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+#back {
+  padding: 20px;
+  color: #fff;
+}

@@ -1,0 +1,49 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+.header {
+  background: #1c1d20;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.search-container {
+  display: flex;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+#search {
+  width: 30vh;
+  height: 5vh;
+}
+
+.content {
+  flex: 1;
+  background-color: #525252;
+  border-radius: 17px;
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#back {
+  padding: 20px;
+  color: #fff;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}

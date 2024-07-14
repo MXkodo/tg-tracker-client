@@ -1,0 +1,35 @@
+footer {
+  background-color: #22c55e;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  height: 20vh;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+footer button {
+  flex: 1;
+  font-size: 16px;
+  padding: 10px 20px;
+  color: #000000;
+  background-color: #22c55e;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+footer button:hover {
+  background-color: #15803d;
+}
+
+.home {
+  padding-top: 10px;
+  padding-bottom: 13px;
+}

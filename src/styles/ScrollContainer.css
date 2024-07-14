@@ -1,0 +1,24 @@
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px;
+  background: #1c1d20;
+}
+
+.scroll-container button {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
+  font-size: 16px;
+  padding: 8px 16px;
+  margin-right: 10px;
+  background-color: #44403c;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.scroll-container button.active {
+  background-color: #4caf50;
+}
