@@ -105,8 +105,12 @@ function MainContent() {
           <button className="search-button">
             <img src={SearchIcon} alt="Search" />
           </button>
-          <img src={SettingIcon} alt="Setting" />
-          <img src={UpdateIcon} alt="Update" />
+          <button className="icon-button" onClick={handleSettingsClick}>
+            <img src={SettingIcon} alt="Setting" />
+          </button>
+          <button className="icon-button" onClick={handleUpdateClick}>
+            <img src={UpdateIcon} alt="Update" />
+          </button>
         </div>
         <div className="task-tiles">
           {tasks.map((task) => (
@@ -130,6 +134,13 @@ const formatTimestamp = (timestamp) => {
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${day}.${month}.${year} ${hours}:${minutes}`;
+};
+const handleSettingsClick = () => {
+  alert("Кнопка Setting нажата");
+};
+
+const handleUpdateClick = () => {
+  alert("Кнопка Update нажата");
 };
 
 export default MainContent;
