@@ -1,15 +1,21 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "../styles/Footer.css";
 import homeImage from "../img/Home.png";
 import addImage from "../img/Add.png";
 import calendarImage from "../img/Calendar.png";
 
 const Footer = () => {
-  const navigate = useNavigate();
+  const [activePath, setActivePath] = useState("/"); // Default active path is "/"
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setActivePath(location.pathname); // Update activePath when location changes
+  }, [location]);
 
   const handleAddClick = () => {
-    navigate("/add");
+    // Handle navigation to "/add" route
   };
 
   return (
@@ -18,16 +24,21 @@ const Footer = () => {
         <img src={addImage} alt="Добавить" />
         <span>Добавить</span>
       </button>
-      <Link to="/">
+      <Link to="/" className={activePath === "/" ? "active" : ""}>
         <button>
           <img className="home" src={homeImage} alt="Главная" />
           <span>Главная</span>
         </button>
       </Link>
-      <button>
-        <img src={calendarImage} alt="Календарь" />
-        <span>Календарь</span>
-      </button>
+      <Link
+        to="/calendar"
+        className={activePath === "/calendar" ? "active" : ""}
+      >
+        <button>
+          <img src={calendarImage} alt="Календарь" />
+          <span>Календарь</span>
+        </button>
+      </Link>
     </footer>
   );
 };
