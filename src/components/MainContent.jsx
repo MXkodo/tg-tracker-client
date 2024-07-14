@@ -182,9 +182,14 @@ const Modal = ({ task, onClose }) => {
           value={editedTask.assignee}
           onChange={handleInputChange}
         />
-
-        <button onClick={handleSaveChanges}>Сохранить изменения</button>
-        <button onClick={onClose}>Закрыть</button>
+        <div className="modal-buttons">
+          <button className="modal-button" onClick={handleSaveChanges}>
+            Сохранить изменения
+          </button>
+          <button className="modal-button" onClick={onClose}>
+            Закрыть
+          </button>
+        </div>
       </div>
     </div>
   );

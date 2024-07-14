@@ -76,6 +76,26 @@
   overflow: auto;
 }
 
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.modal-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #66f96b;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-button:hover {
+  background-color: #15803d;
+}
+
 .search-button {
   border-radius: 10px;
   background-color: #66f96b;
