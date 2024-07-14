@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/ScrollContainer.css";
 import Button from "./Button";
 
-function ScrollContainer({ onFilterChange }) {
+function ScrollContainer({ onFilterChange, activeStatusId }) {
   const buttons = [
     { label: "Новые", statusId: 1 },
     { label: "Отправленные", statusId: 2 },
@@ -14,7 +14,7 @@ function ScrollContainer({ onFilterChange }) {
   ];
 
   const handleButtonClick = (statusId) => {
-    onFilterChange(statusId); // Вызываем колбэк для передачи статуса фильтра в родительский компонент
+    onFilterChange(statusId); // Call parent component's function with statusId
   };
 
   return (
@@ -23,6 +23,7 @@ function ScrollContainer({ onFilterChange }) {
         <Button
           key={index}
           label={button.label}
+          isActive={button.statusId === activeStatusId}
           onClick={() => handleButtonClick(button.statusId)}
         />
       ))}

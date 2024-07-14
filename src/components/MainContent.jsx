@@ -11,14 +11,15 @@ function MainContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [activeStatusId, setActiveStatusId] = useState(1); // Default to status_id 1 (Новые)
 
   useEffect(() => {
-    fetchTasks(); // Вызываем функцию загрузки задач при монтировании компонента
-  }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
+    fetchTasks(activeStatusId); // Fetch tasks based on initial activeStatusId
+  }, [activeStatusId]); // Fetch tasks whenever activeStatusId changes
 
   useEffect(() => {
-    fetchGroups(); // Вызываем функцию загрузки групп при монтировании компонента
-  }, []); // Пустой массив зависимостей, чтобы запрос выполнялся один раз при загрузке
+    fetchGroups(); // Fetch groups on component mount
+  }, []);
 
   const fetchTasks = async (statusId) => {
     try {
@@ -29,11 +30,11 @@ function MainContent() {
             "ngrok-skip-browser-warning": "1",
           },
           params: {
-            status_id: statusId, // Передаем активный статус фильтра как параметр запроса
+            status_id: statusId,
           },
         }
       );
-      setTasks(response.data); // Устанавливаем полученные задачи в состояние
+      setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -49,7 +50,7 @@ function MainContent() {
           },
         }
       );
-      setGroups(response.data); // Устанавливаем полученные группы в состояние
+      setGroups(response.data);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
@@ -69,13 +70,16 @@ function MainContent() {
   };
 
   const handleFilterChange = (statusId) => {
-    fetchTasks(statusId); // Вызываем функцию загрузки задач с новым статусом фильтра
+    setActiveStatusId(statusId); // Update activeStatusId based on clicked button
   };
 
   return (
     <div className="main-content">
       <header className="header">
-        <ScrollContainer onFilterChange={handleFilterChange} />
+        <ScrollContainer
+          onFilterChange={handleFilterChange}
+          activeStatusId={activeStatusId}
+        />
       </header>
       <div className="content">
         <div className="search-container">
@@ -111,7 +115,6 @@ function MainContent() {
   );
 }
 
-// Функция для форматирования времени
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
   const day = date.getDate().toString().padStart(2, "0");
