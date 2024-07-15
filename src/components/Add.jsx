@@ -36,42 +36,42 @@ const AddTaskPage = () => {
     fetchExecutors();
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
 
-    const formattedSendTime = new Date(sendTime).toISOString();
+  //   const formattedSendTime = new Date(sendTime).toISOString();
 
-    const taskData = {
-      name: taskName,
-      description: taskDescription,
-      status_id: 1,
-      apperance_timestamp: formattedSendTime,
-      group_uuid: executor,
-    };
+  //   const taskData = {
+  //     name: taskName,
+  //     description: taskDescription,
+  //     status_id: 1,
+  //     apperance_timestamp: formattedSendTime,
+  //     group_uuid: executor,
+  //   };
 
-    try {
-      const response = await fetch(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(taskData),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(taskData),
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error("Ошибка при сохранении задачи!");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Ошибка при сохранении задачи!");
+  //     }
 
-      console.log("Задача сохранена!");
-      alert("Задача успешно создана");
-    } catch (error) {
-      console.error("Ошибка при сохранении задачи:", error.message);
-      alert("Ошибка при сохранении задачи:", error.message);
-    }
-  };
+  //     console.log("Задача сохранена!");
+  //     alert("Задача успешно создана");
+  //   } catch (error) {
+  //     console.error("Ошибка при сохранении задачи:", error.message);
+  //     alert("Ошибка при сохранении задачи:", error.message);
+  //   }
+  // };
 
   const handleExecutorChange = (event) => {
     setExecutor(event.target.value);
