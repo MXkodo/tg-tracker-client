@@ -284,8 +284,8 @@ const handleSettingsClick = () => {
   alert("Кнопка Setting нажата");
 };
 
-const handleUpdateClick = () => {
-  alert("Кнопка Update нажата");
-};
+// const handleUpdateClick = () => {
+//   alert("Кнопка Update нажата");
+// };
 
 export default MainContent;
