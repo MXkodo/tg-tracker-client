@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
-// import "../styles/MainContent.css";
+import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 // import SearchIcon from "../img/Search.png";
 import SettingIcon from "../img/Setting.png";
@@ -129,10 +129,12 @@ function MainContent() {
             <img src={UpdateIcon} alt="Update" />
           </button>
         </div>
-        {tasks.map((task) => (
+        {tasks.map((task, index) => (
           <div
             key={task.id}
-            className="mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-5"
+            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-5 ${
+              index === tasks.length - 1 ? "mb-5 last-task" : ""
+            }`}
           >
             <div className="task-tile" onClick={() => handleTaskClick(task)}>
               <h3>{task.name}</h3>
