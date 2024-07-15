@@ -101,7 +101,7 @@ function MainContent() {
         />
       </header>
       <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
-        <div className="flex items-center mt-0 ml-0">
+        <div className="flex items-center mr-0">
           <input
             id="search"
             type="text"
@@ -117,13 +117,13 @@ function MainContent() {
           )}
           {/* <button className="search-button rounded-[10px] bg-[#66f96b] border-none p-1 h-[5vh] cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"></.button> */}
           <button
-            className="icon-button rounded-[10px] h-[5vh] bg-[#66f96b] border-none p-1 cursor-pointer transition-colors duration-300 hover:bg-[#15803d] ml-5"
+            className="icon-button rounded-[10px] mr-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d] ml-5"
             onClick={handleSettingsClick}
           >
             <img src={SettingIcon} alt="Setting" />
           </button>
           <button
-            className="icon-button rounded-[10px] h-[5vh] bg-[#66f96b] border-none p-1 cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
             onClick={handleUpdateClick}
           >
             <img src={UpdateIcon} alt="Update" />

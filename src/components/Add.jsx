@@ -36,42 +36,42 @@ const AddTaskPage = () => {
     fetchExecutors();
   }, []);
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  //   const formattedSendTime = new Date(sendTime).toISOString();
+    const formattedSendTime = new Date(sendTime).toISOString();
 
-  //   const taskData = {
-  //     name: taskName,
-  //     description: taskDescription,
-  //     status_id: 1,
-  //     apperance_timestamp: formattedSendTime,
-  //     group_uuid: executor,
-  //   };
+    const taskData = {
+      name: taskName,
+      description: taskDescription,
+      status_id: 1,
+      apperance_timestamp: formattedSendTime,
+      group_uuid: executor,
+    };
 
-  //   try {
-  //     const response = await fetch(
-  //       "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(taskData),
-  //       }
-  //     );
+    try {
+      const response = await fetch(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(taskData),
+        }
+      );
 
-  //     if (!response.ok) {
-  //       throw new Error("Ошибка при сохранении задачи!");
-  //     }
+      if (!response.ok) {
+        throw new Error("Ошибка при сохранении задачи!");
+      }
 
-  //     console.log("Задача сохранена!");
-  //     alert("Задача успешно создана");
-  //   } catch (error) {
-  //     console.error("Ошибка при сохранении задачи:", error.message);
-  //     alert("Ошибка при сохранении задачи:", error.message);
-  //   }
-  // };
+      console.log("Задача сохранена!");
+      alert("Задача успешно создана");
+    } catch (error) {
+      console.error("Ошибка при сохранении задачи:", error.message);
+      alert("Ошибка при сохранении задачи:", error.message);
+    }
+  };
 
   const handleExecutorChange = (event) => {
     setExecutor(event.target.value);
@@ -82,36 +82,36 @@ const AddTaskPage = () => {
   };
 
   return (
-    <div class="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
-      <form class="flex flex-col space-y-5">
-        <label class="block mb-2">
+    <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
+      <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
+        <label className="block mb-2">
           <input
             type="text"
             name="taskName"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             required
-            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500 focus:outline-none"
             placeholder="Введите заголовок задачи"
           />
         </label>
-        <label class="block mb-2">
+        <label className="block mb-2">
           <textarea
             name="taskDescription"
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            class="w-full px-4 py-2 resize-y min-h-24 h-64 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 resize-y min-h-24 h-64 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
-        <label class="block mb-2">
+        <label className="block mb-2">
           <select
             value={executor}
             onChange={handleExecutorChange}
             required
-            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
           >
             <option value="">Выберите исполнителя</option>
             {executorsList.map((executor) => (
@@ -121,7 +121,7 @@ const AddTaskPage = () => {
             ))}
           </select>
         </label>
-        <label class="block mb-2">
+        <label className="block mb-2">
           Время отправки:
           <input
             type="datetime-local"
@@ -129,13 +129,13 @@ const AddTaskPage = () => {
             value={sendTime}
             onChange={handleSendTimeChange}
             required
-            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
             placeholder="Выберите время отправки"
           />
         </label>
         <button
           type="submit"
-          class="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold"
+          className="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold"
         >
           Сохранить
         </button>
