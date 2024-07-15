@@ -1,10 +1,11 @@
 import React from "react";
-import "../styles/Button.css";
 
 function Button({ label, isActive, onClick }) {
   return (
     <button
-      className={`custom-button ${isActive ? "active" : ""}`}
+      className={`px-2 py-1 mr-2 rounded-full shadow-sm whitespace-nowrap flex-shrink-0 transition-colors duration-300 cursor-pointer border border-green-500 ${
+        isActive ? "bg-green-500" : "bg-zinc-800"
+      } text-white`}
       onClick={onClick}
     >
       {label}

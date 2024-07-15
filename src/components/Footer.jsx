@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Footer.css";
 import homeImage from "../img/Home.png";
 import addImage from "../img/Add.png";
 import calendarImage from "../img/Calendar.png";
@@ -13,20 +12,29 @@ const Footer = () => {
   };
 
   return (
-    <footer className="footer">
-      <button onClick={handleAddClick}>
-        <img src={addImage} alt="Добавить" />
-        <span>Добавить</span>
+    <footer className="bg-green-500 p-5 flex justify-center items-center h-[15vh] fixed inset-x-0 bottom-0 w-full box-border">
+      <button
+        onClick={handleAddClick}
+        className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold  transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center"
+      >
+        <div className="flex flex-col items-center justify-center">
+          <img src={addImage} alt="Добавить" />
+          <span>Добавить</span>
+        </div>
       </button>
-      <Link to="/">
-        <button>
-          <img className="home" src={homeImage} alt="Главная" />
-          <span>Главная</span>
+      <Link to="/" className="">
+        <button className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center">
+            <img className="mt-1" src={homeImage} alt="Главная" />
+            <span>Главная</span>
+          </div>
         </button>
       </Link>
-      <button>
-        <img src={calendarImage} alt="Календарь" />
-        <span>Календарь</span>
+      <button className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
+          <img src={calendarImage} alt="Календарь" />
+          <span>Календарь</span>
+        </div>
       </button>
     </footer>
   );

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
-import "../styles/MainContent.css";
+// import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
-import SearchIcon from "../img/Search.png";
+// import SearchIcon from "../img/Search.png";
 import SettingIcon from "../img/Setting.png";
 import UpdateIcon from "../img/Update.png";
 
@@ -34,25 +34,25 @@ function MainContent() {
       }
     };
 
-    const fetchGroups = async () => {
-      try {
-        const response = await axios.get(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
-        setGroups(response.data);
-      } catch (error) {
-        console.error("Error fetching groups:", error);
-      }
-    };
-
     fetchAllTasks();
     fetchGroups();
   }, [activeStatusId]);
+
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+      setGroups(response.data);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
@@ -93,69 +93,107 @@ function MainContent() {
   };
 
   return (
-    <div className="main-content">
-      <header className="header">
+    <div className="flex flex-col min-h-screen">
+      <header>
         <ScrollContainer
           onFilterChange={handleFilterChange}
           activeStatusId={activeStatusId}
         />
       </header>
-      <div className="content">
-        <div className="search-container">
+      <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
+        <div className="flex items-center mt-0 ml-0">
           <input
             id="search"
             type="text"
             placeholder="Поиск..."
             value={searchTerm}
             onChange={handleInputChange}
+            className="rounded-[15px] w-[35vh] h-[5vh] p-1"
           />
           {searchTerm && (
             <button className="clear-button" onClick={clearSearch}>
               <img src={ClearIcon} alt="Clear" />
             </button>
           )}
-          <button className="search-button">
-            <img src={SearchIcon} alt="Search" />
-          </button>
-          <button className="icon-button" onClick={handleSettingsClick}>
+          {/* <button className="search-button rounded-[10px] bg-[#66f96b] border-none p-1 h-[5vh] cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"></.button> */}
+          <button
+            className="icon-button rounded-[10px] h-[5vh] bg-[#66f96b] border-none p-1 cursor-pointer transition-colors duration-300 hover:bg-[#15803d] ml-5"
+            onClick={handleSettingsClick}
+          >
             <img src={SettingIcon} alt="Setting" />
           </button>
-          <button className="icon-button" onClick={handleUpdateClick}>
+          <button
+            className="icon-button rounded-[10px] h-[5vh] bg-[#66f96b] border-none p-1 cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
+            onClick={handleUpdateClick}
+          >
             <img src={UpdateIcon} alt="Update" />
           </button>
         </div>
-        <div className="task-tiles">
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              className="task-tile"
-              onClick={() => handleTaskClick(task)}
-            >
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            className="mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-5"
+          >
+            <div className="task-tile" onClick={() => handleTaskClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
+
       {modalOpen && selectedTask && (
-        <Modal task={selectedTask} onClose={closeModal} groups={groups} />
+        <Modal task={selectedTask} onClose={closeModal} />
       )}
     </div>
   );
 }
 
-const Modal = ({ task, onClose, groups }) => {
-  // Remove unused variables and functions
+const Modal = ({ task, groups, onClose }) => {
   const [taskName, setTaskName] = useState(task.name);
   const [taskDescription, setTaskDescription] = useState(task.description);
-  const [executor, setExecutor] = useState(task.executor);
+  const [executor, setExecutor] = useState("");
   const [sendTime, setSendTime] = useState(formatDateTime(task.sendTime));
 
-  const handleSubmit = (e) => {
+  // // Define getExecutorNameByGroupUUID locally
+  // const getExecutorNameByGroupUUID = (groupUUID) => {
+  //   const executor = executors.find((ex) => ex.group_uuid === groupUUID);
+  //   return executor ? executor.name : "";
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement your submit logic here
-    alert("Form submitted!");
+
+    try {
+      // Prepare the updated task data
+      const updatedTask = {
+        ...task,
+        name: taskName,
+        description: taskDescription,
+        group_uuid: executor,
+        sendTime: sendTime, // Adjust this based on your date/time format handling
+      };
+
+      // Send a POST request to save the updated task
+      const response = await axios.post(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        updatedTask
+      );
+
+      // Handle success response (optional)
+      console.log("Task updated successfully:", response.data);
+
+      // Optionally, you can add logic to inform the user (e.g., show a success message)
+      alert("Changes saved successfully!");
+
+      // Close the modal after successful submission
+      onClose();
+    } catch (error) {
+      console.error("Error updating task:", error);
+      // Optionally, handle errors (e.g., show an error message to the user)
+      alert("Failed to save changes. Please try again.");
+    }
   };
 
   const handleExecutorChange = (e) => {

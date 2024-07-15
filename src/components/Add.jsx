@@ -82,36 +82,36 @@ const AddTaskPage = () => {
   };
 
   return (
-    <div className="add-task-page">
-      <form onSubmit={handleSubmit}>
-        <label>
+    <div class="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
+      <form class="flex flex-col space-y-5">
+        <label class="block mb-2">
           <input
             type="text"
             name="taskName"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             required
-            className="input-field"
+            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
             placeholder="Введите заголовок задачи"
           />
         </label>
-        <label>
+        <label class="block mb-2">
           <textarea
             name="taskDescription"
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            className="input-field"
+            class="w-full px-4 py-2 resize-y min-h-24 h-64 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
-        <label>
+        <label class="block mb-2">
           <select
             value={executor}
             onChange={handleExecutorChange}
             required
-            className="input-field select-field"
+            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
           >
             <option value="">Выберите исполнителя</option>
             {executorsList.map((executor) => (
@@ -121,7 +121,7 @@ const AddTaskPage = () => {
             ))}
           </select>
         </label>
-        <label>
+        <label class="block mb-2">
           Время отправки:
           <input
             type="datetime-local"
@@ -129,11 +129,16 @@ const AddTaskPage = () => {
             value={sendTime}
             onChange={handleSendTimeChange}
             required
-            className="input-field"
+            class="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
             placeholder="Выберите время отправки"
           />
         </label>
-        <button type="submit">Сохранить</button>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold"
+        >
+          Сохранить
+        </button>
       </form>
     </div>
   );
