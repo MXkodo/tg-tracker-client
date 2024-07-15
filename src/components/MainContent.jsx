@@ -82,7 +82,7 @@ function MainContent() {
     setActiveStatusId(statusId);
   };
 
-  const handleTaskClick = (task) => {
+  const handleEditClick = (task) => {
     setSelectedTask(task);
     setModalOpen(true);
   };
@@ -124,7 +124,7 @@ function MainContent() {
           </button>
           <button
             className="icon-button rounded-[10px] ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
-            onClick={handleUpdateClick}
+            onClick={handleEditClick}
           >
             <img src={UpdateIcon} alt="Update" />
           </button>
@@ -136,7 +136,7 @@ function MainContent() {
               index === tasks.length - 1 ? "mb-5 last-task" : ""
             }`}
           >
-            <div className="task-tile" onClick={() => handleTaskClick(task)}>
+            <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
@@ -211,27 +211,21 @@ const Modal = ({ task, groups, onClose }) => {
             <input
               type="text"
               name="taskName"
-              value={taskName}
+              value={task.name}
               onChange={(e) => setTaskName(e.target.value)}
               required
               className="input-field"
               placeholder="Введите заголовок задачи"
             />
-          </label>
-          <label>
-            Описание задачи:
             <textarea
               name="taskDescription"
-              value={taskDescription}
+              value={task.description}
               onChange={(e) => setTaskDescription(e.target.value)}
               rows="4"
               required
               className="input-field"
               placeholder="Введите описание задачи"
             ></textarea>
-          </label>
-          <label>
-            Исполнитель:
             <select
               value={executor}
               onChange={handleExecutorChange}
@@ -245,13 +239,10 @@ const Modal = ({ task, groups, onClose }) => {
                 </option>
               ))}
             </select>
-          </label>
-          <label>
-            Время отправки:
             <input
               type="datetime-local"
               name="sendTime"
-              value={sendTime}
+              value={new Date(task.sendTime).toISOString().substr(0, 16)} // Преобразование формата даты
               onChange={(e) => setSendTime(e.target.value)}
               required
               className="input-field"
