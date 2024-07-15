@@ -3,7 +3,6 @@ import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
 import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
-// import SearchIcon from "../img/Search.png";
 import SettingIcon from "../img/Setting.png";
 import UpdateIcon from "../img/Update.png";
 
@@ -15,6 +14,27 @@ function MainContent() {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+
+  useEffect(() => {
+    fetchGroups();
+  }, [activeStatusId]);
+  const refreshData = async () => {
+    try {
+      const response = await axios.get(
+        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+      setAllTasks(response.data);
+      filterTasksByStatus(response.data, activeStatusId);
+      fetchGroups(); // Предполагается, что fetchGroups также нуждается в обновлении
+    } catch (error) {
+      console.error("Error refreshing tasks:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -33,7 +53,6 @@ function MainContent() {
         console.error("Error fetching tasks:", error);
       }
     };
-
     fetchAllTasks();
     fetchGroups();
   }, [activeStatusId]);
@@ -53,10 +72,30 @@ function MainContent() {
       console.error("Error fetching groups:", error);
     }
   };
+  const handleAcceptTask = async (taskId, status) => {
+    try {
+      const response = await axios.patch(
+        `https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks/`,
+        {
+          uuid: taskId,
+          status_id: status,
+        }
+      );
+      console.log("Task accepted:", response.data);
+      // После успешного обновления статуса, возможно, потребуется перезагрузить список задач
+      refreshData();
+    } catch (error) {
+      console.error("Error accepting task:", error);
+    }
+  };
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
   }, [activeStatusId, allTasks]);
+
+  useEffect(() => {
+    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
+  }, [activeStatusId, allTasks, searchTerm]);
 
   const filterTasksByStatus = (tasksArray, statusId) => {
     const filteredTasks = tasksArray.filter(
@@ -65,8 +104,36 @@ function MainContent() {
     setTasks(filteredTasks);
   };
 
+  const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
+    let filteredTasks = tasksArray;
+
+    // Фильтрация по статусу
+    if (statusId !== null) {
+      filteredTasks = filteredTasks.filter(
+        (task) => task.status_id === statusId
+      );
+    }
+
+    // Фильтрация по поисковому запросу
+    if (searchTerm.trim() !== "") {
+      filteredTasks = filteredTasks.filter((task) => {
+        const taskName = task.name || "";
+        const groupName = task.group_name || "";
+        return (
+          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          groupName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+
+    setTasks(filteredTasks); // Установите состояние tasks здесь
+
+    return filteredTasks; // Возвращение отфильтрованных задач для других целей, если необходимо
+  };
+
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
+    filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId); // Прямой вызов функции фильтрации
   };
 
   const clearSearch = () => {
@@ -109,13 +176,14 @@ function MainContent() {
             value={searchTerm}
             onChange={handleInputChange}
             className="rounded-[15px] w-[35vh] h-[5vh] p-1"
+            style={{ color: "black" }} // Добавляем стиль для цвета шрифта
           />
+
           {searchTerm && (
             <button className="clear-button" onClick={clearSearch}>
               <img src={ClearIcon} alt="Clear" />
             </button>
           )}
-          {/* <button className="search-button rounded-[10px] bg-[#66f96b] border-none p-1 h-[5vh] cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"></.button> */}
           <button
             className="icon-button rounded-[10px] mr-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d] ml-5"
             onClick={handleSettingsClick}
@@ -124,7 +192,7 @@ function MainContent() {
           </button>
           <button
             className="icon-button rounded-[10px] ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
-            onClick={handleEditClick}
+            onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />
           </button>
@@ -140,135 +208,117 @@ function MainContent() {
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+              {task.status_id === 2 && (
+                <button
+                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                  onClick={(event) => {
+                    event.stopPropagation(); // Останавливаем распространение события
+                    handleAcceptTask(task.uuid, 3);
+                  }}
+                >
+                  Принять
+                </button>
+              )}
+              {task.status_id === 3 && (
+                <button
+                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                  onClick={(event) => {
+                    event.stopPropagation(); // Останавливаем распространение события
+                    handleAcceptTask(task.uuid, 4);
+                  }}
+                >
+                  Готово
+                </button>
+              )}
+              {task.status_id === 4 && (
+                <button
+                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                  onClick={(event) => {
+                    event.stopPropagation(); // Останавливаем распространение события
+                    handleAcceptTask(task.uuid, 5);
+                  }}
+                >
+                  В проверке
+                </button>
+              )}
+              {task.status_id === 5 && (
+                <>
+                  <button
+                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    onClick={(event) => {
+                      event.stopPropagation(); // Останавливаем распространение события
+                      handleAcceptTask(task.uuid, 7);
+                    }}
+                  >
+                    Принята
+                  </button>
+                  <button
+                    className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                    onClick={(event) => {
+                      event.stopPropagation(); // Останавливаем распространение события
+                      handleAcceptTask(task.uuid, 6);
+                    }}
+                  >
+                    Доработка
+                  </button>
+                </>
+              )}
+              {task.status_id === 6 && (
+                <>
+                  <button
+                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    onClick={(event) => {
+                      event.stopPropagation(); // Останавливаем распространение события
+                      handleAcceptTask(task.uuid, 3);
+                    }}
+                  >
+                    Принять
+                  </button>
+                </>
+              )}
             </div>
           </div>
         ))}
       </div>
-
       {modalOpen && selectedTask && (
-        <Modal task={selectedTask} onClose={closeModal} />
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div class="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 class="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+                  Информация о задаче
+                </h2>
+                <p class="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Название:</strong> {selectedTask.name}
+                </p>
+                <p class="whitespace-normal overflow-hidden max-w-prose break-words">
+                  <strong>Описание:</strong> {selectedTask.description}
+                </p>
+                <p class="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Группа:</strong>{" "}
+                  {getGroupNameByUUID(selectedTask.group_uuid)}
+                </p>
+                <p class="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Время отправки:</strong>{" "}
+                  {formatTimestamp(selectedTask.apperance_timestamp)}
+                </p>
+
+                <div class="flex justify-end mt-5">
+                  <button
+                    class="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    onClick={closeModal}
+                  >
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 }
-
-const Modal = ({ task, groups, onClose }) => {
-  const [taskName, setTaskName] = useState(task.name);
-  const [taskDescription, setTaskDescription] = useState(task.description);
-  const [executor, setExecutor] = useState("");
-  const [sendTime, setSendTime] = useState(formatDateTime(task.sendTime));
-
-  // // Define getExecutorNameByGroupUUID locally
-  // const getExecutorNameByGroupUUID = (groupUUID) => {
-  //   const executor = executors.find((ex) => ex.group_uuid === groupUUID);
-  //   return executor ? executor.name : "";
-  // };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // Prepare the updated task data
-      const updatedTask = {
-        ...task,
-        name: taskName,
-        description: taskDescription,
-        group_uuid: executor,
-        sendTime: sendTime, // Adjust this based on your date/time format handling
-      };
-
-      // Send a POST request to save the updated task
-      const response = await axios.post(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
-        updatedTask
-      );
-
-      // Handle success response (optional)
-      console.log("Task updated successfully:", response.data);
-
-      // Optionally, you can add logic to inform the user (e.g., show a success message)
-      alert("Changes saved successfully!");
-
-      // Close the modal after successful submission
-      onClose();
-    } catch (error) {
-      console.error("Error updating task:", error);
-      // Optionally, handle errors (e.g., show an error message to the user)
-      alert("Failed to save changes. Please try again.");
-    }
-  };
-
-  const handleExecutorChange = (e) => {
-    setExecutor(e.target.value);
-  };
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Заголовок задачи:
-            <input
-              type="text"
-              name="taskName"
-              value={task.name}
-              onChange={(e) => setTaskName(e.target.value)}
-              required
-              className="input-field"
-              placeholder="Введите заголовок задачи"
-            />
-            <textarea
-              name="taskDescription"
-              value={task.description}
-              onChange={(e) => setTaskDescription(e.target.value)}
-              rows="4"
-              required
-              className="input-field"
-              placeholder="Введите описание задачи"
-            ></textarea>
-            <select
-              value={executor}
-              onChange={handleExecutorChange}
-              required
-              className="input-field select-field"
-            >
-              <option value="">Выберите исполнителя</option>
-              {groups.map((group) => (
-                <option key={group.uuid} value={group.uuid}>
-                  {group.name}
-                </option>
-              ))}
-            </select>
-            <input
-              type="datetime-local"
-              name="sendTime"
-              value={new Date(task.sendTime).toISOString().substr(0, 16)} // Преобразование формата даты
-              onChange={(e) => setSendTime(e.target.value)}
-              required
-              className="input-field"
-              placeholder="Выберите время отправки"
-            />
-          </label>
-          <div className="modal-buttons">
-            <button type="submit" className="modal-button">
-              Сохранить изменения
-            </button>
-            <button className="modal-button" onClick={onClose}>
-              Закрыть
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// Helper function to format date-time in the required format for datetime-local input
-const formatDateTime = (timestamp) => {
-  const date = new Date(timestamp);
-  const isoDateTime = date.toISOString().slice(0, 16);
-  return isoDateTime;
-};
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -283,9 +333,5 @@ const formatTimestamp = (timestamp) => {
 const handleSettingsClick = () => {
   alert("Кнопка Setting нажата");
 };
-
-// const handleUpdateClick = () => {
-//   alert("Кнопка Update нажата");
-// };
 
 export default MainContent;

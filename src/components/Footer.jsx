@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import homeImage from "../img/Home.png";
 import addImage from "../img/Add.png";
-import calendarImage from "../img/Calendar.png";
+import groupImage from "../img/Group.png";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -32,8 +32,8 @@ const Footer = () => {
       </Link>
       <button className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <img src={calendarImage} alt="Календарь" />
-          <span>Календарь</span>
+          <img src={groupImage} alt="Календарь" />
+          <span>Группы</span>
         </div>
       </button>
     </footer>
