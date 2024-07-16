@@ -11,6 +11,10 @@ const Footer = () => {
     navigate("/add");
   };
 
+  const handleGroupClick = () => {
+    navigate("/group");
+  };
+
   return (
     <footer className="bg-green-500 p-5 flex justify-center items-center h-[15vh] fixed inset-x-0 bottom-0 w-full box-border">
       <button
@@ -30,7 +34,10 @@ const Footer = () => {
           </div>
         </button>
       </Link>
-      <button className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center">
+      <button
+        onClick={handleGroupClick}
+        className="flex-1 text-black bg-green-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-green-700 flex flex-col items-center justify-center"
+      >
         <div className="flex flex-col items-center justify-center">
           <img src={groupImage} alt="Календарь" />
           <span>Группы</span>

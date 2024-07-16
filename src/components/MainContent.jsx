@@ -21,7 +21,7 @@ function MainContent() {
   const refreshData = async () => {
     try {
       const response = await axios.get(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -30,7 +30,7 @@ function MainContent() {
       );
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
-      fetchGroups(); // Предполагается, что fetchGroups также нуждается в обновлении
+      fetchGroups();
     } catch (error) {
       console.error("Error refreshing tasks:", error);
     }
@@ -40,7 +40,7 @@ function MainContent() {
     const fetchAllTasks = async () => {
       try {
         const response = await axios.get(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+          "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -60,7 +60,7 @@ function MainContent() {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/groups",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -75,14 +75,14 @@ function MainContent() {
   const handleAcceptTask = async (taskId, status) => {
     try {
       const response = await axios.patch(
-        `https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks/`,
+        `https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks/`,
         {
           uuid: taskId,
           status_id: status,
         }
       );
       console.log("Task accepted:", response.data);
-      // После успешного обновления статуса, возможно, потребуется перезагрузить список задач
+
       refreshData();
     } catch (error) {
       console.error("Error accepting task:", error);
@@ -107,14 +107,12 @@ function MainContent() {
   const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
     let filteredTasks = tasksArray;
 
-    // Фильтрация по статусу
     if (statusId !== null) {
       filteredTasks = filteredTasks.filter(
         (task) => task.status_id === statusId
       );
     }
 
-    // Фильтрация по поисковому запросу
     if (searchTerm.trim() !== "") {
       filteredTasks = filteredTasks.filter((task) => {
         const taskName = task.name || "";
@@ -126,14 +124,14 @@ function MainContent() {
       });
     }
 
-    setTasks(filteredTasks); // Установите состояние tasks здесь
+    setTasks(filteredTasks);
 
-    return filteredTasks; // Возвращение отфильтрованных задач для других целей, если необходимо
+    return filteredTasks;
   };
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
-    filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId); // Прямой вызов функции фильтрации
+    filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId);
   };
 
   const clearSearch = () => {
@@ -176,7 +174,7 @@ function MainContent() {
             value={searchTerm}
             onChange={handleInputChange}
             className="rounded-[15px] w-[35vh] h-[5vh] p-1"
-            style={{ color: "black" }} // Добавляем стиль для цвета шрифта
+            style={{ color: "black" }}
           />
 
           {searchTerm && (
@@ -212,7 +210,7 @@ function MainContent() {
                 <button
                   className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                   onClick={(event) => {
-                    event.stopPropagation(); // Останавливаем распространение события
+                    event.stopPropagation();
                     handleAcceptTask(task.uuid, 3);
                   }}
                 >
@@ -223,7 +221,7 @@ function MainContent() {
                 <button
                   className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                   onClick={(event) => {
-                    event.stopPropagation(); // Останавливаем распространение события
+                    event.stopPropagation();
                     handleAcceptTask(task.uuid, 4);
                   }}
                 >
@@ -234,7 +232,7 @@ function MainContent() {
                 <button
                   className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                   onClick={(event) => {
-                    event.stopPropagation(); // Останавливаем распространение события
+                    event.stopPropagation();
                     handleAcceptTask(task.uuid, 5);
                   }}
                 >
@@ -246,7 +244,7 @@ function MainContent() {
                   <button
                     className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                     onClick={(event) => {
-                      event.stopPropagation(); // Останавливаем распространение события
+                      event.stopPropagation();
                       handleAcceptTask(task.uuid, 7);
                     }}
                   >
@@ -255,7 +253,7 @@ function MainContent() {
                   <button
                     className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                     onClick={(event) => {
-                      event.stopPropagation(); // Останавливаем распространение события
+                      event.stopPropagation();
                       handleAcceptTask(task.uuid, 6);
                     }}
                   >
@@ -268,7 +266,7 @@ function MainContent() {
                   <button
                     className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                     onClick={(event) => {
-                      event.stopPropagation(); // Останавливаем распространение события
+                      event.stopPropagation();
                       handleAcceptTask(task.uuid, 3);
                     }}
                   >

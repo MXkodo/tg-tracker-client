@@ -12,7 +12,7 @@ const AddTaskPage = () => {
     const fetchExecutors = async () => {
       try {
         const response = await fetch(
-          "https://c947-176-100-119-5.ngrok-free.app/api/v1/groups",
+          "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/groups",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -25,11 +25,9 @@ const AddTaskPage = () => {
         }
 
         const data = await response.json();
-
-        setExecutorsList(data);
+        setExecutorsList(data || []);
       } catch (error) {
         console.error("Ошибка при загрузке исполнителей:", error.message);
-        alert("Ошибка при загрузке исполнителей: " + error.message);
       }
     };
 
@@ -51,7 +49,7 @@ const AddTaskPage = () => {
 
     try {
       const response = await fetch(
-        "https://c947-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
         {
           method: "POST",
           headers: {
@@ -114,11 +112,12 @@ const AddTaskPage = () => {
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
           >
             <option value="">Выберите исполнителя</option>
-            {executorsList.map((executor) => (
-              <option key={executor.uuid} value={executor.uuid}>
-                {executor.name}
-              </option>
-            ))}
+            {executorsList.length > 0 &&
+              executorsList.map((executor) => (
+                <option key={executor.uuid} value={executor.uuid}>
+                  {executor.name}
+                </option>
+              ))}
           </select>
         </label>
         <label className="block mb-2">
