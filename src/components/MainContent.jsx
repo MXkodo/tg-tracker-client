@@ -241,7 +241,7 @@ function MainContent() {
             <option value="timestamp">По времени</option>
           </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300 hover:bg-green-700"
             onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />

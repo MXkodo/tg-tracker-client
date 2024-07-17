@@ -164,7 +164,7 @@ const GroupsPage = () => {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center mb-14">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
             <h2 className="text-lg font-bold mb-4">Создание новой группы</h2>
             <input
