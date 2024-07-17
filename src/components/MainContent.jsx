@@ -79,7 +79,6 @@ function MainContent() {
 
   const handleAcceptTask = async (taskId, status) => {
     try {
-      // Установка isLoading для задачи, чтобы показать анимацию загрузки
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.uuid === taskId ? { ...task, isLoading: true } : task
@@ -95,7 +94,6 @@ function MainContent() {
       );
       console.log("Task accepted:", response.data);
 
-      // После успешного выполнения операции, убираем isLoading для задачи
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.uuid === taskId ? { ...task, isLoading: false } : task
@@ -105,7 +103,6 @@ function MainContent() {
       refreshData();
     } catch (error) {
       console.error("Error accepting task:", error);
-      // Также можно добавить обработку ошибки здесь и убрать isLoading в случае неудачи
     }
   };
 
@@ -263,7 +260,7 @@ function MainContent() {
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
-                <div className="loader"></div> // Рендерим анимацию загрузки, если isLoading === true
+                <div className="loader"></div>
               ) : (
                 <>
                   {task.status_id === 2 && (
