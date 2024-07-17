@@ -207,14 +207,14 @@ function MainContent() {
         />
       </header>
       <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
-        <div className="flex items-center mr-0">
+        <div className="flex items-center mr-0 ">
           <input
             id="search"
             type="text"
             placeholder="Поиск..."
             value={searchTerm}
             onChange={handleInputChange}
-            className="rounded-[15px] w-[35vh] h-[5vh] p-1"
+            className="rounded-[15px] w-[27vh] h-[5vh] p-1"
             style={{ color: "black" }}
           />
 
@@ -225,7 +225,7 @@ function MainContent() {
           )}
 
           <select
-            className="sort-dropdown ml-2 h-[5vh] bg-green-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
+            className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
           >
             <option value="group">По группе</option>
