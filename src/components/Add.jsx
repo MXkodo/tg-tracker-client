@@ -7,6 +7,7 @@ const AddTaskPage = () => {
   const [executor, setExecutor] = useState("");
   const [executorsList, setExecutorsList] = useState([]);
   const [sendTime, setSendTime] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchExecutors = async () => {
@@ -37,6 +38,8 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setIsLoading(true); // Показываем анимацию загрузки перед отправкой запроса
+
     const formattedSendTime = new Date(sendTime).toISOString();
 
     const taskData = {
@@ -65,9 +68,17 @@ const AddTaskPage = () => {
 
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
+
+      // Очищаем поля формы и скрываем анимацию загрузки после успешного ответа
+      setTaskName("");
+      setTaskDescription("");
+      setExecutor("");
+      setSendTime("");
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
       alert("Ошибка при сохранении задачи:", error.message);
+    } finally {
+      setIsLoading(false); // Скрываем анимацию загрузки после завершения запроса
     }
   };
 
@@ -135,8 +146,9 @@ const AddTaskPage = () => {
         <button
           type="submit"
           className="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold"
+          disabled={isLoading}
         >
-          Сохранить
+          {isLoading ? "Отправка..." : "Сохранить"}
         </button>
       </form>
     </div>

@@ -18,23 +18,6 @@ function MainContent() {
   useEffect(() => {
     fetchGroups();
   }, [activeStatusId]);
-  const refreshData = async () => {
-    try {
-      const response = await axios.get(
-        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
-      setAllTasks(response.data);
-      filterTasksByStatus(response.data, activeStatusId);
-      fetchGroups();
-    } catch (error) {
-      console.error("Error refreshing tasks:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -57,6 +40,32 @@ function MainContent() {
     fetchGroups();
   }, [activeStatusId]);
 
+  useEffect(() => {
+    filterTasksByStatus(allTasks, activeStatusId);
+  }, [activeStatusId, allTasks]);
+
+  useEffect(() => {
+    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
+  }, [activeStatusId, allTasks, searchTerm]);
+
+  const refreshData = async () => {
+    try {
+      const response = await axios.get(
+        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+      setAllTasks(response.data);
+      filterTasksByStatus(response.data, activeStatusId);
+      fetchGroups();
+    } catch (error) {
+      console.error("Error refreshing tasks:", error);
+    }
+  };
+
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
@@ -72,6 +81,7 @@ function MainContent() {
       console.error("Error fetching groups:", error);
     }
   };
+
   const handleAcceptTask = async (taskId, status) => {
     try {
       const response = await axios.patch(
@@ -87,46 +97,6 @@ function MainContent() {
     } catch (error) {
       console.error("Error accepting task:", error);
     }
-  };
-
-  useEffect(() => {
-    filterTasksByStatus(allTasks, activeStatusId);
-  }, [activeStatusId, allTasks]);
-
-  useEffect(() => {
-    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
-  }, [activeStatusId, allTasks, searchTerm]);
-
-  const filterTasksByStatus = (tasksArray, statusId) => {
-    const filteredTasks = tasksArray.filter(
-      (task) => task.status_id === statusId
-    );
-    setTasks(filteredTasks);
-  };
-
-  const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
-    let filteredTasks = tasksArray;
-
-    if (statusId !== null) {
-      filteredTasks = filteredTasks.filter(
-        (task) => task.status_id === statusId
-      );
-    }
-
-    if (searchTerm.trim() !== "") {
-      filteredTasks = filteredTasks.filter((task) => {
-        const taskName = task.name || "";
-        const groupName = task.group_name || "";
-        return (
-          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          groupName.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-
-    setTasks(filteredTasks);
-
-    return filteredTasks;
   };
 
   const handleInputChange = (e) => {
@@ -157,6 +127,78 @@ function MainContent() {
     setSelectedTask(null);
   };
 
+  const handleSortChange = (e) => {
+    const selectedSortOption = e.target.value;
+    switch (selectedSortOption) {
+      case "group":
+        sortByGroup();
+        break;
+      case "title":
+        sortByTitle();
+        break;
+      case "timestamp":
+        sortByTimestamp();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const sortByGroup = () => {
+    const sortedTasks = [...tasks].sort((a, b) => {
+      const groupNameA = getGroupNameByUUID(a.group_uuid).toLowerCase();
+      const groupNameB = getGroupNameByUUID(b.group_uuid).toLowerCase();
+      return groupNameA.localeCompare(groupNameB);
+    });
+    setTasks(sortedTasks);
+  };
+
+  const sortByTitle = () => {
+    const sortedTasks = [...tasks].sort((a, b) =>
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    );
+    setTasks(sortedTasks);
+  };
+
+  const sortByTimestamp = () => {
+    const sortedTasks = [...tasks].sort((a, b) => {
+      const timestampA = new Date(a.apperance_timestamp);
+      const timestampB = new Date(b.apperance_timestamp);
+      return timestampA - timestampB;
+    });
+    setTasks(sortedTasks);
+  };
+
+  const filterTasksByStatus = (tasksArray, statusId) => {
+    const filteredTasks = tasksArray.filter(
+      (task) => task.status_id === statusId
+    );
+    setTasks(filteredTasks);
+  };
+
+  const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
+    let filteredTasks = tasksArray;
+
+    if (statusId !== null) {
+      filteredTasks = filteredTasks.filter(
+        (task) => task.status_id === statusId
+      );
+    }
+
+    if (searchTerm.trim() !== "") {
+      filteredTasks = filteredTasks.filter((task) => {
+        const taskName = task.name || "";
+        const groupName = getGroupNameByUUID(task.group_uuid) || "";
+        return (
+          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          groupName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+
+    setTasks(filteredTasks);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header>
@@ -182,19 +224,23 @@ function MainContent() {
               <img src={ClearIcon} alt="Clear" />
             </button>
           )}
-          <button
-            className="icon-button rounded-[10px] mr-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d] ml-5"
-            onClick={handleSettingsClick}
+
+          <select
+            className="sort-dropdown ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-[#15803d]"
+            onChange={handleSortChange}
           >
-            <img src={SettingIcon} alt="Setting" />
-          </button>
+            <option value="group">По группе</option>
+            <option value="title">По названию</option>
+            <option value="timestamp">По времени</option>
+          </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] w-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
             onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />
           </button>
         </div>
+
         {tasks.map((task, index) => (
           <div
             key={task.id}
@@ -326,10 +372,6 @@ const formatTimestamp = (timestamp) => {
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${day}.${month}.${year} ${hours}:${minutes}`;
-};
-
-const handleSettingsClick = () => {
-  alert("Кнопка Setting нажата");
 };
 
 export default MainContent;
