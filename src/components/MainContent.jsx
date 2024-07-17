@@ -225,7 +225,7 @@ function MainContent() {
           )}
 
           <select
-            className="sort-dropdown ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer text-white font-semibold transition-colors duration-300"
+            className="sort-dropdown ml-2 h-[5vh] bg-green-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
           >
             <option value="group">По группе</option>
@@ -233,7 +233,7 @@ function MainContent() {
             <option value="timestamp">По времени</option>
           </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] w-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300"
             onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />
