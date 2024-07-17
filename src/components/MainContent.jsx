@@ -3,7 +3,6 @@ import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
 import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
-import SettingIcon from "../img/Setting.png";
 import UpdateIcon from "../img/Update.png";
 
 function MainContent() {
@@ -44,9 +43,9 @@ function MainContent() {
     filterTasksByStatus(allTasks, activeStatusId);
   }, [activeStatusId, allTasks]);
 
-  useEffect(() => {
-    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
-  }, [activeStatusId, allTasks, searchTerm]);
+  // useEffect(() => {
+  //   filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
+  // }, [activeStatusId, allTasks, searchTerm]);
 
   const refreshData = async () => {
     try {
@@ -164,7 +163,7 @@ function MainContent() {
     const sortedTasks = [...tasks].sort((a, b) => {
       const timestampA = new Date(a.apperance_timestamp);
       const timestampB = new Date(b.apperance_timestamp);
-      return timestampA - timestampB;
+      return timestampB - timestampA;
     });
     setTasks(sortedTasks);
   };
@@ -226,7 +225,7 @@ function MainContent() {
           )}
 
           <select
-            className="sort-dropdown ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-[#15803d]"
+            className="sort-dropdown ml-2 h-[5vh] bg-[#66f96b] border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
           >
             <option value="group">По группе</option>
@@ -234,7 +233,7 @@ function MainContent() {
             <option value="timestamp">По времени</option>
           </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] w-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300 hover:bg-[#15803d]"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] w-[5vh] bg-[#66f96b] border-none cursor-pointer transition-colors duration-300"
             onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />
