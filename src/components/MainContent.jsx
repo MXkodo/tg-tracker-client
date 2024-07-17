@@ -43,10 +43,6 @@ function MainContent() {
     filterTasksByStatus(allTasks, activeStatusId);
   }, [activeStatusId, allTasks]);
 
-  // useEffect(() => {
-  //   filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
-  // }, [activeStatusId, allTasks, searchTerm]);
-
   const refreshData = async () => {
     try {
       const response = await axios.get(
@@ -83,6 +79,13 @@ function MainContent() {
 
   const handleAcceptTask = async (taskId, status) => {
     try {
+      // Установка isLoading для задачи, чтобы показать анимацию загрузки
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.uuid === taskId ? { ...task, isLoading: true } : task
+        )
+      );
+
       const response = await axios.patch(
         `https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks/`,
         {
@@ -92,9 +95,17 @@ function MainContent() {
       );
       console.log("Task accepted:", response.data);
 
+      // После успешного выполнения операции, убираем isLoading для задачи
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.uuid === taskId ? { ...task, isLoading: false } : task
+        )
+      );
+
       refreshData();
     } catch (error) {
       console.error("Error accepting task:", error);
+      // Также можно добавить обработку ошибки здесь и убрать isLoading в случае неудачи
     }
   };
 
@@ -243,7 +254,7 @@ function MainContent() {
         {tasks.map((task, index) => (
           <div
             key={task.id}
-            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-5 ${
+            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
               index === tasks.length - 1 ? "mb-5 last-task" : ""
             }`}
           >
@@ -251,72 +262,78 @@ function MainContent() {
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-              {task.status_id === 2 && (
-                <button
-                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleAcceptTask(task.uuid, 3);
-                  }}
-                >
-                  Принять
-                </button>
-              )}
-              {task.status_id === 3 && (
-                <button
-                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleAcceptTask(task.uuid, 4);
-                  }}
-                >
-                  Готово
-                </button>
-              )}
-              {task.status_id === 4 && (
-                <button
-                  className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleAcceptTask(task.uuid, 5);
-                  }}
-                >
-                  В проверке
-                </button>
-              )}
-              {task.status_id === 5 && (
+              {task.isLoading ? (
+                <div className="loader"></div> // Рендерим анимацию загрузки, если isLoading === true
+              ) : (
                 <>
-                  <button
-                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 7);
-                    }}
-                  >
-                    Принята
-                  </button>
-                  <button
-                    className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 6);
-                    }}
-                  >
-                    Доработка
-                  </button>
-                </>
-              )}
-              {task.status_id === 6 && (
-                <>
-                  <button
-                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 3);
-                    }}
-                  >
-                    Принять
-                  </button>
+                  {task.status_id === 2 && (
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 3);
+                      }}
+                    >
+                      Принять
+                    </button>
+                  )}
+                  {task.status_id === 3 && (
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 4);
+                      }}
+                    >
+                      Готово
+                    </button>
+                  )}
+                  {task.status_id === 4 && (
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 5);
+                      }}
+                    >
+                      В проверке
+                    </button>
+                  )}
+                  {task.status_id === 5 && (
+                    <>
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 7);
+                        }}
+                      >
+                        Принята
+                      </button>
+                      <button
+                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 6);
+                        }}
+                      >
+                        Доработка
+                      </button>
+                    </>
+                  )}
+                  {task.status_id === 6 && (
+                    <>
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 3);
+                        }}
+                      >
+                        Принять
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </div>
