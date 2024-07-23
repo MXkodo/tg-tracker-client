@@ -13,7 +13,7 @@ const AddTaskPage = () => {
     const fetchExecutors = async () => {
       try {
         const response = await fetch(
-          "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/groups",
+          "https://42ab-176-100-119-170.ngrok-free.app/api/v1/groups",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -52,7 +52,7 @@ const AddTaskPage = () => {
 
     try {
       const response = await fetch(
-        "https://ec3c-176-100-119-5.ngrok-free.app/api/v1/tasks",
+        "https://42ab-176-100-119-170.ngrok-free.app/api/v1/tasks",
         {
           method: "POST",
           headers: {
