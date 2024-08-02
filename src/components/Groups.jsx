@@ -2,54 +2,47 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const GroupsPage = () => {
+  const [viewMode, setViewMode] = useState("groups"); // Состояние для переключения между группами и пользователями
   const [groups, setGroups] = useState([]);
-  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null);
-  const [activeUser, setActiveUser] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [itemName, setItemName] = useState("");
-  const [viewMode, setViewMode] = useState("groups");
 
   useEffect(() => {
-    const fetchGroupsAndUsers = async () => {
-      try {
-        const groupsResponse = await axios.get(
-          "https://b744-176-100-119-170.ngrok-free.app/api/v1/groups",
-          {
-            headers: { "ngrok-skip-browser-warning": "1" },
+    if (viewMode === "groups") {
+      axios
+        .get("https://b744-176-100-119-170.ngrok-free.app/api/v1/groups", {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        })
+        .then((response) => {
+          if (response.data !== null) {
+            setGroups(response.data);
           }
-        );
-        setGroups(groupsResponse.data || []);
-
-        const usersResponse = await axios.get(
-          "https://b744-176-100-119-170.ngrok-free.app/api/v1/users",
-          {
-            headers: { "ngrok-skip-browser-warning": "1" },
-          }
-        );
-        setUsers(usersResponse.data || []);
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError(error.message);
-        setIsLoading(false);
-      }
-    };
-
-    fetchGroupsAndUsers();
-  }, []);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching groups:", error);
+          setError(error.message);
+          setIsLoading(false);
+        });
+    }
+  }, [viewMode]);
 
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
-    setActiveGroup(null);
-    setActiveUser(null);
+    setActiveGroup(null); // Сбрасываем активное состояние
+  };
+
+  const handleItemClick = (itemId) => {
+    setActiveGroup(itemId);
   };
 
   const handleAddClick = () => {
@@ -65,7 +58,7 @@ const GroupsPage = () => {
     setItemName(event.target.value);
   };
 
-  const handleSave = () => {
+  const handleSaveItem = () => {
     if (viewMode === "groups") {
       axios
         .post("https://b744-176-100-119-170.ngrok-free.app/api/v1/groups", {
@@ -78,58 +71,38 @@ const GroupsPage = () => {
         .catch((error) => {
           console.error("Error adding group:", error);
         });
-    } else if (viewMode === "users") {
-      axios
-        .post("https://b744-176-100-119-170.ngrok-free.app/api/v1/users", {
-          name: itemName,
-        })
-        .then((response) => {
-          setUsers([...users, response.data]);
-          handleCloseModal();
-        })
-        .catch((error) => {
-          console.error("Error adding user:", error);
-        });
+    } else {
+      // Логика для сохранения пользователя будет здесь
+      handleCloseModal();
     }
   };
 
-  const handleDelete = (id) => {
-    const itemToDelete =
-      viewMode === "groups"
-        ? groups.find((group) => group.uuid === id)
-        : users.find((user) => user.uuid === id);
-
+  const handleDeleteItem = (uuid) => {
+    const itemToDelete = groups.find((group) => group.uuid === uuid);
     setItemToDelete(itemToDelete);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (itemToDelete) {
-      const deleteUrl =
-        viewMode === "groups"
-          ? `https://b744-176-100-119-170.ngrok-free.app/api/v1/groups/${itemToDelete.uuid}`
-          : `https://b744-176-100-119-170.ngrok-free.app/api/v1/users/${itemToDelete.uuid}`;
-
+  const confirmDeleteItem = () => {
+    if (viewMode === "groups" && itemToDelete) {
       axios
-        .delete(deleteUrl)
+        .delete(
+          `https://b744-176-100-119-170.ngrok-free.app/api/v1/groups/${itemToDelete.uuid}`
+        )
         .then(() => {
-          const updatedItems =
-            viewMode === "groups"
-              ? groups.filter((group) => group.uuid !== itemToDelete.uuid)
-              : users.filter((user) => user.uuid !== itemToDelete.uuid);
-
-          if (viewMode === "groups") {
-            setGroups(updatedItems);
-          } else {
-            setUsers(updatedItems);
-          }
-
+          const updatedGroups = groups.filter(
+            (group) => group.uuid !== itemToDelete.uuid
+          );
+          setGroups(updatedGroups);
           setItemToDelete(null);
           setShowDeleteModal(false);
         })
         .catch((error) => {
-          console.error("Error deleting item:", error);
+          console.error("Error deleting group:", error);
         });
+    } else {
+      // Логика для удаления пользователя будет здесь
+      setShowDeleteModal(false);
     }
   };
 
@@ -139,10 +112,38 @@ const GroupsPage = () => {
     </div>
   );
 
+  const renderGroupsList = () => (
+    <ul className="list-none pl-0">
+      {groups.length === 0 ? (
+        <p className="text-center">Нет доступных групп.</p>
+      ) : (
+        groups.map((group) => (
+          <li
+            key={group.uuid}
+            className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+              activeGroup === group.uuid ? "bg-green-500 text-black" : ""
+            }`}
+            onClick={() => handleItemClick(group.uuid)}
+          >
+            <span>{group.name}</span>
+            <button
+              className="px-2 py-1 bg-red-500 text-white rounded"
+              onClick={() => handleDeleteItem(group.uuid)}
+            >
+              Удалить
+            </button>
+          </li>
+        ))
+      )}
+    </ul>
+  );
+
+  const renderUsersPlaceholder = () => (
+    <p className="text-center">Здесь будет список пользователей.</p>
+  );
+
   if (isLoading) return renderLoadingAnimation();
   if (error) return <p>Error: {error}</p>;
-
-  const itemsToRender = viewMode === "groups" ? groups : users;
 
   return (
     <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
@@ -165,37 +166,8 @@ const GroupsPage = () => {
         </button>
       </div>
 
-      {itemsToRender.length === 0 ? (
-        <p className="text-center">
-          Нет доступных {viewMode === "groups" ? "групп" : "пользователей"}.
-        </p>
-      ) : (
-        <ul className="list-none pl-0">
-          {itemsToRender.map((item) => (
-            <li
-              key={item.uuid}
-              className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
-                (viewMode === "groups" ? activeGroup : activeUser) === item.uuid
-                  ? "bg-green-500 text-black"
-                  : ""
-              }`}
-              onClick={() =>
-                viewMode === "groups"
-                  ? setActiveGroup(item.uuid)
-                  : setActiveUser(item.uuid)
-              }
-            >
-              <span>{item.name}</span>
-              <button
-                className="px-2 py-1 bg-red-500 text-white rounded"
-                onClick={() => handleDelete(item.uuid)}
-              >
-                Удалить
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {viewMode === "groups" ? renderGroupsList() : renderUsersPlaceholder()}
+
       <div className="w-full flex justify-center items-center">
         <button
           type="button"
@@ -217,12 +189,11 @@ const GroupsPage = () => {
               {viewMode === "groups" ? "группу" : "пользователя"} "
               {itemToDelete.name}"?
             </p>
-
             <div className="flex justify-end">
               <button
                 type="button"
                 className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
-                onClick={confirmDelete}
+                onClick={confirmDeleteItem}
               >
                 Удалить
               </button>
@@ -242,7 +213,8 @@ const GroupsPage = () => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center mb-14">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
             <h2 className="text-lg font-bold mb-4">
-              Создание новой {viewMode === "groups" ? "группы" : "пользователя"}
+              Создание нового{" "}
+              {viewMode === "groups" ? "группы" : "пользователя"}
             </h2>
             <input
               type="text"
@@ -253,12 +225,11 @@ const GroupsPage = () => {
               value={itemName}
               onChange={handleInputChange}
             />
-
             <div className="flex justify-end">
               <button
                 type="button"
                 className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
-                onClick={handleSave}
+                onClick={handleSaveItem}
               >
                 Сохранить
               </button>
