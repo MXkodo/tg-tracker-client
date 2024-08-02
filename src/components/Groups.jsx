@@ -15,7 +15,7 @@ const GroupsPage = () => {
 
   useEffect(() => {
     axios
-      .get("https://42ab-176-100-119-170.ngrok-free.app/api/v1/groups", {
+      .get("https://b744-176-100-119-170.ngrok-free.app/api/v1/groups", {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -52,7 +52,7 @@ const GroupsPage = () => {
 
   const handleSaveGroup = () => {
     axios
-      .post("https://42ab-176-100-119-170.ngrok-free.app/api/v1/groups", {
+      .post("https://b744-176-100-119-170.ngrok-free.app/api/v1/groups", {
         name: groupName,
       })
       .then((response) => {
@@ -75,7 +75,7 @@ const GroupsPage = () => {
     if (groupToDelete) {
       axios
         .delete(
-          `https://42ab-176-100-119-170.ngrok-free.app/api/v1/groups/${groupToDelete.uuid}`
+          `https://b744-176-100-119-170.ngrok-free.app/api/v1/groups/${groupToDelete.uuid}`
         )
         .then(() => {
           const updatedGroups = groups.filter(
