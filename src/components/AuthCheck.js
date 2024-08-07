@@ -41,7 +41,7 @@ function AuthCheck() {
 
             // Закрываем Telegram Web App
             if (window.Telegram && window.Telegram.WebApp) {
-              window.Telegram.WebApp.close();
+              // window.Telegram.WebApp.close();
             }
 
             // Перенаправляем на страницу ошибки или выполняем другую логику, если нужно
@@ -65,7 +65,7 @@ function AuthCheck() {
 
       // Закрываем Telegram Web App
       if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.close();
+        // window.Telegram.WebApp.close();
       }
 
       // Перенаправляем на страницу ошибки или выполняем другую логику, если нужно
