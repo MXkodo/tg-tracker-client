@@ -48,7 +48,7 @@ function AuthCheck() {
 
             // Закрываем Telegram Web App
             if (window.Telegram && window.Telegram.WebApp) {
-              window.Telegram.WebApp.close();
+              //window.Telegram.WebApp.close();
             }
           });
       } else {
@@ -56,7 +56,7 @@ function AuthCheck() {
 
         // Закрываем Telegram Web App
         if (window.Telegram && window.Telegram.WebApp) {
-          window.Telegram.WebApp.close();
+          //  window.Telegram.WebApp.close();
         }
       }
     } else {
@@ -66,7 +66,7 @@ function AuthCheck() {
 
       // Закрываем Telegram Web App
       if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.close();
+        //window.Telegram.WebApp.close();
       }
     }
   }, [navigate]);
