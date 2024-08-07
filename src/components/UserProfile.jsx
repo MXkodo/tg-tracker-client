@@ -5,22 +5,17 @@ function UserProfile() {
 
   useEffect(() => {
     // Проверяем, загружен ли Telegram Web Apps API
-    if (window.TelegramWebApp) {
-      // Инициализируем Telegram Web App
-      const { TelegramWebApp } = window;
+    if (window.Telegram && window.Telegram.WebApp) {
+      const { WebApp } = window.Telegram;
 
-      // Получаем информацию о пользователе
-      const user = TelegramWebApp.initDataUnsafe.user;
-      if (user) {
+      // Инициализируем Telegram Web App
+      WebApp.ready();
+
+      // Получаем информацию о пользователе из initDataUnsafe
+      const user = WebApp.initDataUnsafe.user;
+      if (user && user.first_name) {
         setUserName(user.first_name);
       }
-
-      // В случае, если скрипт еще не загрузился, устанавливаем таймер
-      TelegramWebApp.onEvent("onMainButtonClicked", () => {
-        setUserName(TelegramWebApp.initDataUnsafe.user.first_name);
-      });
-
-      TelegramWebApp.ready();
     } else {
       console.error("Telegram Web Apps API is not loaded");
     }
