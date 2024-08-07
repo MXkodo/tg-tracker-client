@@ -99,11 +99,11 @@ const GroupsPage = () => {
             setAvailableUsers(usersNotInAnyGroup);
             setShowUserSelectModal(true);
           });
-      })
-      .catch((error) => {
-        console.error("Error fetching available users:", error);
-        setError("Ошибка при получении доступных пользователей.");
       });
+    // .catch((error) => {
+    //   console.error("Error fetching available users:", error);
+    //   setError("Ошибка при получении доступных пользователей.");
+    // });
   };
 
   const handleViewModeChange = (mode) => {
