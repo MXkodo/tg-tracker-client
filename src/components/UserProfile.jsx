@@ -13,8 +13,8 @@ function UserProfile() {
 
       // Получаем информацию о пользователе из initDataUnsafe
       const user = WebApp.initDataUnsafe.user;
-      if (user && user.first_name) {
-        setUserName(user.first_name);
+      if (user && user.username) {
+        setUserName(user.username);
       }
     } else {
       console.error("Telegram Web Apps API is not loaded");
