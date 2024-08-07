@@ -26,7 +26,7 @@ function AuthCheck() {
         fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify({ username }), // Отправляем имя пользователя
         })
