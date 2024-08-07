@@ -22,7 +22,7 @@ function MainContent() {
     const fetchAllTasks = async () => {
       try {
         const response = await axios.get(
-          "https://b744-176-100-119-170.ngrok-free.app/api/v1/tasks",
+          " https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -46,7 +46,7 @@ function MainContent() {
   const refreshData = async () => {
     try {
       const response = await axios.get(
-        "https://b744-176-100-119-170.ngrok-free.app/api/v1/tasks",
+        " https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -64,7 +64,7 @@ function MainContent() {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        "https://b744-176-100-119-170.ngrok-free.app/api/v1/groups",
+        " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -86,7 +86,7 @@ function MainContent() {
       );
 
       const response = await axios.patch(
-        `https://b744-176-100-119-170.ngrok-free.app/api/v1/tasks/`,
+        ` https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`,
         {
           uuid: taskId,
           status_id: status,
