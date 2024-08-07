@@ -5,6 +5,8 @@ function AuthCheck() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("AuthCheck component mounted"); // Добавьте это для отладки
+
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
@@ -15,7 +17,11 @@ function AuthCheck() {
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
 
+      console.log("User info:", user); // Логируем информацию о пользователе
+
       if (username) {
+        console.log("Fetching user data for username:", username); // Логируем имя пользователя
+
         // Проверяем наличие пользователя на сервере
         fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
           method: "GET",
@@ -42,22 +48,16 @@ function AuthCheck() {
 
             // Закрываем Telegram Web App
             if (window.Telegram && window.Telegram.WebApp) {
-              // window.Telegram.WebApp.close();
+              window.Telegram.WebApp.close();
             }
-
-            // Перенаправляем на страницу ошибки или выполняем другую логику, если нужно
-            // navigate("/error"); // Не обязательно, так как WebApp будет закрыт
           });
       } else {
         alert("Пользователь не найден в Telegram");
 
         // Закрываем Telegram Web App
         if (window.Telegram && window.Telegram.WebApp) {
-          //window.Telegram.WebApp.close();
+          window.Telegram.WebApp.close();
         }
-
-        // Перенаправляем на страницу ошибки или выполняем другую логику, если нужно
-        // navigate("/error"); // Не обязательно, так как WebApp будет закрыт
       }
     } else {
       console.error("Telegram Web Apps API is not loaded");
@@ -66,15 +66,11 @@ function AuthCheck() {
 
       // Закрываем Telegram Web App
       if (window.Telegram && window.Telegram.WebApp) {
-        // window.Telegram.WebApp.close();
+        window.Telegram.WebApp.close();
       }
-
-      // Перенаправляем на страницу ошибки или выполняем другую логику, если нужно
-      // navigate("/error"); // Не обязательно, так как WebApp будет закрыт
     }
   }, [navigate]);
 
-  // Можно вернуть null, так как этот компонент только для проверки и перенаправления
   return null;
 }
 
