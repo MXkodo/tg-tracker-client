@@ -5,8 +5,6 @@ function AuthCheck() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("AuthCheck component mounted"); // Добавьте это для отладки
-
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
@@ -17,18 +15,14 @@ function AuthCheck() {
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
 
-      console.log("User info:", user); // Логируем информацию о пользователе
-
       if (username) {
-        console.log("Fetching user data for username:", username); // Логируем имя пользователя
-
         // Проверяем наличие пользователя на сервере
         fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
-          method: "GET",
+          method: "POST", // Используем метод POST
           headers: {
-            "ngrok-skip-browser-warning": "1",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username }), // Отправляем имя пользователя
+          body: JSON.stringify({ username }), // Отправляем имя пользователя в теле запроса
         })
           .then((response) => {
             if (!response.ok) {
@@ -38,7 +32,7 @@ function AuthCheck() {
           })
           .then((data) => {
             console.log("User data:", data);
-            // Продолжайте загрузку приложения
+            // Если пользователь найден, перенаправляем на главную страницу
             navigate("/");
           })
           .catch((error) => {
@@ -48,7 +42,7 @@ function AuthCheck() {
 
             // Закрываем Telegram Web App
             if (window.Telegram && window.Telegram.WebApp) {
-              //window.Telegram.WebApp.close();
+              // window.Telegram.WebApp.close();
             }
           });
       } else {
@@ -56,7 +50,7 @@ function AuthCheck() {
 
         // Закрываем Telegram Web App
         if (window.Telegram && window.Telegram.WebApp) {
-          //  window.Telegram.WebApp.close();
+          // window.Telegram.WebApp.close();
         }
       }
     } else {
@@ -66,7 +60,7 @@ function AuthCheck() {
 
       // Закрываем Telegram Web App
       if (window.Telegram && window.Telegram.WebApp) {
-        //window.Telegram.WebApp.close();
+        // window.Telegram.WebApp.close();
       }
     }
   }, [navigate]);
