@@ -33,6 +33,7 @@ function AuthCheck() {
           .then((data) => {
             console.log("User data:", data);
             // Продолжайте загрузку приложения
+            navigate("/");
           })
           .catch((error) => {
             alert(
