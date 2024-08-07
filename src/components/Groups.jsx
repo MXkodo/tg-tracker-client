@@ -27,7 +27,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
-        : "http://localhost:8081/api/v1/users";
+        : "https://0239-85-172-92-2.ngrok-free.app/api/v1/users";
 
     axios
       .get(apiUrl, {
@@ -70,7 +70,7 @@ const GroupsPage = () => {
 
   const fetchAvailableUsers = () => {
     axios
-      .get("http://localhost:8081/api/v1/users", {
+      .get("https://0239-85-172-92-2.ngrok-free.app/api/v1/users", {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -142,7 +142,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
-        : "http://localhost:8081/api/v1/users";
+        : "https://0239-85-172-92-2.ngrok-free.app/api/v1/users";
 
     const requestConfig = {
       method: "post",
@@ -180,7 +180,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? ` https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/${itemToDelete.uuid}`
-        : `http://localhost:8081/api/v1/users`;
+        : `https://0239-85-172-92-2.ngrok-free.app/api/v1/users`;
 
     const requestData =
       viewMode === "users" ? { username: itemToDelete.username } : {};
