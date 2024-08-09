@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
@@ -7,10 +7,12 @@ import GroupsPage from "./Groups";
 import AuthCheck from "./AuthCheck";
 
 function App() {
+  const [userRole, setUserRole] = useState(null);
+
   return (
     <Router>
       <div className="app">
-        <AuthCheck />
+        <AuthCheck setUserRole={setUserRole} />
         <main>
           <Routes>
             <Route path="/" element={<MainContent />} />
@@ -18,7 +20,8 @@ function App() {
             <Route path="/group" element={<GroupsPage />} />
           </Routes>
         </main>
-        <Footer />
+        {userRole !== 0 && <Footer />}{" "}
+        {/* Отображаем Footer только если роль не равна 0 */}
       </div>
     </Router>
   );

@@ -1,14 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function AuthCheck() {
+function AuthCheck({ setUserRole }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Проверяем, был ли пользователь уже аутентифицирован
     const isAuthenticated = localStorage.getItem("authChecked");
 
-    if (isAuthenticated) return; // Если аутентификация была уже проверена, ничего не делаем
+    if (isAuthenticated) return;
 
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
@@ -33,7 +32,8 @@ function AuthCheck() {
           })
           .then((data) => {
             console.log("User data:", data);
-            localStorage.setItem("authChecked", "true"); // Устанавливаем флаг аутентификации в localStorage
+            localStorage.setItem("authChecked", "true");
+            setUserRole(data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })
           .catch((error) => {
@@ -61,7 +61,7 @@ function AuthCheck() {
         window.Telegram.WebApp.close();
       }
     }
-  }, [navigate]);
+  }, [navigate, setUserRole]);
 
   return null;
 }
