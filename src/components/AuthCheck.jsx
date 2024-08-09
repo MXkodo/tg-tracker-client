@@ -17,8 +17,8 @@ function AuthCheck() {
 
       if (username) {
         // Проверяем наличие пользователя на сервере
-        fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
-          method: "GET", // Используем метод POST
+        fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/users", {
+          method: "POST", // Используем метод POST
           headers: {
             "Content-Type": "application/json",
           },
