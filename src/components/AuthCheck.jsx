@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AuthCheck({ setUserRole }) {
   const navigate = useNavigate();
@@ -7,7 +8,6 @@ function AuthCheck({ setUserRole }) {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
 
-    // Отладка
     console.log("Is authenticated:", isAuthenticated);
     alert("Checking authentication...");
 
@@ -20,32 +20,23 @@ function AuthCheck({ setUserRole }) {
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
 
-      console.log("User data from WebApp:", user); // Отладка
+      console.log("User data from WebApp:", user);
       alert("Username: " + username);
 
       if (username) {
-        fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
+        axios
+          .post("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
+            username,
           })
-          .then((data) => {
-            console.log("Data received from server:", data); // Отладка
-            alert("Data received: " + JSON.stringify(data));
+          .then((response) => {
+            console.log("Data received from server:", response.data); // Отладка
+            alert("Data received: " + JSON.stringify(response.data));
             localStorage.setItem("authChecked", "true");
-            setUserRole(data.role); // Передаём роль пользователя в состояние
+            setUserRole(response.data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })
           .catch((error) => {
-            console.error("Fetch error:", error);
+            console.error("Axios error:", error);
             alert(
               "Вас не зарегистрировали, вы не можете использовать приложение"
             );

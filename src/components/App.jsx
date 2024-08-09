@@ -8,7 +8,6 @@ import AuthCheck from "./AuthCheck";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
-
   useEffect(() => {
     console.log("Current userRole:", userRole); // Отладка
   }, [userRole]);
