@@ -33,6 +33,8 @@ function AuthCheck({ setUserRole }) {
           .then((data) => {
             console.log("User data:", data);
             localStorage.setItem("authChecked", "true");
+            console.log("Setting user role:", data.role); // Добавлено для отладки
+            alert(data.role);
             setUserRole(data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })
@@ -62,6 +64,7 @@ function AuthCheck({ setUserRole }) {
         window.Telegram.WebApp.close();
       }
     }
+    alert(setUserRole);
   }, [navigate, setUserRole]);
 
   return null;
