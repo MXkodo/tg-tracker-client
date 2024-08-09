@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 
-function AuthCheck({ setUserRole, setUserUUID, setLoading }) {
+function AuthCheck({ setUserRole, setUserUUID }) {
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
@@ -21,7 +21,6 @@ function AuthCheck({ setUserRole, setUserUUID, setLoading }) {
             response.data.role = 1;
             setUserRole(response.data.role);
             setUserUUID(response.data.uuid);
-            setLoading(false); // Установить загрузку в false после успешной аутентификации
           })
           .catch((error) => {
             console.error("Axios error:", error);
@@ -49,7 +48,7 @@ function AuthCheck({ setUserRole, setUserUUID, setLoading }) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [setUserRole, setUserUUID, setLoading]);
+  }, [setUserRole, setUserUUID]);
 
   return null;
 }
