@@ -8,7 +8,7 @@ import AuthCheck from "./AuthCheck";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
-
+  console.log(userRole);
   return (
     <Router>
       <div className="app">
