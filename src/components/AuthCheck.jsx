@@ -37,6 +37,7 @@ function AuthCheck({ setUserRole }) {
             navigate("/");
           })
           .catch((error) => {
+            console.error("Fetch error:", error);
             alert(
               "Вас не зарегистрировали, вы не можете использовать приложение"
             );
@@ -61,7 +62,6 @@ function AuthCheck({ setUserRole }) {
         window.Telegram.WebApp.close();
       }
     }
-    console.log(setUserRole);
   }, [navigate, setUserRole]);
 
   return null;
