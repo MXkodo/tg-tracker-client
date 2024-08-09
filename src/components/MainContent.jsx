@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ScrollContainer from "./ScrollContainer"; // Убедитесь, что ScrollContainer импортирован
+import ScrollContainer from "./ScrollContainer";
 import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
@@ -19,74 +19,41 @@ function MainContent({ role, userUUID }) {
   }, [activeStatusId]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        let url;
-        if (role === 0) {
-          switch (activeStatusId) {
-            case 1:
-              url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/new/${userUUID}`;
-              break;
-            case 2:
-              url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/current/${userUUID}`;
-              break;
-            case 3:
-              url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/completed/${userUUID}`;
-              break;
-            case 4:
-              url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/incorrect/${userUUID}`;
-              break;
-            default:
-              url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks`;
-          }
-        } else {
-          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks`;
-        }
-
-        const response = await axios.get(url, {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        });
-        setAllTasks(response.data);
-        filterTasksByStatus(response.data, activeStatusId);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks();
-    fetchGroups();
+    fetchAllTasks();
   }, [activeStatusId, role, userUUID]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
   }, [activeStatusId, allTasks]);
 
+  const fetchAllTasks = async () => {
+    try {
+      let url = "";
+      if (role === 1) {
+        url = "https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks";
+      } else if (role === 0) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/new/${userUUID}`;
+      }
+      const response = await axios.get(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      });
+      setAllTasks(response.data);
+      filterTasksByStatus(response.data, activeStatusId);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
   const refreshData = async () => {
     try {
-      let url;
-      if (role === 0) {
-        switch (activeStatusId) {
-          case 1:
-            url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/new/${userUUID}`;
-            break;
-          case 2:
-            url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/current/${userUUID}`;
-            break;
-          case 3:
-            url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/completed/${userUUID}`;
-            break;
-          case 4:
-            url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/incorrect/${userUUID}`;
-            break;
-          default:
-            url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks`;
-        }
-      } else {
-        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks`;
+      let url = "";
+      if (role === 1) {
+        url = "https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks";
+      } else if (role === 0) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/new/${userUUID}`;
       }
-
       const response = await axios.get(url, {
         headers: {
           "ngrok-skip-browser-warning": "1",
@@ -97,6 +64,38 @@ function MainContent({ role, userUUID }) {
       fetchGroups();
     } catch (error) {
       console.error("Error refreshing tasks:", error);
+    }
+  };
+
+  const handleAcceptTask = async (taskId, status) => {
+    try {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.uuid === taskId ? { ...task, isLoading: true } : task
+        )
+      );
+
+      let url = "";
+      if (role === 1) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`;
+      } else if (role === 0) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/status/${userUUID}`;
+      }
+
+      await axios.post(url, {
+        uuid: taskId,
+        status_id: status,
+      });
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.uuid === taskId ? { ...task, isLoading: false } : task
+        )
+      );
+
+      refreshData();
+    } catch (error) {
+      console.error("Error accepting task:", error);
     }
   };
 
@@ -116,35 +115,6 @@ function MainContent({ role, userUUID }) {
     }
   };
 
-  const handleAcceptTask = async (taskId, status) => {
-    try {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: true } : task
-        )
-      );
-
-      const response = await axios.patch(
-        `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`,
-        {
-          uuid: taskId,
-          status_id: status,
-        }
-      );
-      console.log("Task accepted:", response.data);
-
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: false } : task
-        )
-      );
-
-      refreshData();
-    } catch (error) {
-      console.error("Error accepting task:", error);
-    }
-  };
-
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId);
@@ -156,37 +126,39 @@ function MainContent({ role, userUUID }) {
 
   const getGroupNameByUUID = (groupUUID) => {
     const group = groups.find((g) => g.uuid === groupUUID);
-    return group ? group.name : "Неизвестно";
+    return group ? group.name : "Unknown Group";
   };
 
-  const filterTasksByStatus = (tasks, statusId) => {
-    const filteredTasks = tasks.filter((task) => task.status_id === statusId);
-    setTasks(filteredTasks);
+  const handleFilterChange = (statusId) => {
+    setActiveStatusId(statusId);
+    fetchTasksByStatus(statusId);
   };
 
-  const filterTasksBySearchAndStatus = (tasks, searchTerm, statusId) => {
-    const filteredTasks = tasks
-      .filter((task) => task.status_id === statusId)
-      .filter((task) =>
-        task.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    setTasks(filteredTasks);
-  };
-
-  const handleSortChange = (e) => {
-    const sortedTasks = [...tasks].sort((a, b) => {
-      if (e.target.value === "group") {
-        return a.group_name.localeCompare(b.group_name);
-      } else if (e.target.value === "title") {
-        return a.name.localeCompare(b.name);
-      } else if (e.target.value === "timestamp") {
-        return (
-          new Date(a.apperance_timestamp) - new Date(b.apperance_timestamp)
-        );
+  const fetchTasksByStatus = async (statusId) => {
+    try {
+      let url = "";
+      if (role === 1) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks?status_id=${statusId}`;
+      } else if (role === 0) {
+        const statusMap = {
+          1: "new",
+          2: "current",
+          3: "completed",
+          4: "incorrect",
+        };
+        const statusPath = statusMap[statusId] || "new";
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${statusPath}/${userUUID}`;
       }
-      return 0;
-    });
-    setTasks(sortedTasks);
+      const response = await axios.get(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      });
+      setAllTasks(response.data);
+      filterTasksByStatus(response.data, activeStatusId);
+    } catch (error) {
+      console.error("Error fetching tasks by status:", error);
+    }
   };
 
   const handleEditClick = (task) => {
@@ -199,123 +171,134 @@ function MainContent({ role, userUUID }) {
     setSelectedTask(null);
   };
 
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  const handleSortChange = (e) => {
+    const selectedSortOption = e.target.value;
+    switch (selectedSortOption) {
+      case "group":
+        sortByGroup();
+        break;
+      case "title":
+        sortByTitle();
+        break;
+      case "timestamp":
+        sortByTimestamp();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const sortByGroup = () => {
+    const sortedTasks = [...tasks].sort((a, b) => {
+      const groupNameA = getGroupNameByUUID(a.group_uuid).toLowerCase();
+      const groupNameB = getGroupNameByUUID(b.group_uuid).toLowerCase();
+      return groupNameA.localeCompare(groupNameB);
+    });
+    setTasks(sortedTasks);
+  };
+
+  const sortByTitle = () => {
+    const sortedTasks = [...tasks].sort((a, b) =>
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    );
+    setTasks(sortedTasks);
+  };
+
+  const sortByTimestamp = () => {
+    const sortedTasks = [...tasks].sort((a, b) => {
+      const timestampA = new Date(a.apperance_timestamp);
+      const timestampB = new Date(b.apperance_timestamp);
+      return timestampB - timestampA;
+    });
+    setTasks(sortedTasks);
+  };
+
+  const filterTasksByStatus = (tasksArray, statusId) => {
+    const filteredTasks = tasksArray.filter(
+      (task) => task.status_id === statusId
+    );
+    setTasks(filteredTasks);
+  };
+
+  const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
+    let filteredTasks = tasksArray;
+
+    if (statusId !== null) {
+      filteredTasks = filteredTasks.filter(
+        (task) => task.status_id === statusId
+      );
+    }
+
+    if (searchTerm.trim() !== "") {
+      filteredTasks = filteredTasks.filter((task) => {
+        const taskName = task.name || "";
+        const groupName = getGroupNameByUUID(task.group_uuid) || "";
+        return (
+          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          groupName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+
+    setTasks(filteredTasks);
   };
 
   return (
-    <div className="main-content">
-      <div className="header">
-        <input
-          type="text"
-          placeholder="Поиск..."
-          value={searchTerm}
-          onChange={handleInputChange}
-          className="rounded-[15px] w-[27vh] h-[5vh] p-1"
-          style={{ color: "black" }}
+    <div className="flex flex-col min-h-screen">
+      <header>
+        <ScrollContainer
+          onFilterChange={handleFilterChange}
+          activeStatusId={activeStatusId}
         />
-        {searchTerm && (
-          <button className="clear-button" onClick={clearSearch}>
+      </header>
+      <div className="flex flex-col flex-grow bg-[#1E1E1E] p-4">
+        <div className="flex items-center mb-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleInputChange}
+            className="p-2 border rounded-lg"
+            placeholder="Поиск по названию или группе"
+          />
+          <button
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-red-500 border-none cursor-pointer transition-colors duration-300 hover:bg-red-700"
+            onClick={clearSearch}
+          >
             <img src={ClearIcon} alt="Clear" />
           </button>
-        )}
-        <select
-          className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
-          onChange={handleSortChange}
-        >
-          <option value="group">По группе</option>
-          <option value="title">По названию</option>
-          <option value="timestamp">По времени</option>
-        </select>
-        <button
-          className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300 hover:bg-green-700"
-          onClick={refreshData}
-        >
-          <img src={UpdateIcon} alt="Update" />
-        </button>
-      </div>
-      <ScrollContainer
-        onFilterChange={setActiveStatusId}
-        activeStatusId={activeStatusId}
-      />
-      {tasks.map((task, index) => (
-        <div
-          key={task.id}
-          className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
-            index === tasks.length - 1 ? "mb-5 last-task" : ""
-          }`}
-        >
-          <div className="task-tile" onClick={() => handleEditClick(task)}>
-            <h3>{task.name}</h3>
-            <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
-            <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-            {task.isLoading ? (
-              <div className="loader"></div>
-            ) : (
-              <>
-                {task.status_id === 2 && (
-                  <button
-                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 3);
-                    }}
-                  >
-                    Принять
-                  </button>
-                )}
-                {task.status_id === 3 && (
-                  <button
-                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 4);
-                    }}
-                  >
-                    Готово
-                  </button>
-                )}
-                {task.status_id === 4 && (
-                  <button
-                    className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleAcceptTask(task.uuid, 5);
-                    }}
-                  >
-                    В проверке
-                  </button>
-                )}
-                {task.status_id === 5 && (
-                  <>
-                    <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 7);
-                      }}
-                    >
-                      Принята
-                    </button>
-                    <button
-                      className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 6);
-                      }}
-                    >
-                      Доработка
-                    </button>
-                  </>
-                )}
-                {task.status_id === 6 && (
-                  <>
+          <select
+            onChange={handleSortChange}
+            className="ml-2 p-2 border rounded-lg"
+          >
+            <option value="none">Сортировка</option>
+            <option value="group">По группе</option>
+            <option value="title">По названию</option>
+            <option value="timestamp">По времени</option>
+          </select>
+          <button
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300 hover:bg-green-700"
+            onClick={refreshData}
+          >
+            <img src={UpdateIcon} alt="Update" />
+          </button>
+        </div>
+
+        {tasks.map((task, index) => (
+          <div
+            key={task.id}
+            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+              index === tasks.length - 1 ? "mb-5 last-task" : ""
+            }`}
+          >
+            <div className="task-tile" onClick={() => handleEditClick(task)}>
+              <h3>{task.name}</h3>
+              <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
+              <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+              {task.isLoading ? (
+                <div className="loader"></div>
+              ) : (
+                <>
+                  {task.status_id === 2 && (
                     <button
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
@@ -325,13 +308,70 @@ function MainContent({ role, userUUID }) {
                     >
                       Принять
                     </button>
-                  </>
-                )}
-              </>
-            )}
+                  )}
+                  {task.status_id === 3 && (
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 4);
+                      }}
+                    >
+                      Готово
+                    </button>
+                  )}
+                  {task.status_id === 4 && (
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 5);
+                      }}
+                    >
+                      В проверке
+                    </button>
+                  )}
+                  {task.status_id === 5 && (
+                    <>
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 7);
+                        }}
+                      >
+                        Принята
+                      </button>
+                      <button
+                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 6);
+                        }}
+                      >
+                        Доработка
+                      </button>
+                    </>
+                  )}
+                  {task.status_id === 6 && (
+                    <>
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 3);
+                        }}
+                      >
+                        Принять
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       {modalOpen && selectedTask && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -371,5 +411,15 @@ function MainContent({ role, userUUID }) {
     </div>
   );
 }
+
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+};
 
 export default MainContent;
