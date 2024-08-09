@@ -9,6 +9,12 @@ function AuthCheck({ setUserRole, setUserUUID }) {
     const isAuthenticated = localStorage.getItem("authChecked");
     console.log("Is authenticated:", isAuthenticated);
 
+    if (isAuthenticated === "true") {
+      // Если аутентификация уже проверена, просто перенаправьте пользователя
+      navigate("/");
+      return;
+    }
+
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
