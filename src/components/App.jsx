@@ -9,10 +9,13 @@ import AuthCheck from "./AuthCheck";
 function App() {
   const [userRole, setUserRole] = useState(null);
 
-  // Debugging output to check if userRole is updated correctly
   useEffect(() => {
-    console.log("Current userRole:", userRole);
+    console.log("Current userRole:", userRole); // Отладка
   }, [userRole]);
+
+  if (userRole === null) {
+    return <div>Loading...</div>; // Или какой-то индикатор загрузки
+  }
 
   return (
     <Router>

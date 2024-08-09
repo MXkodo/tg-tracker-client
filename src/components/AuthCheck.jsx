@@ -6,7 +6,8 @@ function AuthCheck({ setUserRole }) {
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
-    alert(setUserRole);
+    alert("setUserRole function: " + setUserRole); // Отладка
+
     if (isAuthenticated) return;
 
     if (window.Telegram && window.Telegram.WebApp) {
@@ -33,8 +34,8 @@ function AuthCheck({ setUserRole }) {
           .then((data) => {
             console.log("User data:", data);
             localStorage.setItem("authChecked", "true");
-            console.log("Setting user role:", data.role); // Добавлено для отладки
-            alert(data.role);
+            console.log("Setting user role:", data.role); // Отладка
+            alert("Setting role: " + data.role); // Отладка
             setUserRole(data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })
