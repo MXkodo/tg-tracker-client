@@ -23,12 +23,12 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <AuthCheck
-          setUserRole={setUserRole}
-          setUserUUID={setUserUUID}
-          setLoading={setLoading}
-        />
         <main>
+          <AuthCheck
+            setUserRole={setUserRole}
+            setUserUUID={setUserUUID}
+            setLoading={setLoading}
+          />
           <Routes>
             <Route
               path="/"
