@@ -3,13 +3,6 @@ import axios from "axios";
 
 function AuthCheck({ setUserRole, setUserUUID, setLoading }) {
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("authChecked");
-
-    if (isAuthenticated === "true") {
-      setLoading(false);
-      return;
-    }
-
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
