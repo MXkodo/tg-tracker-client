@@ -6,7 +6,7 @@ function AuthCheck({ setUserRole }) {
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
-
+    alert(setUserRole);
     if (isAuthenticated) return;
 
     if (window.Telegram && window.Telegram.WebApp) {
@@ -64,7 +64,6 @@ function AuthCheck({ setUserRole }) {
         window.Telegram.WebApp.close();
       }
     }
-    alert(setUserRole);
   }, [navigate, setUserRole]);
 
   return null;
