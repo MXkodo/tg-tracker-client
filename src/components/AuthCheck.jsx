@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AuthCheck() {
   const navigate = useNavigate();
-  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
+    // Проверяем, был ли пользователь уже аутентифицирован
+    const isAuthenticated = localStorage.getItem("authChecked");
+
+    if (isAuthenticated) return; // Если аутентификация была уже проверена, ничего не делаем
+
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
-      // Инициализируем Telegram Web App
       WebApp.ready();
-
-      // Получаем информацию о пользователе из initDataUnsafe
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
 
       if (username) {
-        // Проверяем наличие пользователя на сервере
         fetch("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
-          method: "POST", // Используем метод POST
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username }), // Отправляем имя пользователя в теле запроса
+          body: JSON.stringify({ username }),
         })
           .then((response) => {
             if (!response.ok) {
@@ -33,8 +33,7 @@ function AuthCheck() {
           })
           .then((data) => {
             console.log("User data:", data);
-            // Если пользователь найден, перенаправляем на главную страницу
-            setAuthChecked(true);
+            localStorage.setItem("authChecked", "true"); // Устанавливаем флаг аутентификации в localStorage
             navigate("/");
           })
           .catch((error) => {
@@ -42,7 +41,6 @@ function AuthCheck() {
               "Вас не зарегистрировали, вы не можете использовать приложение"
             );
 
-            // Закрываем Telegram Web App
             if (window.Telegram && window.Telegram.WebApp) {
               window.Telegram.WebApp.close();
             }
@@ -50,7 +48,6 @@ function AuthCheck() {
       } else {
         alert("Пользователь не найден в Telegram");
 
-        // Закрываем Telegram Web App
         if (window.Telegram && window.Telegram.WebApp) {
           window.Telegram.WebApp.close();
         }
@@ -60,12 +57,11 @@ function AuthCheck() {
 
       alert("Произошла ошибка при загрузке приложения");
 
-      // Закрываем Telegram Web App
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [authChecked, navigate]);
+  }, [navigate]);
 
   return null;
 }
