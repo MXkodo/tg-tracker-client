@@ -11,8 +11,6 @@ function AuthCheck({ setUserRole }) {
     console.log("Is authenticated:", isAuthenticated);
     alert("Checking authentication...");
 
-    if (isAuthenticated) return;
-
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
 
