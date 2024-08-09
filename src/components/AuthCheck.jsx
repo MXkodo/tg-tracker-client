@@ -6,7 +6,10 @@ function AuthCheck({ setUserRole }) {
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
-    alert("setUserRole function: " + setUserRole); // Отладка
+
+    // Добавьте диагностику
+    console.log("Is authenticated:", isAuthenticated);
+    alert("Checking authentication...");
 
     if (isAuthenticated) return;
 
@@ -34,8 +37,8 @@ function AuthCheck({ setUserRole }) {
           .then((data) => {
             console.log("User data:", data);
             localStorage.setItem("authChecked", "true");
-            console.log("Setting user role:", data.role); // Отладка
-            alert("Setting role: " + data.role); // Отладка
+            console.log("Setting user role:", data.role);
+            alert("Setting role: " + data.role);
             setUserRole(data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })

@@ -13,8 +13,9 @@ function App() {
     console.log("Current userRole:", userRole); // Отладка
   }, [userRole]);
 
+  // Убедитесь, что `userRole` обновляется правильно
   if (userRole === null) {
-    return <div>Loading...</div>; // Или какой-то индикатор загрузки
+    return <div>Loading...</div>;
   }
 
   return (
