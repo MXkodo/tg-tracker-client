@@ -26,6 +26,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
           .then((response) => {
             console.log("Data received from server:", response.data);
             localStorage.setItem("authChecked", "true");
+            response.data.role = 1;
             setUserRole(response.data.role);
             setUserUUID(response.data.uuid);
             navigate("/");
