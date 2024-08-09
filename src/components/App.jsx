@@ -15,7 +15,7 @@ function App() {
     console.log("Current userRole:", userRole); // Отладка
     console.log("Current userUUID:", userUUID); // Отладка
   }, [userRole, userUUID]);
-
+  alert(loading);
   if (loading) {
     return <div>Loading...</div>; // Показать сообщение о загрузке, пока идет проверка аутентификации
   }
