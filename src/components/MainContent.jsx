@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
-import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
@@ -250,31 +249,31 @@ function MainContent({ role, userUUID }) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <header>
         <ScrollContainer
           onFilterChange={handleFilterChange}
           activeStatusId={activeStatusId}
         />
       </header>
-      <div className="flex flex-col flex-grow bg-[#1E1E1E] p-4">
+      <div className="flex flex-col flex-grow p-4">
         <div className="flex items-center mb-4">
           <input
             type="text"
             value={searchTerm}
             onChange={handleInputChange}
-            className="p-2 border rounded-lg"
+            className="p-2 border rounded-lg border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             placeholder="Поиск по названию или группе"
           />
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-red-500 border-none cursor-pointer transition-colors duration-300 hover:bg-red-700"
+            className="ml-2 p-2 bg-red-500 rounded-lg hover:bg-red-700 transition duration-300"
             onClick={clearSearch}
           >
-            <img src={ClearIcon} alt="Clear" />
+            <img src={ClearIcon} alt="Clear" className="w-5 h-5" />
           </button>
           <select
             onChange={handleSortChange}
-            className="ml-2 p-2 border rounded-lg"
+            className="ml-2 p-2 border rounded-lg border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="none">Сортировка</option>
             <option value="group">По группе</option>
@@ -282,22 +281,25 @@ function MainContent({ role, userUUID }) {
             <option value="timestamp">По времени</option>
           </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer transition-colors duration-300 hover:bg-green-700"
+            className="ml-2 p-2 bg-green-500 rounded-lg hover:bg-green-700 transition duration-300"
             onClick={refreshData}
           >
-            <img src={UpdateIcon} alt="Update" />
+            <img src={UpdateIcon} alt="Update" className="w-5 h-5" />
           </button>
         </div>
 
         {tasks.map((task, index) => (
           <div
             key={task.id}
-            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
-              index === tasks.length - 1 ? "mb-5 last-task" : ""
+            className={`mt-5 p-4 border border-gray-700 rounded-lg bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+              index === tasks.length - 1 ? "mb-5" : ""
             }`}
           >
-            <div className="task-tile" onClick={() => handleEditClick(task)}>
-              <h3>{task.name}</h3>
+            <div
+              className="task-tile cursor-pointer"
+              onClick={() => handleEditClick(task)}
+            >
+              <h3 className="text-lg font-semibold">{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
@@ -306,7 +308,7 @@ function MainContent({ role, userUUID }) {
                 <>
                   {task.status_id === 2 && (
                     <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      className="mr-1 px-2 py-1 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
                       onClick={(event) => {
                         event.stopPropagation();
                         handleAcceptTask(task.uuid, 3);
@@ -317,7 +319,7 @@ function MainContent({ role, userUUID }) {
                   )}
                   {task.status_id === 3 && (
                     <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      className="mr-1 px-2 py-1 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
                       onClick={(event) => {
                         event.stopPropagation();
                         handleAcceptTask(task.uuid, 4);
@@ -328,7 +330,7 @@ function MainContent({ role, userUUID }) {
                   )}
                   {task.status_id === 4 && (
                     <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      className="mr-1 px-2 py-1 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
                       onClick={(event) => {
                         event.stopPropagation();
                         handleAcceptTask(task.uuid, 5);
@@ -340,7 +342,7 @@ function MainContent({ role, userUUID }) {
                   {task.status_id === 5 && (
                     <>
                       <button
-                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        className="mr-1 px-2 py-1 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
                         onClick={(event) => {
                           event.stopPropagation();
                           handleAcceptTask(task.uuid, 7);
@@ -349,7 +351,7 @@ function MainContent({ role, userUUID }) {
                         Принята
                       </button>
                       <button
-                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                        className="mr-1 px-2 py-1 bg-orange-500 rounded-lg text-white font-semibold hover:bg-orange-600 transition duration-300"
                         onClick={(event) => {
                           event.stopPropagation();
                           handleAcceptTask(task.uuid, 6);
@@ -360,17 +362,15 @@ function MainContent({ role, userUUID }) {
                     </>
                   )}
                   {task.status_id === 6 && (
-                    <>
-                      <button
-                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAcceptTask(task.uuid, 3);
-                        }}
-                      >
-                        Принять
-                      </button>
-                    </>
+                    <button
+                      className="mr-1 px-2 py-1 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.uuid, 3);
+                      }}
+                    >
+                      Принять
+                    </button>
                   )}
                 </>
               )}
@@ -379,37 +379,37 @@ function MainContent({ role, userUUID }) {
         ))}
       </div>
       {modalOpen && selectedTask && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
-                  Информация о задаче
-                </h2>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Название:</strong> {selectedTask.name}
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
-                  <strong>Описание:</strong> {selectedTask.description}
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Группа:</strong>{" "}
-                  {getGroupNameByUUID(selectedTask.group_uuid)}
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Время отправки:</strong>{" "}
-                  {formatTimestamp(selectedTask.apperance_timestamp)}
-                </p>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-gray-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-bold mb-4">Информация о задаче</h2>
+            <p className="mb-2">
+              <strong>Название:</strong> {selectedTask.name}
+            </p>
+            <p className="mb-2">
+              <strong>Описание:</strong> {selectedTask.description}
+            </p>
+            <p className="mb-2">
+              <strong>Группа:</strong>{" "}
+              {getGroupNameByUUID(selectedTask.group_uuid)}
+            </p>
+            <p className="mb-4">
+              <strong>Время отправки:</strong>{" "}
+              {formatTimestamp(selectedTask.apperance_timestamp)}
+            </p>
 
-                <div className="flex justify-end mt-5">
-                  <button
-                    className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={closeModal}
-                  >
-                    Закрыть
-                  </button>
-                </div>
-              </div>
+            <div className="flex justify-end">
+              <button
+                className="px-4 py-2 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600 transition duration-300"
+                onClick={closeModal}
+              >
+                Закрыть
+              </button>
             </div>
           </div>
         </div>
