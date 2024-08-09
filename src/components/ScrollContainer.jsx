@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 import "../styles/ScrollContainer.css";
 
-function ScrollContainer({ onFilterChange, activeStatusId }) {
+function ScrollContainer({ onFilterChange, activeStatusId, userRole }) {
   const buttons = [
     { label: "Новые", statusId: 1 },
     { label: "Отправленные", statusId: 2 },
@@ -13,13 +13,19 @@ function ScrollContainer({ onFilterChange, activeStatusId }) {
     { label: "Выполнены", statusId: 7 },
   ];
 
+  // Фильтрация кнопок в зависимости от роли пользователя
+  const filteredButtons =
+    userRole === 0
+      ? buttons.filter((button) => [1, 2, 3, 4].includes(button.statusId))
+      : buttons;
+
   const handleButtonClick = (statusId) => {
     onFilterChange(statusId);
   };
 
   return (
     <div className="flex overflow-x-auto p-2 bg-zinc-800 h-[6vh]">
-      {buttons.map((button, index) => (
+      {filteredButtons.map((button, index) => (
         <Button
           key={index}
           label={button.label}
