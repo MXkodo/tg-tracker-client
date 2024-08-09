@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function AuthCheck({ setUserRole, setUserUUID }) {
+function AuthCheck({ setUserRole }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +16,6 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       WebApp.ready();
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
-      //const userUUID = user ? user.id : null; // Получение UUID пользователя из Telegram
 
       console.log("User data from WebApp:", user);
 
@@ -26,12 +25,9 @@ function AuthCheck({ setUserRole, setUserUUID }) {
             username,
           })
           .then((response) => {
-            console.log("Data received from server:", response.data); // Отладка
+            console.log("Data received from server:", response.data); // Отладк
             localStorage.setItem("authChecked", "true");
-            response.data.role = 1;
-            localStorage.setItem("authChecked", "true");
-            setUserRole(response.data.role); // Передаем роль пользователя в состояние
-            setUserUUID(response.data.uuid); // Передаем UUID пользователя в состояние
+            setUserRole(response.data.role); // Передаём роль пользователя в состояние
             navigate("/");
           })
           .catch((error) => {
@@ -60,7 +56,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [navigate, setUserRole, setUserUUID]);
+  }, [navigate, setUserRole]);
 
   return null;
 }
