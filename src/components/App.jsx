@@ -9,16 +9,25 @@ import AuthCheck from "./AuthCheck";
 function App() {
   const [userRole, setUserRole] = useState(null);
   const [userUUID, setUserUUID] = useState("");
+  const [loading, setLoading] = useState(true); // Состояние для управления загрузкой
 
   useEffect(() => {
     console.log("Current userRole:", userRole); // Отладка
     console.log("Current userUUID:", userUUID); // Отладка
   }, [userRole, userUUID]);
 
+  if (loading) {
+    return <div>Loading...</div>; // Показать сообщение о загрузке, пока идет проверка аутентификации
+  }
+
   return (
     <Router>
       <div className="app">
-        <AuthCheck setUserRole={setUserRole} setUserUUID={setUserUUID} />
+        <AuthCheck
+          setUserRole={setUserRole}
+          setUserUUID={setUserUUID}
+          setLoading={setLoading}
+        />
         <main>
           <Routes>
             <Route

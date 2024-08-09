@@ -1,17 +1,12 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function AuthCheck({ setUserRole, setUserUUID }) {
-  const navigate = useNavigate();
-
+function AuthCheck({ setUserRole, setUserUUID, setLoading }) {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
-    console.log("Is authenticated:", isAuthenticated);
 
     if (isAuthenticated === "true") {
-      // Если аутентификация уже проверена, просто перенаправьте пользователя
-      navigate("/");
+      setLoading(false);
       return;
     }
 
@@ -22,20 +17,17 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
 
-      console.log("User data from WebApp:", user);
-
       if (username) {
         axios
           .post("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
             username,
           })
           .then((response) => {
-            console.log("Data received from server:", response.data);
             localStorage.setItem("authChecked", "true");
             response.data.role = 1;
             setUserRole(response.data.role);
             setUserUUID(response.data.uuid);
-            navigate("/");
+            setLoading(false); // Установить загрузку в false после успешной аутентификации
           })
           .catch((error) => {
             console.error("Axios error:", error);
@@ -63,7 +55,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [navigate, setUserRole, setUserUUID]);
+  }, [setUserRole, setUserUUID, setLoading]);
 
   return null;
 }
