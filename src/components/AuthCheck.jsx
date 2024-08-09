@@ -61,6 +61,7 @@ function AuthCheck({ setUserRole }) {
         window.Telegram.WebApp.close();
       }
     }
+    console.log(setUserRole);
   }, [navigate, setUserRole]);
 
   return null;
