@@ -13,11 +13,6 @@ function App() {
     console.log("Current userRole:", userRole); // Отладка
   }, [userRole]);
 
-  // Убедитесь, что `userRole` обновляется правильно
-  if (userRole === null) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Router>
       <div className="app">
