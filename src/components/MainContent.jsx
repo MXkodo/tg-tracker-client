@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
 import "../styles/MainContent.css";
@@ -14,19 +14,23 @@ function MainContent({ role, userUUID }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  useEffect(() => {
-    fetchGroups();
-  }, [activeStatusId]);
+  const fetchGroups = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+      setGroups(response.data);
+    } catch (error) {
+      console.error("Ошибка при получении групп:", error);
+    }
+  }, []);
 
-  useEffect(() => {
-    fetchAllTasks();
-  }, [activeStatusId, role, userUUID]);
-
-  useEffect(() => {
-    filterTasksByStatus(allTasks, activeStatusId);
-  }, [activeStatusId, allTasks]);
-
-  const fetchAllTasks = async () => {
+  const fetchAllTasks = useCallback(async () => {
     try {
       let url = "";
       if (role === 1) {
@@ -42,11 +46,23 @@ function MainContent({ role, userUUID }) {
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Ошибка при получении задач:", error);
     }
-  };
+  }, [role, userUUID, activeStatusId]);
 
-  const refreshData = async () => {
+  useEffect(() => {
+    fetchGroups();
+  }, [fetchGroups]);
+
+  useEffect(() => {
+    fetchAllTasks();
+  }, [fetchAllTasks]);
+
+  useEffect(() => {
+    filterTasksByStatus(allTasks, activeStatusId);
+  }, [activeStatusId, allTasks]);
+
+  const refreshData = useCallback(async () => {
     try {
       let url = "";
       if (role === 1) {
@@ -63,57 +79,44 @@ function MainContent({ role, userUUID }) {
       filterTasksByStatus(response.data, activeStatusId);
       fetchGroups();
     } catch (error) {
-      console.error("Error refreshing tasks:", error);
+      console.error("Ошибка при обновлении данных:", error);
     }
-  };
+  }, [role, userUUID, activeStatusId, fetchGroups]);
 
-  const handleAcceptTask = async (taskId, status) => {
-    try {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: true } : task
-        )
-      );
+  const handleAcceptTask = useCallback(
+    async (taskId, status) => {
+      try {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.uuid === taskId ? { ...task, isLoading: true } : task
+          )
+        );
 
-      let url = "";
-      if (role === 1) {
-        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`;
-      } else if (role === 0) {
-        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/status/${userUUID}`;
-      }
-
-      await axios.post(url, {
-        uuid: taskId,
-        status_id: status,
-      });
-
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: false } : task
-        )
-      );
-
-      refreshData();
-    } catch (error) {
-      console.error("Error accepting task:", error);
-    }
-  };
-
-  const fetchGroups = async () => {
-    try {
-      const response = await axios.get(
-        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
+        let url = "";
+        if (role === 1) {
+          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`;
+        } else if (role === 0) {
+          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/status/${userUUID}`;
         }
-      );
-      setGroups(response.data);
-    } catch (error) {
-      console.error("Error fetching groups:", error);
-    }
-  };
+
+        await axios.post(url, {
+          uuid: taskId,
+          status_id: status,
+        });
+
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.uuid === taskId ? { ...task, isLoading: false } : task
+          )
+        );
+
+        refreshData();
+      } catch (error) {
+        console.error("Ошибка при принятии задачи:", error);
+      }
+    },
+    [role, userUUID, refreshData]
+  );
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -126,7 +129,7 @@ function MainContent({ role, userUUID }) {
 
   const getGroupNameByUUID = (groupUUID) => {
     const group = groups.find((g) => g.uuid === groupUUID);
-    return group ? group.name : "Unknown Group";
+    return group ? group.name : "Неизвестная группа";
   };
 
   const handleFilterChange = (statusId) => {
@@ -134,32 +137,35 @@ function MainContent({ role, userUUID }) {
     fetchTasksByStatus(statusId);
   };
 
-  const fetchTasksByStatus = async (statusId) => {
-    try {
-      let url = "";
-      if (role === 1) {
-        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks?status_id=${statusId}`;
-      } else if (role === 0) {
-        const statusMap = {
-          1: "new",
-          2: "current",
-          3: "completed",
-          4: "incorrect",
-        };
-        const statusPath = statusMap[statusId] || "new";
-        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${statusPath}/${userUUID}`;
+  const fetchTasksByStatus = useCallback(
+    async (statusId) => {
+      try {
+        let url = "";
+        if (role === 1) {
+          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks?status_id=${statusId}`;
+        } else if (role === 0) {
+          const statusMap = {
+            1: "new",
+            2: "current",
+            3: "completed",
+            4: "incorrect",
+          };
+          const statusPath = statusMap[statusId] || "new";
+          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${statusPath}/${userUUID}`;
+        }
+        const response = await axios.get(url, {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        });
+        setAllTasks(response.data);
+        filterTasksByStatus(response.data, activeStatusId);
+      } catch (error) {
+        console.error("Ошибка при получении задач по статусу:", error);
       }
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "1",
-        },
-      });
-      setAllTasks(response.data);
-      filterTasksByStatus(response.data, activeStatusId);
-    } catch (error) {
-      console.error("Error fetching tasks by status:", error);
-    }
-  };
+    },
+    [role, userUUID, activeStatusId]
+  );
 
   const handleEditClick = (task) => {
     setSelectedTask(task);
