@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AuthCheck() {
   const navigate = useNavigate();
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -33,6 +34,7 @@ function AuthCheck() {
           .then((data) => {
             console.log("User data:", data);
             // Если пользователь найден, перенаправляем на главную страницу
+            setAuthChecked(true);
             navigate("/");
           })
           .catch((error) => {
@@ -63,7 +65,7 @@ function AuthCheck() {
         window.Telegram.WebApp.close();
       }
     }
-  }, [navigate]);
+  }, [authChecked, navigate]);
 
   return null;
 }
