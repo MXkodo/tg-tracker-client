@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function AuthCheck({ setUserRole }) {
+function AuthCheck({ setUserRole, setUserUUID }) {
   const navigate = useNavigate();
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("authChecked");
-
     console.log("Is authenticated:", isAuthenticated);
 
     if (window.Telegram && window.Telegram.WebApp) {
@@ -25,9 +24,10 @@ function AuthCheck({ setUserRole }) {
             username,
           })
           .then((response) => {
-            console.log("Data received from server:", response.data); // Отладк
+            console.log("Data received from server:", response.data);
             localStorage.setItem("authChecked", "true");
-            setUserRole(response.data.role); // Передаём роль пользователя в состояние
+            setUserRole(response.data.role);
+            setUserUUID(response.data.uuid);
             navigate("/");
           })
           .catch((error) => {
@@ -56,7 +56,7 @@ function AuthCheck({ setUserRole }) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [navigate, setUserRole]);
+  }, [navigate, setUserRole, setUserUUID]);
 
   return null;
 }

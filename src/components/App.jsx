@@ -8,11 +8,12 @@ import AuthCheck from "./AuthCheck";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
-  const [userUUID, setUserUUID] = useState(""); // Добавляем состояние для userUUID
+  const [userUUID, setUserUUID] = useState("");
 
   useEffect(() => {
     console.log("Current userRole:", userRole); // Отладка
-  }, [userRole]);
+    console.log("Current userUUID:", userUUID); // Отладка
+  }, [userRole, userUUID]);
 
   return (
     <Router>
@@ -34,8 +35,7 @@ function App() {
             <Route path="/group" element={<GroupsPage />} />
           </Routes>
         </main>
-        {userRole !== 0 && <Footer />}{" "}
-        {/* Отображаем Footer только если роль не равна 0 */}
+        {userRole !== 0 && <Footer />}
       </div>
     </Router>
   );
