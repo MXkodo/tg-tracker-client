@@ -425,7 +425,7 @@ const GroupsPage = () => {
             >
               <option value="">Выберите пользователя</option>
               {availableUsers.map((user) => (
-                <option key={user.UUID} value={user.UUID}>
+                <option key={user.uuid} value={user.uuid}>
                   {user.name}
                 </option>
               ))}
