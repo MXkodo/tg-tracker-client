@@ -93,7 +93,7 @@ const GroupsPage = () => {
 
             // Находим пользователей, которые не состоят ни в одной группе
             const usersNotInAnyGroup = allUsers.filter(
-              (user) => !groupUserUUIDs.includes(user.UUID)
+              (user) => !groupUserUUIDs.includes(user.uuid)
             );
 
             setAvailableUsers(usersNotInAnyGroup);
@@ -386,7 +386,7 @@ const GroupsPage = () => {
               ) : (
                 groupUsers.map((user) => (
                   <li
-                    key={user.UUID}
+                    key={user.uuid}
                     className="mb-2 border border-green-500 p-2 rounded-md shadow-md"
                   >
                     <span>{user.name}</span>
