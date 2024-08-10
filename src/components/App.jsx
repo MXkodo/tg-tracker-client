@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import AddTaskPage from "./Add";
 import GroupsPage from "./Groups";
 import AuthCheck from "./AuthCheck";
+import MainUser from "./MainUser"; // Предполагается, что этот компонент импортирован
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -21,11 +22,16 @@ function App() {
         <main>
           <AuthCheck setUserRole={setUserRole} setUserUUID={setUserUUID} />
           <Routes>
+            {/* Изменяем здесь логику выбора компонента */}
             <Route
               path="/"
               element={
                 userRole !== null && userUUID ? (
-                  <MainContent role={userRole} userUUID={userUUID} />
+                  userRole === 1 ? (
+                    <MainContent role={userRole} userUUID={userUUID} />
+                  ) : (
+                    <MainUser /> // Показываем MainUser, если role равен 0
+                  )
                 ) : (
                   <div>Loading...</div>
                 )

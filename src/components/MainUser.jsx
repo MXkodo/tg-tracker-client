@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
 import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
-function MainContent() {
+function MainContent({ userUUID, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -14,67 +14,64 @@ function MainContent() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  useEffect(() => {
-    fetchGroups();
-  }, [activeStatusId]);
-
-  useEffect(() => {
-    const fetchAllTasks = async () => {
-      try {
-        const response = await axios.get(
-          " https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
-        setAllTasks(response.data);
-        filterTasksByStatus(response.data, activeStatusId);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-    fetchAllTasks();
-    fetchGroups();
-  }, [activeStatusId]);
-
-  useEffect(() => {
-    filterTasksByStatus(allTasks, activeStatusId);
-  }, [activeStatusId, allTasks]);
-
-  const refreshData = async () => {
+  // Мемоизация функции fetchTasks с помощью useCallback
+  const fetchTasks = useCallback(async () => {
     try {
+      let endpoint = "";
+      switch (activeStatusId) {
+        case 1:
+          endpoint = `/api/v1/tasks/new/${userUUID}`;
+          break;
+        case 2:
+          endpoint = `/api/v1/tasks/sent/${userUUID}`;
+          break;
+        case 3:
+          endpoint = `/api/v1/tasks/current/${userUUID}`;
+          break;
+        case 4:
+          endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
+          break;
+        case 5:
+          endpoint = `/api/v1/tasks/incomplete/${userUUID}`;
+          break;
+        case 6:
+          endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
+          break;
+        case 7:
+          endpoint = `/api/v1/tasks/completed/${userUUID}`;
+          break;
+        default:
+          endpoint = `/api/v1/tasks/new/${userUUID}`;
+      }
+
       const response = await axios.get(
-        " https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
+        `https://1686-188-170-174-171.ngrok-free.app${endpoint}`
       );
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
-      fetchGroups();
     } catch (error) {
-      console.error("Error refreshing tasks:", error);
+      console.error("Error fetching tasks:", error);
     }
-  };
+  }, [activeStatusId, userUUID]); // Зависимости функции fetchTasks
+
+  useEffect(() => {
+    fetchGroups();
+    fetchTasks();
+  }, [activeStatusId, userUUID, fetchTasks]); // Добавляем fetchTasks в массив зависимостей
 
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
+        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
+      ); // Использование нового URL сервера
       setGroups(response.data);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
+  };
+
+  const refreshData = () => {
+    fetchTasks();
   };
 
   const handleAcceptTask = async (taskId, status) => {
@@ -85,20 +82,9 @@ function MainContent() {
         )
       );
 
-      const response = await axios.patch(
-        ` https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`,
-        {
-          uuid: taskId,
-          status_id: status,
-        }
-      );
-      console.log("Task accepted:", response.data);
-
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: false } : task
-        )
-      );
+      await axios.patch(`https://api.example.com/api/v1/tasks/${taskId}`, {
+        status_id: status,
+      });
 
       refreshData();
     } catch (error) {
@@ -212,10 +198,11 @@ function MainContent() {
         <ScrollContainer
           onFilterChange={handleFilterChange}
           activeStatusId={activeStatusId}
+          userRole={userRole}
         />
       </header>
       <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
-        <div className="flex items-center mr-0 ">
+        <div className="flex items-center mr-0">
           <input
             id="search"
             type="text"
@@ -340,29 +327,29 @@ function MainContent() {
       {modalOpen && selectedTask && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div class="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                <h2 class="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
                   Информация о задаче
                 </h2>
-                <p class="whitespace-normal overflow-hidden max-w-full">
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Название:</strong> {selectedTask.name}
                 </p>
-                <p class="whitespace-normal overflow-hidden max-w-prose break-words">
+                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
                   <strong>Описание:</strong> {selectedTask.description}
                 </p>
-                <p class="whitespace-normal overflow-hidden max-w-full">
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Группа:</strong>{" "}
                   {getGroupNameByUUID(selectedTask.group_uuid)}
                 </p>
-                <p class="whitespace-normal overflow-hidden max-w-full">
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Время отправки:</strong>{" "}
                   {formatTimestamp(selectedTask.apperance_timestamp)}
                 </p>
 
-                <div class="flex justify-end mt-5">
+                <div className="flex justify-end mt-5">
                   <button
-                    class="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                     onClick={closeModal}
                   >
                     Закрыть
