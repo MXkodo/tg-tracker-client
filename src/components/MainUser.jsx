@@ -93,8 +93,9 @@ function MainContent({ userUUID, userRole }) {
       );
 
       await axios.patch(
-        `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${taskId}`,
+        `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/`,
         {
+          uuid: taskId,
           status_id: status,
         }
       );
