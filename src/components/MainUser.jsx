@@ -45,7 +45,12 @@ function MainContent({ userUUID, userRole }) {
       }
 
       const response = await axios.get(
-        `https://1686-188-170-174-171.ngrok-free.app${endpoint}`
+        `https://1686-188-170-174-171.ngrok-free.app${endpoint}`,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
       );
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
@@ -62,8 +67,13 @@ function MainContent({ userUUID, userRole }) {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
-      ); // Использование нового URL сервера
+        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
       setGroups(response.data);
     } catch (error) {
       console.error("Error fetching groups:", error);
