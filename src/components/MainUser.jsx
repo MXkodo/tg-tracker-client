@@ -28,10 +28,10 @@ function MainContent({ userUUID, userRole }) {
         case 3:
           endpoint = `/api/v1/tasks/current/${userUUID}`;
           break;
-        case 6:
+        case 7:
           endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
           break;
-        case 7:
+        case 6:
           endpoint = `/api/v1/tasks/completed/${userUUID}`;
           break;
         default:
