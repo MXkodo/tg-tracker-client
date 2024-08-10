@@ -133,30 +133,27 @@ function MainContent({ role, userUUID }) {
 
   const fetchTasksByStatus = useCallback(
     async (statusId) => {
-      try {
-        let url = "";
-        if (role === 1) {
-          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks?status_id=${statusId}`;
-        } else if (role === 0) {
-          const statusMap = {
-            1: "new",
-            2: "current",
-            3: "completed",
-            4: "incorrect",
-          };
-          const statusPath = statusMap[statusId] || "new";
-          url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${statusPath}/${userUUID}`;
-        }
-        const response = await axios.get(url, {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        });
-        setAllTasks(response.data);
-        filterTasksByStatus(response.data, activeStatusId);
-      } catch (error) {
-        console.error("Ошибка при получении задач по статусу:", error);
+      let url = "";
+      if (role === 1) {
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks?status_id=${statusId}`;
+      } else if (role === 0) {
+        const statusMap = {
+          1: "new",
+          2: "sent",
+          3: "current",
+          4: "completed",
+          5: "incorrect",
+        };
+        const statusPath = statusMap[statusId] || "new";
+        url = `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks/${statusPath}/${userUUID}`;
       }
+      const response = await axios.get(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      });
+      setAllTasks(response.data);
+      filterTasksByStatus(response.data, activeStatusId);
     },
     [role, userUUID, activeStatusId]
   );
