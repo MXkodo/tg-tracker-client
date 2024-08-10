@@ -302,7 +302,8 @@ function MainContent({ userUUID, userRole }) {
                       Готово
                     </button>
                   )}
-                  (task.status_id === 4 &&) (task.status_id === 5 &&)
+                  {task.status_id === 4 && <></>}
+                  {task.status_id === 5 && <></>}
                   {task.status_id === 6 && (
                     <>
                       <button
