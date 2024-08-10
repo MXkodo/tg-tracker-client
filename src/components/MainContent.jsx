@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import ScrollContainer from "./ScrollContainer";
-import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
 function MainContent({ role, userUUID }) {
@@ -120,10 +119,6 @@ function MainContent({ role, userUUID }) {
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId);
-  };
-
-  const clearSearch = () => {
-    setSearchTerm("");
   };
 
   const getGroupNameByUUID = (groupUUID) => {
@@ -265,12 +260,7 @@ function MainContent({ role, userUUID }) {
             className="p-2 border rounded-lg border-gray-600 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             placeholder="Поиск по названию или группе"
           />
-          <button
-            className="ml-2 p-2 bg-red-500 rounded-lg hover:bg-red-700 transition duration-300"
-            onClick={clearSearch}
-          >
-            <img src={ClearIcon} alt="Clear" className="w-5 h-5" />
-          </button>
+
           <select
             onChange={handleSortChange}
             className="ml-2 p-2 border rounded-lg border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
