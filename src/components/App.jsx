@@ -30,7 +30,7 @@ function App() {
                   userRole === 1 ? (
                     <MainContent role={userRole} userUUID={userUUID} />
                   ) : (
-                    <MainUser /> // Показываем MainUser, если role равен 0
+                    <MainUser role={userRole} userUUID={userUUID} /> // Показываем MainUser, если role равен 0
                   )
                 ) : (
                   <div>Loading...</div>
