@@ -179,14 +179,27 @@ function MainContent({ userUUID, userRole }) {
     setTasks(sortedTasks);
   };
 
-  const filterTasksByStatus = (tasksArray, statusId) => {
+  const filterTasksByStatus = (tasksArray = [], statusId) => {
+    if (!tasksArray) {
+      console.error("Tasks array is null or undefined.");
+      return;
+    }
     const filteredTasks = tasksArray.filter(
       (task) => task.status_id === statusId
     );
     setTasks(filteredTasks);
   };
 
-  const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
+  const filterTasksBySearchAndStatus = (
+    tasksArray = [],
+    searchTerm,
+    statusId
+  ) => {
+    if (!tasksArray) {
+      console.error("Tasks array is null or undefined.");
+      return;
+    }
+
     let filteredTasks = tasksArray;
 
     if (statusId !== null) {

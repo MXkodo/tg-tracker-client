@@ -3,6 +3,7 @@ import Button from "./Button";
 import "../styles/ScrollContainer.css";
 
 function ScrollContainer({ onFilterChange, activeStatusId, userRole }) {
+  // Определите кнопки для всех ролей
   const buttons = [
     { label: "Новые", statusId: 1 },
     { label: "Отправленные", statusId: 2 },
@@ -16,7 +17,7 @@ function ScrollContainer({ onFilterChange, activeStatusId, userRole }) {
   // Фильтрация кнопок в зависимости от роли пользователя
   const filteredButtons =
     userRole === 0
-      ? buttons.filter((button) => [1, 2, 3, 4].includes(button.statusId))
+      ? buttons.filter((button) => ![4, 5].includes(button.statusId)) // Исключаем кнопки с statusId 4 и 5
       : buttons;
 
   const handleButtonClick = (statusId) => {
