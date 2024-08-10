@@ -302,39 +302,7 @@ function MainContent({ userUUID, userRole }) {
                       Готово
                     </button>
                   )}
-                  {task.status_id === 4 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 5);
-                      }}
-                    >
-                      В проверке
-                    </button>
-                  )}
-                  {task.status_id === 5 && (
-                    <>
-                      <button
-                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAcceptTask(task.uuid, 7);
-                        }}
-                      >
-                        Принята
-                      </button>
-                      <button
-                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAcceptTask(task.uuid, 6);
-                        }}
-                      >
-                        Доработка
-                      </button>
-                    </>
-                  )}
+                  (task.status_id === 4 &&) (task.status_id === 5 &&)
                   {task.status_id === 6 && (
                     <>
                       <button
