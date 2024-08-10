@@ -14,7 +14,6 @@ function MainContent({ userUUID, userRole }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  // Мемоизация функции fetchTasks с помощью useCallback
   const fetchTasks = useCallback(async () => {
     try {
       let endpoint = "";
@@ -51,12 +50,12 @@ function MainContent({ userUUID, userRole }) {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [activeStatusId, userUUID]); // Зависимости функции fetchTasks
+  }, [activeStatusId, userUUID]);
 
   useEffect(() => {
     fetchGroups();
     fetchTasks();
-  }, [activeStatusId, userUUID, fetchTasks]); // Добавляем fetchTasks в массив зависимостей
+  }, [activeStatusId, userUUID, fetchTasks]);
 
   const fetchGroups = async () => {
     try {
@@ -116,7 +115,6 @@ function MainContent({ userUUID, userRole }) {
 
   const handleFilterChange = (statusId) => {
     setActiveStatusId(statusId);
-    // Очищаем текущие задачи перед загрузкой новых
     setTasks([]);
     fetchTasks();
   };

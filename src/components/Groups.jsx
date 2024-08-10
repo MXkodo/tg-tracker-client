@@ -78,7 +78,6 @@ const GroupsPage = () => {
       .then((response) => {
         const allUsers = response.data || [];
 
-        // Получаем UUID пользователей, состоящих в группах
         return axios
           .get(
             " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/users",
@@ -91,7 +90,6 @@ const GroupsPage = () => {
           .then((groupUsersResponse) => {
             const groupUserUUIDs = groupUsersResponse.data || [];
 
-            // Находим пользователей, которые не состоят ни в одной группе
             const usersNotInAnyGroup = allUsers.filter(
               (user) => !groupUserUUIDs.includes(user.uuid)
             );
@@ -100,10 +98,6 @@ const GroupsPage = () => {
             setShowUserSelectModal(true);
           });
       });
-    // .catch((error) => {
-    //   console.error("Error fetching available users:", error);
-    //   setError("Ошибка при получении доступных пользователей.");
-    // });
   };
 
   const handleViewModeChange = (mode) => {

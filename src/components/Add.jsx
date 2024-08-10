@@ -38,7 +38,7 @@ const AddTaskPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setIsLoading(true); // Показываем анимацию загрузки перед отправкой запроса
+    setIsLoading(true);
 
     const formattedSendTime = new Date(sendTime).toISOString();
 
@@ -69,7 +69,6 @@ const AddTaskPage = () => {
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
 
-      // Очищаем поля формы и скрываем анимацию загрузки после успешного ответа
       setTaskName("");
       setTaskDescription("");
       setExecutor("");
@@ -78,7 +77,7 @@ const AddTaskPage = () => {
       console.error("Ошибка при сохранении задачи:", error.message);
       alert("Ошибка при сохранении задачи:", error.message);
     } finally {
-      setIsLoading(false); // Скрываем анимацию загрузки после завершения запроса
+      setIsLoading(false);
     }
   };
 

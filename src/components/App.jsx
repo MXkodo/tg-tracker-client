@@ -5,15 +5,15 @@ import Footer from "./Footer";
 import AddTaskPage from "./Add";
 import GroupsPage from "./Groups";
 import AuthCheck from "./AuthCheck";
-import MainUser from "./MainUser"; // Предполагается, что этот компонент импортирован
+import MainUser from "./MainUser";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
   const [userUUID, setUserUUID] = useState("");
 
   useEffect(() => {
-    console.log("Current userRole:", userRole); // Отладка
-    console.log("Current userUUID:", userUUID); // Отладка
+    console.log("Current userRole:", userRole);
+    console.log("Current userUUID:", userUUID);
   }, [userRole, userUUID]);
 
   return (
@@ -22,7 +22,7 @@ function App() {
         <main>
           <AuthCheck setUserRole={setUserRole} setUserUUID={setUserUUID} />
           <Routes>
-            {/* Изменяем здесь логику выбора компонента */}
+            {}
             <Route
               path="/"
               element={
@@ -30,7 +30,7 @@ function App() {
                   userRole === 1 ? (
                     <MainContent role={userRole} userUUID={userUUID} />
                   ) : (
-                    <MainUser role={userRole} userUUID={userUUID} /> // Показываем MainUser, если role равен 0
+                    <MainUser role={userRole} userUUID={userUUID} />
                   )
                 ) : (
                   <div>Loading...</div>
