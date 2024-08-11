@@ -130,7 +130,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? " https://taskback.emivn.io/api/v1/groups"
-        : "https:/taskauth.emivn.io/api/v1/users";
+        : "https://taskauth.emivn.io/api/v1/users";
 
     const requestConfig = {
       method: "post",
