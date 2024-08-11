@@ -28,14 +28,14 @@ function AuthCheck({ setUserRole, setUserUUID }) {
             );
 
             if (window.Telegram && window.Telegram.WebApp) {
-              // window.Telegram.WebApp.close();
+              window.Telegram.WebApp.close();
             }
           });
       } else {
         alert("Пользователь не найден в Telegram");
 
         if (window.Telegram && window.Telegram.WebApp) {
-          // window.Telegram.WebApp.close();
+          window.Telegram.WebApp.close();
         }
       }
     } else {
@@ -44,7 +44,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       alert("Произошла ошибка при загрузке приложения");
 
       if (window.Telegram && window.Telegram.WebApp) {
-        //window.Telegram.WebApp.close();
+        window.Telegram.WebApp.close();
       }
     }
   }, [setUserRole, setUserUUID]);
