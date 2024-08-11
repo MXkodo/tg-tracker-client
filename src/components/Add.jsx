@@ -13,7 +13,7 @@ const AddTaskPage = () => {
     const fetchExecutors = async () => {
       try {
         const response = await fetch(
-          " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
+          " https://taskback.emivn.io/api/v1/groups",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -51,16 +51,13 @@ const AddTaskPage = () => {
     };
 
     try {
-      const response = await fetch(
-        " https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(taskData),
-        }
-      );
+      const response = await fetch(" https://taskback.emivn.io/api/v1/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(taskData),
+      });
 
       if (!response.ok) {
         throw new Error("Ошибка при сохранении задачи!");

@@ -26,8 +26,8 @@ const GroupsPage = () => {
     setIsLoading(true);
     const apiUrl =
       viewMode === "groups"
-        ? " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
-        : "https://0239-85-172-92-2.ngrok-free.app/api/v1/users";
+        ? " https://taskback.emivn.io/api/v1/groups"
+        : "https://taskback.emivn.io/api/v1/users";
 
     axios
       .get(apiUrl, {
@@ -48,14 +48,11 @@ const GroupsPage = () => {
 
   const fetchGroupUsers = (groupId) => {
     axios
-      .get(
-        ` https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/${groupId}/users`,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      )
+      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
       .then((response) => {
         setGroupUsers(response.data || []);
         setShowGroupModal(true);
@@ -70,7 +67,7 @@ const GroupsPage = () => {
 
   const fetchAvailableUsers = () => {
     axios
-      .get("https://0239-85-172-92-2.ngrok-free.app/api/v1/users", {
+      .get("https://taskback.emivn.io/api/v1/users", {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -79,14 +76,11 @@ const GroupsPage = () => {
         const allUsers = response.data || [];
 
         return axios
-          .get(
-            " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/users",
-            {
-              headers: {
-                "ngrok-skip-browser-warning": "1",
-              },
-            }
-          )
+          .get(" https://taskback.emivn.io/api/v1/groups/users", {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          })
           .then((groupUsersResponse) => {
             const groupUserUUIDs = groupUsersResponse.data || [];
 
@@ -135,8 +129,8 @@ const GroupsPage = () => {
   const handleSaveItem = () => {
     const apiUrl =
       viewMode === "groups"
-        ? " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups"
-        : "https://0239-85-172-92-2.ngrok-free.app/api/v1/users";
+        ? " https://taskback.emivn.io/api/v1/groups"
+        : "https://taskback.emivn.io/api/v1/users";
 
     const requestConfig = {
       method: "post",
@@ -173,8 +167,8 @@ const GroupsPage = () => {
   const confirmDeleteItem = () => {
     const apiUrl =
       viewMode === "groups"
-        ? ` https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/${itemToDelete.uuid}`
-        : `https://0239-85-172-92-2.ngrok-free.app/api/v1/users`;
+        ? ` https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}`
+        : `https://taskback.emivn.io/api/v1/users`;
 
     const requestData =
       viewMode === "users" ? { username: itemToDelete.username } : {};
@@ -203,7 +197,7 @@ const GroupsPage = () => {
     if (selectedUserId) {
       axios
         .post(
-          " https://1686-188-170-174-171.ngrok-free.app/api/v1/groups/add-user",
+          " https://taskback.emivn.io/api/v1/groups/add-user",
           {
             user_uuid: selectedUserId,
             group_uuid: activeItem,

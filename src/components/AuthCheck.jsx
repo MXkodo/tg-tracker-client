@@ -12,7 +12,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
 
       if (username) {
         axios
-          .post("https://0239-85-172-92-2.ngrok-free.app/api/v1/user", {
+          .post("https://taskback.emivn.io/api/v1/user", {
             username,
           })
           .then((response) => {

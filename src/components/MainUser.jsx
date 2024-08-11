@@ -37,14 +37,11 @@ function MainContent({ userUUID, userRole }) {
           endpoint = `/api/v1/tasks/new/${userUUID}`;
       }
 
-      const response = await axios.get(
-        `https://1686-188-170-174-171.ngrok-free.app${endpoint}`,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
+      const response = await axios.get(`https://taskback.emivn.io${endpoint}`, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      });
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
     } catch (error) {
@@ -60,7 +57,7 @@ function MainContent({ userUUID, userRole }) {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        "https://1686-188-170-174-171.ngrok-free.app/api/v1/groups",
+        "https://taskback.emivn.io/api/v1/groups",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -85,13 +82,10 @@ function MainContent({ userUUID, userRole }) {
         )
       );
 
-      await axios.patch(
-        `https://1686-188-170-174-171.ngrok-free.app/api/v1/tasks`,
-        {
-          uuid: taskId,
-          status_id: status,
-        }
-      );
+      await axios.patch(`https://taskback.emivn.io/api/v1/tasks`, {
+        uuid: taskId,
+        status_id: status,
+      });
 
       refreshData();
     } catch (error) {
