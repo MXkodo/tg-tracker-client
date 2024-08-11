@@ -27,7 +27,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? " https://taskback.emivn.io/api/v1/groups"
-        : "https://taskback.emivn.io/api/v1/users";
+        : "https://taskauth.emivn.io/api/v1/users";
 
     axios
       .get(apiUrl, {
@@ -48,7 +48,7 @@ const GroupsPage = () => {
 
   const fetchGroupUsers = (groupId) => {
     axios
-      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+      .get(` https://taskauth.emivn.io/api/v1/groups/${groupId}/users`, {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -67,7 +67,7 @@ const GroupsPage = () => {
 
   const fetchAvailableUsers = () => {
     axios
-      .get("https://taskback.emivn.io/api/v1/users", {
+      .get("https://taskauth.emivn.io/api/v1/users", {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -76,7 +76,7 @@ const GroupsPage = () => {
         const allUsers = response.data || [];
 
         return axios
-          .get(" https://taskback.emivn.io/api/v1/groups/users", {
+          .get(" https://taskauth.emivn.io/api/v1/groups/users", {
             headers: {
               "ngrok-skip-browser-warning": "1",
             },
@@ -130,7 +130,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? " https://taskback.emivn.io/api/v1/groups"
-        : "https://taskback.emivn.io/api/v1/users";
+        : "https:/taskauth.emivn.io/api/v1/users";
 
     const requestConfig = {
       method: "post",
@@ -168,7 +168,7 @@ const GroupsPage = () => {
     const apiUrl =
       viewMode === "groups"
         ? ` https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}`
-        : `https://taskback.emivn.io/api/v1/users`;
+        : `https://taskauth.emivn.io/api/v1/users`;
 
     const requestData =
       viewMode === "users" ? { username: itemToDelete.username } : {};

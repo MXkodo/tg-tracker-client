@@ -12,7 +12,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
 
       if (username) {
         axios
-          .post("https://taskback.emivn.io/api/v1/user", {
+          .post("https://taskauth.emivn.io/api/v1/user", {
             username,
           })
           .then((response) => {
