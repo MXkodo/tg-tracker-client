@@ -48,7 +48,7 @@ const GroupsPage = () => {
 
   const fetchGroupUsers = (groupId) => {
     axios
-      .get(` https://taskauth.emivn.io/api/v1/groups/${groupId}/users`, {
+      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
