@@ -107,9 +107,12 @@ const GroupsPage = () => {
 
   const handleSaveEditUser = () => {
     if (userToEdit) {
+      // Извлекаем UUID пользователя из объекта userToEdit
+      const userUUID = userToEdit.uuid;
+
       axios
         .put(
-          `https://taskauth.emivn.io/api/v1/users`,
+          `https://taskauth.emivn.io/api/v1/users/${userUUID}`,
           {
             name: editUserName,
             username: editTelegramUsername,
@@ -174,12 +177,19 @@ const GroupsPage = () => {
     setActiveItem(null);
   };
 
-  const handleItemClick = (item) => {
-    setActiveItem(item.uuid);
-    if (viewMode === "groups") {
-      fetchGroupUsers(item.uuid);
+  const handleItemClick = (item, event) => {
+    if (
+      viewMode === "users" &&
+      !event.target.classList.contains("delete-btn")
+    ) {
+      handleEditUser(item);
     } else {
-      setShowGroupModal(false);
+      setActiveItem(item.uuid);
+      if (viewMode === "groups") {
+        fetchGroupUsers(item.uuid);
+      } else {
+        setShowGroupModal(false);
+      }
     }
   };
 
@@ -330,30 +340,19 @@ const GroupsPage = () => {
             className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
               activeItem === item.uuid ? "bg-green-500 text-black" : ""
             }`}
-            onClick={() => handleItemClick(item)}
+            onClick={(e) => handleItemClick(item, e)}
           >
-            <div className="flex items-center">
+            <div className="flex items-center cursor-pointer">
               <span>{item.name}</span>
               {viewMode === "users" && item.role === 1 && (
                 <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
-                  Админ
+                  А
                 </span>
               )}
             </div>
             <div className="flex items-center">
-              {viewMode === "users" && (
-                <button
-                  className="px-2 py-1 bg-blue-500 text-white rounded mr-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditUser(item);
-                  }}
-                >
-                  Редактировать
-                </button>
-              )}
               <button
-                className="px-2 py-1 bg-red-500 text-white rounded"
+                className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteItem(item.uuid);
