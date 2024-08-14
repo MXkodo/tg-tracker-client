@@ -242,8 +242,8 @@ const GroupsPage = () => {
             <div className="flex items-center">
               <span>{item.name}</span>
               {viewMode === "users" && item.role === 1 && (
-                <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
-                  Администратор
+                <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
+                  Админ
                 </span>
               )}
             </div>
