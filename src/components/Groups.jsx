@@ -24,6 +24,11 @@ const GroupsPage = () => {
   const [availableGroups, setAvailableGroups] = useState([]);
   const [selectedGroupForUser, setSelectedGroupForUser] = useState("");
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [editUserName, setEditUserName] = useState("");
+  const [editTelegramUsername, setEditTelegramUsername] = useState("");
+
   useEffect(() => {
     setIsLoading(true);
     const apiUrl =
@@ -83,6 +88,56 @@ const GroupsPage = () => {
           "Ошибка при получении пользователей группы. Проверьте сервер."
         );
       });
+  };
+
+  const handleEditUser = (user) => {
+    setUserToEdit(user);
+    setEditUserName(user.name);
+    setEditTelegramUsername(user.username || "");
+    setShowEditModal(true);
+  };
+
+  const handleEditInputChange = (event) => {
+    if (event.target.name === "editUserName") {
+      setEditUserName(event.target.value);
+    } else if (event.target.name === "editTelegramUsername") {
+      setEditTelegramUsername(event.target.value);
+    }
+  };
+
+  const handleSaveEditUser = () => {
+    if (userToEdit) {
+      axios
+        .put(
+          `https://taskauth.emivn.io/api/v1/users`,
+          {
+            name: editUserName,
+            username: editTelegramUsername,
+          },
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
+        )
+        .then(() => {
+          // Обновляем список пользователей
+          return axios.get("https://taskauth.emivn.io/api/v1/users", {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          });
+        })
+        .then((response) => {
+          setItems(response.data || []);
+          setShowEditModal(false);
+          setUserToEdit(null);
+        })
+        .catch((error) => {
+          console.error("Error updating user:", error);
+          setError("Ошибка при обновлении пользователя.");
+        });
+    }
   };
 
   const fetchAvailableUsers = () => {
@@ -285,15 +340,28 @@ const GroupsPage = () => {
                 </span>
               )}
             </div>
-            <button
-              className="px-2 py-1 bg-red-500 text-white rounded"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteItem(item.uuid);
-              }}
-            >
-              Удалить
-            </button>
+            <div className="flex items-center">
+              {viewMode === "users" && (
+                <button
+                  className="px-2 py-1 bg-blue-500 text-white rounded mr-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditUser(item);
+                  }}
+                >
+                  Редактировать
+                </button>
+              )}
+              <button
+                className="px-2 py-1 bg-red-500 text-white rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteItem(item.uuid);
+                }}
+              >
+                Удалить
+              </button>
+            </div>
           </li>
         ))
       )}
@@ -359,6 +427,49 @@ const GroupsPage = () => {
                 type="button"
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
                 onClick={() => setShowDeleteModal(false)}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEditModal && userToEdit && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
+            <h2 className="text-lg font-bold mb-4">
+              Редактирование пользователя
+            </h2>
+            <input
+              type="text"
+              name="editUserName"
+              className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
+              placeholder="Имя"
+              value={editUserName}
+              onChange={handleEditInputChange}
+              required
+            />
+            <input
+              type="text"
+              name="editTelegramUsername"
+              className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
+              placeholder="Юзернейм (после @)"
+              value={editTelegramUsername}
+              onChange={handleEditInputChange}
+              required
+            />
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                onClick={handleSaveEditUser}
+              >
+                Сохранить
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                onClick={() => setShowEditModal(false)}
               >
                 Отмена
               </button>
