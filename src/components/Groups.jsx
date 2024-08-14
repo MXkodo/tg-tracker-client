@@ -17,11 +17,12 @@ const GroupsPage = () => {
 
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupUsers, setGroupUsers] = useState([]);
-  const [selectedGroupId, setSelectedGroupId] = useState("");
 
   const [showUserSelectModal, setShowUserSelectModal] = useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const [availableGroups, setAvailableGroups] = useState([]);
+  const [selectedGroupForUser, setSelectedGroupForUser] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -45,6 +46,24 @@ const GroupsPage = () => {
         setError(error.message);
         setIsLoading(false);
       });
+  }, [viewMode]);
+
+  useEffect(() => {
+    if (viewMode === "users") {
+      axios
+        .get("https://taskback.emivn.io/api/v1/groups", {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        })
+        .then((response) => {
+          setAvailableGroups(response.data || []);
+        })
+        .catch((error) => {
+          console.error("Error fetching groups:", error);
+          setError("Ошибка при получении групп.");
+        });
+    }
   }, [viewMode]);
 
   const fetchGroupUsers = (groupId) => {
@@ -146,12 +165,12 @@ const GroupsPage = () => {
       })
       .then((response) => {
         // После создания, если это пользователь и выбранная группа указана, добавляем пользователя в группу
-        if (viewMode === "users" && selectedGroupId) {
+        if (viewMode === "users" && selectedGroupForUser) {
           return axios.post(
             "https://taskback.emivn.io/api/v1/groups/add-user",
             {
               user_uuid: response.data.uuid,
-              group_uuid: selectedGroupId,
+              group_uuid: selectedGroupForUser,
             },
             {
               headers: {
@@ -377,12 +396,12 @@ const GroupsPage = () => {
                   required
                 />
                 <select
-                  value={selectedGroupId}
-                  onChange={(e) => setSelectedGroupId(e.target.value)}
+                  value={selectedGroupForUser}
+                  onChange={(e) => setSelectedGroupForUser(e.target.value)}
                   className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
                 >
-                  <option value="">Без группы</option>
-                  {items.map((group) => (
+                  <option value="">Выберите группу</option>
+                  {availableGroups.map((group) => (
                     <option key={group.uuid} value={group.uuid}>
                       {group.name}
                     </option>
