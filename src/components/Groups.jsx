@@ -17,6 +17,7 @@ const GroupsPage = () => {
 
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupUsers, setGroupUsers] = useState([]);
+  const [selectedGroupId, setSelectedGroupId] = useState("");
 
   const [showUserSelectModal, setShowUserSelectModal] = useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
@@ -129,20 +130,39 @@ const GroupsPage = () => {
   const handleSaveItem = () => {
     const apiUrl =
       viewMode === "groups"
-        ? " https://taskback.emivn.io/api/v1/groups"
+        ? "https://taskback.emivn.io/api/v1/groups"
         : "https://taskauth.emivn.io/api/v1/users";
 
-    const requestConfig = {
-      method: "post",
-      url: apiUrl,
-      data:
-        viewMode === "groups"
-          ? { name: itemName }
-          : { name: itemName, username: telegramUsername },
-    };
+    const requestData =
+      viewMode === "groups"
+        ? { name: itemName }
+        : { name: itemName, username: telegramUsername };
 
-    axios(requestConfig)
+    axios
+      .post(apiUrl, requestData, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
+      .then((response) => {
+        // После создания, если это пользователь и выбранная группа указана, добавляем пользователя в группу
+        if (viewMode === "users" && selectedGroupId) {
+          return axios.post(
+            "https://taskback.emivn.io/api/v1/groups/add-user",
+            {
+              user_uuid: response.data.uuid,
+              group_uuid: selectedGroupId,
+            },
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "1",
+              },
+            }
+          );
+        }
+      })
       .then(() => {
+        // Обновляем список
         return axios.get(apiUrl, {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -345,14 +365,28 @@ const GroupsPage = () => {
               onChange={handleInputChange}
             />
             {viewMode === "users" && (
-              <input
-                type="text"
-                name="telegramUsername"
-                className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
-                placeholder="Юзернейм (после @)"
-                value={telegramUsername}
-                onChange={handleInputChange}
-              />
+              <>
+                <input
+                  type="text"
+                  name="telegramUsername"
+                  className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
+                  placeholder="Юзернейм (после @)"
+                  value={telegramUsername}
+                  onChange={handleInputChange}
+                />
+                <select
+                  value={selectedGroupId}
+                  onChange={(e) => setSelectedGroupId(e.target.value)}
+                  className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
+                >
+                  <option value="">Без группы</option>
+                  {items.map((group) => (
+                    <option key={group.uuid} value={group.uuid}>
+                      {group.name}
+                    </option>
+                  ))}
+                </select>
+              </>
             )}
             <div className="flex justify-end">
               <button
