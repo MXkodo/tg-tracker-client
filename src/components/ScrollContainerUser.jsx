@@ -4,9 +4,9 @@ import "../styles/ScrollContainer.css";
 
 function ScrollContainer({ onFilterChange, activeStatusId }) {
   const buttons = [
-    { label: "Новые", statusId: 1 },
-    { label: "Отправленные", statusId: 2 },
+    { label: "Новые", statusId: 2 },
     { label: "Выполняются", statusId: 3 },
+    { label: "Модерация", statusId: 5 },
     { label: "Выполнены с ошибкой", statusId: 6 },
     { label: "Выполнены", statusId: 7 },
   ];

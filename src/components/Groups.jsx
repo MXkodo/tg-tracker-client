@@ -239,10 +239,20 @@ const GroupsPage = () => {
             }`}
             onClick={() => handleItemClick(item)}
           >
-            <span>{item.name}</span>
+            <div className="flex items-center">
+              <span>{item.name}</span>
+              {viewMode === "users" && item.role === 1 && (
+                <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
+                  Администратор
+                </span>
+              )}
+            </div>
             <button
               className="px-2 py-1 bg-red-500 text-white rounded"
-              onClick={() => handleDeleteItem(item.uuid)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteItem(item.uuid);
+              }}
             >
               Удалить
             </button>
