@@ -40,11 +40,14 @@ function MainContent({ userUUID, userRole }) {
           endpoint = `/api/v1/tasks/new/${userUUID}`;
       }
 
+      setTasks([]);
+
       const response = await axios.get(`https://taskback.emivn.io${endpoint}`, {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
       });
+
       setAllTasks(response.data);
       filterTasksByStatus(response.data, activeStatusId);
     } catch (error) {
@@ -296,22 +299,7 @@ function MainContent({ userUUID, userRole }) {
                       В проверке
                     </button>
                   )}
-                  {task.status_id === 5 && (
-                    <>
-                      <button className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600">
-                        Принята
-                      </button>
-                      <button
-                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAcceptTask(task.uuid, 6);
-                        }}
-                      >
-                        Доработка
-                      </button>
-                    </>
-                  )}
+                  {task.status_id === 5 && <></>}
                   {task.status_id === 6 && (
                     <>
                       <button
