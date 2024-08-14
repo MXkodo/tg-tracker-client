@@ -363,6 +363,7 @@ const GroupsPage = () => {
               placeholder={viewMode === "groups" ? "Название группы" : "Имя"}
               value={itemName}
               onChange={handleInputChange}
+              required
             />
             {viewMode === "users" && (
               <>
@@ -373,6 +374,7 @@ const GroupsPage = () => {
                   placeholder="Юзернейм (после @)"
                   value={telegramUsername}
                   onChange={handleInputChange}
+                  required
                 />
                 <select
                   value={selectedGroupId}
