@@ -47,10 +47,16 @@ function MainContent({ userUUID, userRole }) {
         },
       });
 
-      setAllTasks(response.data);
-      filterTasksByStatus(response.data, activeStatusId);
+      if (response.data && Array.isArray(response.data)) {
+        setAllTasks(response.data);
+        filterTasksByStatus(response.data, activeStatusId);
+      } else {
+        setTasks([]);
+      }
     } catch (error) {
       console.error("Error fetching tasks:", error);
+
+      setTasks([]);
     }
   }, [activeStatusId, userUUID]);
 
