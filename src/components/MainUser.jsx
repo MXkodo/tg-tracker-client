@@ -16,6 +16,7 @@ function MainContent({ userUUID, userRole }) {
 
   const fetchTasks = useCallback(async () => {
     try {
+      setTasks([]);
       let endpoint = "";
       switch (activeStatusId) {
         case 1:
@@ -39,8 +40,6 @@ function MainContent({ userUUID, userRole }) {
         default:
           endpoint = `/api/v1/tasks/new/${userUUID}`;
       }
-
-      setTasks([]);
 
       const response = await axios.get(`https://taskback.emivn.io${endpoint}`, {
         headers: {
