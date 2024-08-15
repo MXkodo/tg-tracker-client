@@ -16,13 +16,18 @@ function App() {
     console.log("Current userUUID:", userUUID);
   }, [userRole, userUUID]);
 
+  const renderLoadingAnimation = () => (
+    <div className="flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-green-500"></div>
+    </div>
+  );
+
   return (
     <Router>
       <div className="app">
         <main>
           <AuthCheck setUserRole={setUserRole} setUserUUID={setUserUUID} />
           <Routes>
-            {}
             <Route
               path="/"
               element={
@@ -33,7 +38,7 @@ function App() {
                     <MainUser role={userRole} userUUID={userUUID} />
                   )
                 ) : (
-                  <div>Loading...</div>
+                  renderLoadingAnimation()
                 )
               }
             />
