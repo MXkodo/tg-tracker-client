@@ -86,7 +86,8 @@ const GroupsPage = () => {
   const hasChanges = () => {
     return (
       editUserName !== initialUserName ||
-      editTelegramUsername !== initialTelegramUsername
+      editTelegramUsername !== initialTelegramUsername ||
+      isAdmin !== (userToEdit?.role === 1)
     );
   };
 
