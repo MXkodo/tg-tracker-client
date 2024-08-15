@@ -13,6 +13,9 @@ function MainContent() {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [editedTask, setEditedTask] = useState({ name: "", description: "" });
+
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchGroups();
@@ -22,7 +25,7 @@ function MainContent() {
     const fetchAllTasks = async () => {
       try {
         const response = await axios.get(
-          " https://taskback.emivn.io/api/v1/tasks",
+          "https://taskback.emivn.io/api/v1/tasks",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -46,7 +49,7 @@ function MainContent() {
   const refreshData = async () => {
     try {
       const response = await axios.get(
-        " https://taskback.emivn.io/api/v1/tasks",
+        "https://taskback.emivn.io/api/v1/tasks",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -64,7 +67,7 @@ function MainContent() {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        " https://taskback.emivn.io/api/v1/groups",
+        "https://taskback.emivn.io/api/v1/groups",
         {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -86,9 +89,8 @@ function MainContent() {
       );
 
       const response = await axios.patch(
-        ` https://taskback.emivn.io/api/v1/tasks/`,
+        `https://taskback.emivn.io/api/v1/tasks/${taskId}`,
         {
-          uuid: taskId,
           status_id: status,
         }
       );
@@ -126,12 +128,14 @@ function MainContent() {
 
   const handleEditClick = (task) => {
     setSelectedTask(task);
+    setEditedTask({ name: task.name, description: task.description });
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
+    setError(""); // Clear any errors when closing modal
   };
 
   const handleSortChange = (e) => {
@@ -204,6 +208,36 @@ function MainContent() {
     }
 
     setTasks(filteredTasks);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditedTask((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!editedTask.name || !editedTask.description) {
+      setError("Название и описание не могут быть пустыми");
+      return;
+    }
+    try {
+      await axios.put(
+        `https://taskback.emivn.io/api/v1/tasks/${selectedTask.uuid}`,
+        editedTask,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+      console.log("Task updated:", editedTask);
+      refreshData();
+      closeModal();
+    } catch (error) {
+      console.error("Error updating task:", error);
+      setError("Ошибка при обновлении задачи");
+    }
   };
 
   return (
@@ -340,34 +374,52 @@ function MainContent() {
       {modalOpen && selectedTask && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div class="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                <h2 class="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
                   Информация о задаче
                 </h2>
-                <p class="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Название:</strong> {selectedTask.name}
-                </p>
-                <p class="whitespace-normal overflow-hidden max-w-prose break-words">
-                  <strong>Описание:</strong> {selectedTask.description}
-                </p>
-                <p class="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Группа:</strong>{" "}
-                  {getGroupNameByUUID(selectedTask.group_uuid)}
-                </p>
-                <p class="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Время отправки:</strong>{" "}
-                  {formatTimestamp(selectedTask.apperance_timestamp)}
-                </p>
-
-                <div class="flex justify-end mt-5">
-                  <button
-                    class="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                    onClick={closeModal}
-                  >
-                    Закрыть
-                  </button>
-                </div>
+                <form onSubmit={handleEditSubmit}>
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold">
+                      Название:
+                      <input
+                        type="text"
+                        name="name"
+                        value={editedTask.name}
+                        onChange={handleEditChange}
+                        className="mt-1 block w-full p-2 border rounded"
+                      />
+                    </label>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold">
+                      Описание:
+                      <textarea
+                        name="description"
+                        value={editedTask.description}
+                        onChange={handleEditChange}
+                        className="mt-1 block w-full p-2 border rounded"
+                      />
+                    </label>
+                  </div>
+                  {error && <p className="text-red-500 text-sm">{error}</p>}
+                  <div className="flex justify-end mt-5">
+                    <button
+                      type="submit"
+                      className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    >
+                      Сохранить
+                    </button>
+                    <button
+                      type="button"
+                      className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                      onClick={closeModal}
+                    >
+                      Закрыть
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
