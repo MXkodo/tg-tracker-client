@@ -227,7 +227,7 @@ function MainContent() {
     if (selectedTask) {
       try {
         const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks/`,
+          `https://taskback.emivn.io/api/v1/tasks`,
           {
             uuid: selectedTask.uuid,
             name: taskName,
