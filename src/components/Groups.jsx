@@ -439,7 +439,7 @@ const GroupsPage = () => {
               Вы уверены, что хотите удалить В таком случае удалятся и связанные
               с ней задачи.
               {viewMode === "groups" ? "группу" : "пользователя"} "
-              {itemToDelete.name}"?
+              {itemToDelete.name}"? В таком случае удалятся и связанные задачи.
             </p>
             <div className="flex justify-end">
               <button
