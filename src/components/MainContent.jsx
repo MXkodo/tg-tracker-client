@@ -131,7 +131,7 @@ function MainContent() {
     setSelectedTask(task);
     setTaskName(task.name);
     setTaskDescription(task.description);
-    setEditMode(false); // При открытии модального окна редактирование отключено
+    setEditMode(true); // При открытии модального окна редактирование отключено
     setModalOpen(true);
   };
 
