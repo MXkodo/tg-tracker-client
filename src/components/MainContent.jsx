@@ -13,9 +13,9 @@ function MainContent() {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [editedTask, setEditedTask] = useState({ name: "", description: "" });
-
-  const [error, setError] = useState("");
+  const [editMode, setEditMode] = useState(false); // Состояние для редактирования
+  const [taskName, setTaskName] = useState(""); // Новое значение заголовка
+  const [taskDescription, setTaskDescription] = useState(""); // Новое значение описания
 
   useEffect(() => {
     fetchGroups();
@@ -89,8 +89,9 @@ function MainContent() {
       );
 
       const response = await axios.patch(
-        `https://taskback.emivn.io/api/v1/tasks/${taskId}`,
+        `https://taskback.emivn.io/api/v1/tasks/`,
         {
+          uuid: taskId,
           status_id: status,
         }
       );
@@ -128,14 +129,16 @@ function MainContent() {
 
   const handleEditClick = (task) => {
     setSelectedTask(task);
-    setEditedTask({ name: task.name, description: task.description });
+    setTaskName(task.name);
+    setTaskDescription(task.description);
+    setEditMode(false); // При открытии модального окна редактирование отключено
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
-    setError(""); // Clear any errors when closing modal
+    setEditMode(false); // Сброс состояния редактирования при закрытии модального окна
   };
 
   const handleSortChange = (e) => {
@@ -210,33 +213,33 @@ function MainContent() {
     setTasks(filteredTasks);
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTask((prev) => ({ ...prev, [name]: value }));
+  const handleNameChange = (e) => {
+    setTaskName(e.target.value);
+    setEditMode(true); // Включить режим редактирования при изменении
   };
 
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    if (!editedTask.name || !editedTask.description) {
-      setError("Название и описание не могут быть пустыми");
-      return;
-    }
-    try {
-      await axios.put(
-        `https://taskback.emivn.io/api/v1/tasks/${selectedTask.uuid}`,
-        editedTask,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      );
-      console.log("Task updated:", editedTask);
-      refreshData();
-      closeModal();
-    } catch (error) {
-      console.error("Error updating task:", error);
-      setError("Ошибка при обновлении задачи");
+  const handleDescriptionChange = (e) => {
+    setTaskDescription(e.target.value);
+    setEditMode(true); // Включить режим редактирования при изменении
+  };
+
+  const handleSave = async () => {
+    if (selectedTask) {
+      try {
+        const response = await axios.patch(
+          `https://taskback.emivn.io/api/v1/tasks/`,
+          {
+            uuid: selectedTask.uuid,
+            name: taskName,
+            description: taskDescription,
+          }
+        );
+        console.log("Task updated:", response.data);
+        refreshData(); // Обновить данные после сохранения
+        closeModal(); // Закрыть модальное окно
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
     }
   };
 
@@ -379,47 +382,51 @@ function MainContent() {
                 <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
                   Информация о задаче
                 </h2>
-                <form onSubmit={handleEditSubmit}>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold">
-                      Название:
-                      <input
-                        type="text"
-                        name="name"
-                        value={editedTask.name}
-                        onChange={handleEditChange}
-                        className="mt-1 block w-full p-2 border rounded"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold">
-                      Описание:
-                      <textarea
-                        name="description"
-                        value={editedTask.description}
-                        onChange={handleEditChange}
-                        className="mt-1 block w-full p-2 border rounded"
-                      />
-                    </label>
-                  </div>
-                  {error && <p className="text-red-500 text-sm">{error}</p>}
-                  <div className="flex justify-end mt-5">
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Название:</strong>
+                  <input
+                    type="text"
+                    value={taskName}
+                    onChange={handleNameChange}
+                    className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
+                    disabled={!editMode}
+                  />
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
+                  <strong>Описание:</strong>
+                  <textarea
+                    value={taskDescription}
+                    onChange={handleDescriptionChange}
+                    className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
+                    rows="4"
+                    disabled={!editMode}
+                  />
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Группа:</strong>{" "}
+                  {getGroupNameByUUID(selectedTask.group_uuid)}
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Время отправки:</strong>{" "}
+                  {formatTimestamp(selectedTask.apperance_timestamp)}
+                </p>
+
+                <div className="flex justify-end mt-5">
+                  {editMode && (
                     <button
-                      type="submit"
                       className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={handleSave}
                     >
                       Сохранить
                     </button>
-                    <button
-                      type="button"
-                      className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
-                      onClick={closeModal}
-                    >
-                      Закрыть
-                    </button>
-                  </div>
-                </form>
+                  )}
+                  <button
+                    className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                    onClick={closeModal}
+                  >
+                    Закрыть
+                  </button>
+                </div>
               </div>
             </div>
           </div>
