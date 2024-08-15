@@ -10,10 +10,13 @@ const GroupsPage = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [initialUserName, setInitialUserName] = useState("");
+  const [initialTelegramUsername, setInitialTelegramUsername] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [itemName, setItemName] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupUsers, setGroupUsers] = useState([]);
@@ -70,6 +73,22 @@ const GroupsPage = () => {
         });
     }
   }, [viewMode]);
+  useEffect(() => {
+    if (userToEdit) {
+      setEditUserName(userToEdit.name);
+      setEditTelegramUsername(userToEdit.username || "");
+      setInitialUserName(userToEdit.name);
+      setInitialTelegramUsername(userToEdit.username || "");
+      setIsAdmin(userToEdit.role === 1);
+    }
+  }, [userToEdit]);
+
+  const hasChanges = () => {
+    return (
+      editUserName !== initialUserName ||
+      editTelegramUsername !== initialTelegramUsername
+    );
+  };
 
   const fetchGroupUsers = (groupId) => {
     axios
@@ -102,12 +121,13 @@ const GroupsPage = () => {
       setEditUserName(event.target.value);
     } else if (event.target.name === "editTelegramUsername") {
       setEditTelegramUsername(event.target.value);
+    } else if (event.target.name === "isAdmin") {
+      setIsAdmin(event.target.checked);
     }
   };
 
   const handleSaveEditUser = () => {
     if (userToEdit) {
-      // Извлекаем UUID пользователя из объекта userToEdit
       const userUUID = userToEdit.uuid;
 
       axios
@@ -116,6 +136,7 @@ const GroupsPage = () => {
           {
             name: editUserName,
             username: editTelegramUsername,
+            role: isAdmin ? 1 : 0, // Установка role в зависимости от состояния чекбокса
           },
           {
             headers: {
@@ -220,7 +241,11 @@ const GroupsPage = () => {
     const requestData =
       viewMode === "groups"
         ? { name: itemName }
-        : { name: itemName, username: telegramUsername };
+        : {
+            name: itemName,
+            username: telegramUsername,
+            role: isAdmin ? 1 : 0, // Установка role в зависимости от состояния чекбокса
+          };
 
     axios
       .post(apiUrl, requestData, {
@@ -457,14 +482,26 @@ const GroupsPage = () => {
               onChange={handleEditInputChange}
               required
             />
+            <div className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                name="isAdmin"
+                checked={isAdmin}
+                onChange={handleEditInputChange}
+                className="mr-2"
+              />
+              <label htmlFor="isAdmin">Админ</label>
+            </div>
             <div className="flex justify-end">
-              <button
-                type="button"
-                className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
-                onClick={handleSaveEditUser}
-              >
-                Сохранить
-              </button>
+              {hasChanges() && (
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                  onClick={handleSaveEditUser}
+                >
+                  Сохранить
+                </button>
+              )}
               <button
                 type="button"
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
@@ -516,8 +553,19 @@ const GroupsPage = () => {
                     </option>
                   ))}
                 </select>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id="isAdmin"
+                    checked={isAdmin}
+                    onChange={() => setIsAdmin(!isAdmin)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="isAdmin">Админ</label>
+                </div>
               </>
             )}
+
             <div className="flex justify-end">
               <button
                 type="button"
