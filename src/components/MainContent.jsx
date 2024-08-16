@@ -19,7 +19,7 @@ function MainContent() {
 
   useEffect(() => {
     fetchGroups();
-  }, []);
+  }, [activeStatusId]);
 
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -39,6 +39,7 @@ function MainContent() {
       }
     };
     fetchAllTasks();
+    fetchGroups();
   }, [activeStatusId]);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ function MainContent() {
       );
 
       const response = await axios.patch(
-        "https://taskback.emivn.io/api/v1/tasks/",
+        `https://taskback.emivn.io/api/v1/tasks/`,
         {
           uuid: taskId,
           status_id: status,
@@ -130,7 +131,7 @@ function MainContent() {
     setSelectedTask(task);
     setTaskName(task.name);
     setTaskDescription(task.description);
-    setEditMode(false); // Отключаем режим редактирования при открытии модального окна
+    setEditMode(true); // При открытии модального окна редактирование отключено
     setModalOpen(true);
   };
 
@@ -226,7 +227,7 @@ function MainContent() {
     if (selectedTask) {
       try {
         const response = await axios.patch(
-          "https://taskback.emivn.io/api/v1/tasks",
+          `https://taskback.emivn.io/api/v1/tasks`,
           {
             uuid: selectedTask.uuid,
             name: taskName,
@@ -251,7 +252,7 @@ function MainContent() {
         />
       </header>
       <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
-        <div className="flex items-center">
+        <div className="flex items-center mr-0 ">
           <input
             id="search"
             type="text"
@@ -261,11 +262,13 @@ function MainContent() {
             className="rounded-[15px] w-[27vh] h-[5vh] p-1"
             style={{ color: "black" }}
           />
+
           {searchTerm && (
             <button className="clear-button" onClick={clearSearch}>
               <img src={ClearIcon} alt="Clear" />
             </button>
           )}
+
           <select
             className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-green-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
@@ -281,6 +284,7 @@ function MainContent() {
             <img src={UpdateIcon} alt="Update" />
           </button>
         </div>
+
         {tasks.map((task, index) => (
           <div
             key={task.id}
@@ -353,15 +357,17 @@ function MainContent() {
                     </>
                   )}
                   {task.status_id === 6 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 3);
-                      }}
-                    >
-                      Принять
-                    </button>
+                    <>
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 3);
+                        }}
+                      >
+                        Принять
+                      </button>
+                    </>
                   )}
                   {task.status_id === 8}
                 </>
@@ -375,8 +381,10 @@ function MainContent() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                <h2 className="text-xl font-bold">Информация о задаче</h2>
-                <p>
+                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+                  Информация о задаче
+                </h2>
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Название:</strong>
                   <input
                     type="text"
@@ -386,7 +394,7 @@ function MainContent() {
                     disabled={!editMode}
                   />
                 </p>
-                <p>
+                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
                   <strong>Описание:</strong>
                   <textarea
                     value={taskDescription}
@@ -396,18 +404,19 @@ function MainContent() {
                     disabled={!editMode}
                   />
                 </p>
-                <p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Группа:</strong>{" "}
                   {getGroupNameByUUID(selectedTask.group_uuid)}
                 </p>
-                <p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Время отправки:</strong>{" "}
                   {formatTimestamp(selectedTask.apperance_timestamp)}
                 </p>
-                <p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Дедлайн:</strong>{" "}
                   {formatTimestamp(selectedTask.deadline)}
                 </p>
+
                 <div className="flex justify-end mt-5">
                   {editMode && (
                     <button
