@@ -42,9 +42,7 @@ const AddTaskPage = () => {
     setIsLoading(true);
 
     const formattedSendTime = new Date(sendTime).toISOString();
-    const deadlineFormatted = deadline
-      ? new Date(deadline).toISOString()
-      : null;
+    const deadlineFormatted = new Date(deadline).toDateString();
 
     const taskData = {
       name: taskName,
@@ -75,6 +73,7 @@ const AddTaskPage = () => {
       setTaskDescription("");
       setExecutor("");
       setSendTime("");
+      setDeadline("");
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
       alert("Ошибка при сохранении задачи:", error.message);
@@ -89,6 +88,10 @@ const AddTaskPage = () => {
 
   const handleSendTimeChange = (event) => {
     setSendTime(event.target.value);
+  };
+
+  const handleSendDeadline = (event) => {
+    setDeadline(event.target.value);
   };
 
   return (
@@ -150,7 +153,7 @@ const AddTaskPage = () => {
             type="datetime-local"
             name="deadline"
             value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
+            onChange={handleSendDeadline}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
           />
