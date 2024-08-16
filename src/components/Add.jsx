@@ -7,6 +7,7 @@ const AddTaskPage = () => {
   const [executor, setExecutor] = useState("");
   const [executorsList, setExecutorsList] = useState([]);
   const [sendTime, setSendTime] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -41,12 +42,16 @@ const AddTaskPage = () => {
     setIsLoading(true);
 
     const formattedSendTime = new Date(sendTime).toISOString();
+    const deadlineFormatted = deadline
+      ? new Date(deadline).toISOString()
+      : null;
 
     const taskData = {
       name: taskName,
       description: taskDescription,
       status_id: 1,
       apperance_timestamp: formattedSendTime,
+      deadline: deadlineFormatted,
       group_uuid: executor,
     };
 
@@ -137,6 +142,17 @@ const AddTaskPage = () => {
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
             placeholder="Выберите время отправки"
+          />
+        </label>
+        <label className="block mb-2">
+          Дедлайн:
+          <input
+            type="date"
+            name="deadline"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
           />
         </label>
         <button
