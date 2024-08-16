@@ -112,7 +112,7 @@ const AddTaskPage = () => {
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            className="w-full px-4 py-2 resize-y min-h-12 h-54 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
+            className="w-full px-4 py-2 resize-y min-h-12 h-40 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
@@ -147,7 +147,7 @@ const AddTaskPage = () => {
         <label className="block mb-2">
           Дедлайн:
           <input
-            type="date"
+            type="datetime-local"
             name="deadline"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
