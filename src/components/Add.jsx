@@ -42,7 +42,7 @@ const AddTaskPage = () => {
     setIsLoading(true);
 
     const formattedSendTime = new Date(sendTime).toISOString();
-    const deadlineFormatted = new Date(deadline).toDateString();
+    const deadlineFormatted = new Date(deadline).toISOString();
 
     const taskData = {
       name: taskName,
