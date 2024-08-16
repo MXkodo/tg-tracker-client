@@ -215,12 +215,12 @@ function MainContent() {
 
   const handleNameChange = (e) => {
     setTaskName(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
+    setEditMode(true);
   };
 
   const handleDescriptionChange = (e) => {
     setTaskDescription(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
+    setEditMode(true);
   };
 
   const handleSave = async () => {
@@ -295,6 +295,7 @@ function MainContent() {
             <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
+              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
@@ -437,6 +438,8 @@ function MainContent() {
 }
 
 const formatTimestamp = (timestamp) => {
+  if (!timestamp) return "Не указано";
+
   const date = new Date(timestamp);
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
