@@ -112,7 +112,7 @@ const AddTaskPage = () => {
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            className="w-full px-4 py-2 resize-y min-h-12 h-40 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
+            className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
