@@ -295,6 +295,7 @@ function MainContent() {
             <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
+              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
