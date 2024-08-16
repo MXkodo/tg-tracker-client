@@ -272,6 +272,7 @@ function MainContent({ userUUID, userRole }) {
             <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
+              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
@@ -345,6 +346,11 @@ function MainContent({ userUUID, userRole }) {
                 <p className="whitespace-normal overflow-hidden max-w-full">
                   <strong>Время отправки:</strong>{" "}
                   {formatTimestamp(selectedTask.apperance_timestamp)}
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Дедлайн:</strong>
+                  {""}
+                  {formatTimestamp(selectedTask.deadline)}
                 </p>
 
                 <div className="flex justify-end mt-5">
