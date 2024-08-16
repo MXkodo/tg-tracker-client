@@ -347,12 +347,6 @@ function MainContent({ userUUID, userRole }) {
                   <strong>Время отправки:</strong>{" "}
                   {formatTimestamp(selectedTask.apperance_timestamp)}
                 </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Дедлайн:</strong>
-                  {""}
-                  {formatTimestamp(selectedTask.deadline)}
-                </p>
-
                 <div className="flex justify-end mt-5">
                   <button
                     className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
