@@ -11,6 +11,7 @@ function ScrollContainer({ onFilterChange, activeStatusId }) {
     { label: "Проверяются", statusId: 5 },
     { label: "Выполнены с ошибкой", statusId: 6 },
     { label: "Выполнены", statusId: 7 },
+    { label: "Просрочены", statusId: 8 },
   ];
 
   const handleButtonClick = (statusId) => {

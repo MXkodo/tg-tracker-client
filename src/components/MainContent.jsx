@@ -363,6 +363,7 @@ function MainContent() {
                       Принять
                     </button>
                   )}
+                  {task.status_id === 8}
                 </>
               )}
             </div>
