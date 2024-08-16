@@ -215,12 +215,12 @@ function MainContent() {
 
   const handleNameChange = (e) => {
     setTaskName(e.target.value);
-    setEditMode(true);
+    setEditMode(true); // Включить режим редактирования при изменении
   };
 
   const handleDescriptionChange = (e) => {
     setTaskDescription(e.target.value);
-    setEditMode(true);
+    setEditMode(true); // Включить режим редактирования при изменении
   };
 
   const handleSave = async () => {
@@ -295,7 +295,6 @@ function MainContent() {
             <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
-              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
@@ -369,7 +368,6 @@ function MainContent() {
                       </button>
                     </>
                   )}
-                  {task.status_id === 8}
                 </>
               )}
             </div>
@@ -412,10 +410,6 @@ function MainContent() {
                   <strong>Время отправки:</strong>{" "}
                   {formatTimestamp(selectedTask.apperance_timestamp)}
                 </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Дедлайн:</strong>{" "}
-                  {formatTimestamp(selectedTask.deadline)}
-                </p>
 
                 <div className="flex justify-end mt-5">
                   {editMode && (
@@ -443,8 +437,6 @@ function MainContent() {
 }
 
 const formatTimestamp = (timestamp) => {
-  if (!timestamp) return "Не указано";
-
   const date = new Date(timestamp);
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
