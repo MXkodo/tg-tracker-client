@@ -32,7 +32,7 @@ function MainContent() {
             },
           }
         );
-        setAllTasks(response.data);
+        setAllTasks(response.data || []);
         filterTasksByStatus(response.data, activeStatusId);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -56,7 +56,7 @@ function MainContent() {
           },
         }
       );
-      setAllTasks(response.data);
+      setAllTasks(response.data || []);
       filterTasksByStatus(response.data, activeStatusId);
       fetchGroups();
     } catch (error) {
@@ -74,7 +74,7 @@ function MainContent() {
           },
         }
       );
-      setGroups(response.data);
+      setGroups(response.data || []);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
@@ -191,7 +191,7 @@ function MainContent() {
   };
 
   const filterTasksBySearchAndStatus = (tasksArray, searchTerm, statusId) => {
-    let filteredTasks = tasksArray;
+    let filteredTasks = tasksArray || [];
 
     if (statusId !== null) {
       filteredTasks = filteredTasks.filter(
