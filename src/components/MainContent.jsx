@@ -156,7 +156,7 @@ function MainContent() {
           `https://taskback.emivn.io/api/v1/tasks/status`,
           {
             uuid: pendingTaskId,
-            status_id: 7, // Принята
+            status_id: 7, // Обновляем статус на Принята
             rating: rating, // Передаем оценку
           }
         );
@@ -378,6 +378,7 @@ function MainContent() {
                       >
                         Принята
                       </button>
+
                       <button
                         className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                         onClick={(event) => {
