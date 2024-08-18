@@ -51,6 +51,7 @@ const AddTaskPage = () => {
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
       group_uuid: executor,
+      result: 1,
     };
 
     try {
