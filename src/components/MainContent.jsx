@@ -419,14 +419,24 @@ function MainContent() {
                     {pendingTaskId ? (
                       <>
                         <h2 className="text-xl font-bold">Оцените задачу</h2>
-                        <input
-                          type="number"
-                          min="1"
-                          max="5"
-                          value={rating}
-                          onChange={handleRatingChange}
-                          className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                        />
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Имя исполнителя
+                          </label>
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Оценка (1-100):
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={rating}
+                            onChange={handleRatingChange}
+                            className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
+                          />
+                        </div>
                         <div className="flex justify-end mt-5">
                           <button
                             className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
