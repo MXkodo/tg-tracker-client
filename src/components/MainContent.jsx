@@ -330,7 +330,7 @@ function MainContent() {
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-              <p>Исполнитель:{task.firstName}</p>
+              <p>Исполнитель:{task.first_name}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
               ) : (
