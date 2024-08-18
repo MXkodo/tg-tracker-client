@@ -83,7 +83,7 @@ function MainContent() {
   };
 
   const handleAcceptTask = async (taskId, status) => {
-    if (status === 5) {
+    if (status === 7) {
       // Статус "В проверке", показываем модальное окно для оценки
       setPendingTaskId(taskId);
       setSelectedTask(tasks.find((task) => task.uuid === taskId));
