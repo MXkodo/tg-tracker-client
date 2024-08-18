@@ -429,9 +429,7 @@ function MainContent() {
                             Оценка (1-100):
                           </label>
                           <input
-                            type="number"
-                            min="1"
-                            max="100"
+                            type="text"
                             value={rating}
                             onChange={handleRatingChange}
                             className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
