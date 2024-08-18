@@ -13,9 +13,11 @@ function MainContent() {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [editMode, setEditMode] = useState(false); // Состояние для редактирования
-  const [taskName, setTaskName] = useState(""); // Новое значение заголовка
-  const [taskDescription, setTaskDescription] = useState(""); // Новое значение описания
+  const [editMode, setEditMode] = useState(false);
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [rating, setRating] = useState(1);
+  const [pendingTaskId, setPendingTaskId] = useState(null); // ID задачи, для которой ожидается оценка
 
   useEffect(() => {
     fetchGroups();
@@ -81,6 +83,14 @@ function MainContent() {
   };
 
   const handleAcceptTask = async (taskId, status) => {
+    if (status === 5) {
+      // Статус "В проверке", показываем модальное окно для оценки
+      setPendingTaskId(taskId);
+      setSelectedTask(tasks.find((task) => task.uuid === taskId));
+      setModalOpen(true);
+      return;
+    }
+
     try {
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
@@ -131,14 +141,57 @@ function MainContent() {
     setSelectedTask(task);
     setTaskName(task.name);
     setTaskDescription(task.description);
-    setEditMode(true); // При открытии модального окна редактирование отключено
+    setEditMode(true);
     setModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     setModalOpen(false);
     setSelectedTask(null);
-    setEditMode(false); // Сброс состояния редактирования при закрытии модального окна
+    setEditMode(false);
+
+    if (pendingTaskId) {
+      try {
+        const response = await axios.patch(
+          `https://taskback.emivn.io/api/v1/tasks/status`,
+          {
+            uuid: pendingTaskId,
+            status_id: 7, // Принята
+            rating: rating, // Передаем оценку
+          }
+        );
+        console.log("Task rating updated:", response.data);
+
+        setPendingTaskId(null);
+        refreshData();
+      } catch (error) {
+        console.error("Error updating task rating:", error);
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    if (selectedTask) {
+      try {
+        const response = await axios.patch(
+          `https://taskback.emivn.io/api/v1/tasks`,
+          {
+            uuid: selectedTask.uuid,
+            name: taskName,
+            description: taskDescription,
+          }
+        );
+        console.log("Task updated:", response.data);
+        refreshData();
+        closeModal(); // Закрыть модальное окно
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
+  };
+
+  const handleRatingChange = (e) => {
+    setRating(Number(e.target.value));
   };
 
   const handleSortChange = (e) => {
@@ -221,26 +274,6 @@ function MainContent() {
   const handleDescriptionChange = (e) => {
     setTaskDescription(e.target.value);
     setEditMode(true); // Включить режим редактирования при изменении
-  };
-
-  const handleSave = async () => {
-    if (selectedTask) {
-      try {
-        const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks`,
-          {
-            uuid: selectedTask.uuid,
-            name: taskName,
-            description: taskDescription,
-          }
-        );
-        console.log("Task updated:", response.data);
-        refreshData(); // Обновить данные после сохранения
-        closeModal(); // Закрыть модальное окно
-      } catch (error) {
-        console.error("Error updating task:", error);
-      }
-    }
   };
 
   return (
@@ -375,59 +408,93 @@ function MainContent() {
           </div>
         ))}
       </div>
-      {modalOpen && selectedTask && (
+      {modalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
-                  Информация о задаче
-                </h2>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Название:</strong>
-                  <input
-                    type="text"
-                    value={taskName}
-                    onChange={handleNameChange}
-                    className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                    disabled={!editMode}
-                  />
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
-                  <strong>Описание:</strong>
-                  <textarea
-                    value={taskDescription}
-                    onChange={handleDescriptionChange}
-                    className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                    rows="4"
-                    disabled={!editMode}
-                  />
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Группа:</strong>{" "}
-                  {getGroupNameByUUID(selectedTask.group_uuid)}
-                </p>
-                <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Время отправки:</strong>{" "}
-                  {formatTimestamp(selectedTask.apperance_timestamp)}
-                </p>
+                {selectedTask && (
+                  <>
+                    {pendingTaskId ? (
+                      <>
+                        <h2 className="text-xl font-bold">Оцените задачу</h2>
+                        <input
+                          type="number"
+                          min="1"
+                          max="5"
+                          value={rating}
+                          onChange={handleRatingChange}
+                          className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
+                        />
+                        <div className="flex justify-end mt-5">
+                          <button
+                            className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                            onClick={closeModal}
+                          >
+                            Сохранить
+                          </button>
+                          <button
+                            className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                            onClick={closeModal}
+                          >
+                            Закрыть
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+                          Информация о задаче
+                        </h2>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Название:</strong>
+                          <input
+                            type="text"
+                            value={taskName}
+                            onChange={handleNameChange}
+                            className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
+                            disabled={!editMode}
+                          />
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-prose break-words">
+                          <strong>Описание:</strong>
+                          <textarea
+                            value={taskDescription}
+                            onChange={handleDescriptionChange}
+                            className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
+                            rows="4"
+                            disabled={!editMode}
+                          />
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Группа:</strong>{" "}
+                          {getGroupNameByUUID(selectedTask.group_uuid)}
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Время отправки:</strong>{" "}
+                          {formatTimestamp(selectedTask.apperance_timestamp)}
+                        </p>
 
-                <div className="flex justify-end mt-5">
-                  {editMode && (
-                    <button
-                      className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={handleSave}
-                    >
-                      Сохранить
-                    </button>
-                  )}
-                  <button
-                    className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
-                    onClick={closeModal}
-                  >
-                    Закрыть
-                  </button>
-                </div>
+                        <div className="flex justify-end mt-5">
+                          {editMode && (
+                            <button
+                              className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                              onClick={handleSave}
+                            >
+                              Сохранить
+                            </button>
+                          )}
+                          <button
+                            className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                            onClick={closeModal}
+                          >
+                            Закрыть
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
