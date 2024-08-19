@@ -11,13 +11,15 @@ function MainContent() {
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
   const [activeStatusId, setActiveStatusId] = useState(1);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+
+  const [rating, setRating] = useState(1);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedTaskForEdit, setSelectedTaskForEdit] = useState(null);
+  const [, setEditMode] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const [rating, setRating] = useState(1);
-  const [pendingTaskId, setPendingTaskId] = useState(null); // ID задачи, для которой ожидается оценка
+  const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const [selectedTaskForRating, setSelectedTaskForRating] = useState(null);
 
   useEffect(() => {
     fetchGroups();
@@ -83,10 +85,7 @@ function MainContent() {
   };
   const handleAcceptTask = async (taskId, status) => {
     if (status === 7) {
-      console.log("Opening modal for task:", taskId); // Логирование
-      setPendingTaskId(taskId);
-      setSelectedTask(tasks.find((task) => task.uuid === taskId));
-      setModalOpen(true);
+      openRatingModal(tasks.find((task) => task.uuid === taskId));
       return;
     }
 
@@ -137,96 +136,90 @@ function MainContent() {
   };
 
   const handleEditClick = (task) => {
-    setSelectedTask(task);
     setTaskName(task.name);
     setTaskDescription(task.description);
     setEditMode(true);
-    setModalOpen(true);
+    setEditModalOpen(true);
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setSelectedTask(null);
+  const openEditModal = (task) => {
+    setSelectedTaskForEdit(task);
+    setTaskName(task.name);
+    setTaskDescription(task.description);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedTaskForEdit(null);
     setEditMode(false);
   };
 
-  const handleSaveGrade = async () => {
-    if (selectedTask) {
+  const openRatingModal = (task) => {
+    setSelectedTaskForRating(task);
+    setRating(0); // Сброс оценки
+    setRatingModalOpen(true);
+  };
+
+  const closeRatingModal = () => {
+    setRatingModalOpen(false);
+    setSelectedTaskForRating(null);
+  };
+
+  const handleSaveRating = async () => {
+    if (selectedTaskForRating) {
       try {
-        // 1. Обновляем задачу
-        const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks`,
+        await axios.patch(
+          "https://taskback.emivn.io/api/v1/tasks/grade",
           {
-            uuid: selectedTask.uuid,
-            name: taskName,
-            description: taskDescription,
+            userUUID: selectedTaskForRating.user_uuid, // Замените на правильный userUUID
+            taskUUID: selectedTaskForRating.uuid,
+            grade: rating,
+          },
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
           }
         );
-        console.log("Task updated:", response.data);
 
-        // 2. Если есть ожидаемая задача, обновляем её оценку и статус
-        if (pendingTaskId) {
-          await axios.patch(
-            "https://taskback.emivn.io/api/v1/tasks/grade", // Путь для установки оценки
-            {
-              userUUID: selectedTask.user_uuid, // Замените на правильный userUUID
-              taskUUID: pendingTaskId,
-              grade: rating,
+        await axios.patch(
+          "https://taskback.emivn.io/api/v1/tasks/status",
+          {
+            uuid: selectedTaskForRating.uuid,
+            status_id: 7, // Статус "Принята"
+          },
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
             },
-            {
-              headers: {
-                "ngrok-skip-browser-warning": "1",
-              },
-            }
-          );
+          }
+        );
 
-          await axios.patch(
-            "https://taskback.emivn.io/api/v1/tasks/status", // Путь для изменения статуса задачи
-            {
-              uuid: pendingTaskId,
-              status_id: 7, // Статус "Принята"
-            },
-            {
-              headers: {
-                "ngrok-skip-browser-warning": "1",
-              },
-            }
-          );
-
-          console.log("Task rating updated and status changed to 7");
-          setPendingTaskId(null);
-        }
-
+        console.log("Task rating updated and status changed to 7");
         refreshData(); // Обновляем данные после успешного обновления
-        closeModal(); // Закрываем модальное окно после успешного сохранения
+        closeRatingModal(); // Закрываем модальное окно после успешного сохранения
       } catch (error) {
         console.error("Error updating task:", error);
       }
     }
   };
 
-  const handleSave = async () => {
-    if (selectedTask) {
+  const handleSaveEdit = async () => {
+    if (selectedTaskForEdit) {
       try {
-        const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks`,
-          {
-            uuid: selectedTask.uuid,
-            name: taskName,
-            description: taskDescription,
-          }
-        );
-        console.log("Task updated:", response.data);
+        await axios.patch(`https://taskback.emivn.io/api/v1/tasks`, {
+          uuid: selectedTaskForEdit.uuid,
+          name: taskName,
+          description: taskDescription,
+        });
+        console.log("Task updated");
         refreshData();
-        closeModal(); // Закрыть модальное окно
+        closeEditModal();
       } catch (error) {
         console.error("Error updating task:", error);
       }
     }
-  };
-
-  const handleRatingChange = (e) => {
-    setRating(Number(e.target.value));
   };
 
   const handleSortChange = (e) => {
@@ -271,6 +264,10 @@ function MainContent() {
     setTasks(sortedTasks);
   };
 
+  const handleTaskClick = (task) => {
+    openEditModal(task);
+  };
+
   const filterTasksByStatus = (tasksArray, statusId) => {
     const filteredTasks = tasksArray.filter(
       (task) => task.status_id === statusId
@@ -299,16 +296,6 @@ function MainContent() {
     }
 
     setTasks(filteredTasks);
-  };
-
-  const handleNameChange = (e) => {
-    setTaskName(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
-  };
-
-  const handleDescriptionChange = (e) => {
-    setTaskDescription(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
   };
 
   return (
@@ -356,6 +343,7 @@ function MainContent() {
         {tasks.map((task, index) => (
           <div
             key={task.id}
+            onClick={() => handleTaskClick(task)}
             className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
               index === tasks.length - 1 ? "mb-5 last-task" : ""
             }`}
@@ -445,101 +433,117 @@ function MainContent() {
           </div>
         ))}
       </div>
-      {modalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
+      {editModalOpen && (
+        <div className="modal-overlay" onClick={closeEditModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
-                {selectedTask && (
+                {selectedTaskForEdit && (
                   <>
-                    {pendingTaskId ? (
-                      <>
-                        <h2 className="text-xl font-bold">Оцените задачу</h2>
-                        <div className="mt-4">
-                          <label className="block text-sm font-medium">
-                            Имя исполнителя
-                          </label>
-                        </div>
-                        <div className="mt-4">
-                          <label className="block text-sm font-medium">
-                            Оценка (1-100):
-                          </label>
-                          <input
-                            type="text"
-                            min="1"
-                            max="100"
-                            value={rating}
-                            onChange={handleRatingChange}
-                            className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
-                          />
-                        </div>
-                        <div className="flex justify-end mt-5">
-                          <button
-                            className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                            onClick={handleSaveGrade}
-                          >
-                            Сохранить
-                          </button>
-                          <button
-                            className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
-                            onClick={closeModal}
-                          >
-                            Закрыть
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
-                          Информация о задаче
-                        </h2>
-                        <p className="whitespace-normal overflow-hidden max-w-full">
-                          <strong>Название:</strong>
-                          <input
-                            type="text"
-                            value={taskName}
-                            onChange={handleNameChange}
-                            className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                            disabled={!editMode}
-                          />
-                        </p>
-                        <p className="whitespace-normal overflow-hidden max-w-prose break-words">
-                          <strong>Описание:</strong>
-                          <textarea
-                            value={taskDescription}
-                            onChange={handleDescriptionChange}
-                            className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                            rows="4"
-                            disabled={!editMode}
-                          />
-                        </p>
-                        <p className="whitespace-normal overflow-hidden max-w-full">
-                          <strong>Группа:</strong>{" "}
-                          {getGroupNameByUUID(selectedTask.group_uuid)}
-                        </p>
-                        <p className="whitespace-normal overflow-hidden max-w-full">
-                          <strong>Время отправки:</strong>{" "}
-                          {formatTimestamp(selectedTask.apperance_timestamp)}
-                        </p>
-
-                        <div className="flex justify-end mt-5">
-                          {editMode && (
-                            <button
-                              className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                              onClick={handleSave}
-                            >
-                              Сохранить
-                            </button>
-                          )}
-                          <button
-                            className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
-                            onClick={closeModal}
-                          >
-                            Закрыть
-                          </button>
-                        </div>
-                      </>
-                    )}
+                    <h2 className="text-xl font-bold">Редактирование задачи</h2>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Название задачи:
+                      </label>
+                      <input
+                        type="text"
+                        value={taskName}
+                        onChange={(e) => setTaskName(e.target.value)}
+                        className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Описание задачи:
+                      </label>
+                      <textarea
+                        value={taskDescription}
+                        onChange={(e) => setTaskDescription(e.target.value)}
+                        className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
+                        rows="4"
+                      />
+                    </div>
+                    <div className="flex justify-end mt-5">
+                      <button
+                        className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={handleSaveEdit}
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                        onClick={closeEditModal}
+                      >
+                        Закрыть
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {ratingModalOpen && (
+        <div className="modal-overlay" onClick={closeRatingModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                {selectedTaskForRating && (
+                  <>
+                    <h2 className="text-xl font-bold">Оцените задачу</h2>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Имя исполнителя:
+                      </label>
+                      <p>
+                        {selectedTaskForRating.first_name}{" "}
+                        {selectedTaskForRating.last_name}
+                      </p>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Название задачи:
+                      </label>
+                      <p>{selectedTaskForRating.name}</p>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Описание задачи:
+                      </label>
+                      <p>{selectedTaskForRating.description}</p>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Дедлайн:
+                      </label>
+                      <p>{formatTimestamp(selectedTaskForRating.deadline)}</p>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium">
+                        Оценка (1-100):
+                      </label>
+                      <input
+                        type="number"
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                        className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
+                      />
+                    </div>
+                    <div className="flex justify-end mt-5">
+                      <button
+                        className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={handleSaveRating}
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                        onClick={closeRatingModal}
+                      >
+                        Закрыть
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
