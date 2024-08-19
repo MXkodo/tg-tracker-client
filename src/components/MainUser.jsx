@@ -261,53 +261,28 @@ function MainContent({ userUUID, userRole }) {
             <img src={UpdateIcon} alt="Update" />
           </button>
         </div>
-
-        {tasks.map((task, index) => (
-          <div
-            key={task.id}
-            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
-              index === tasks.length - 1 ? "mb-5 last-task" : ""
-            }`}
-          >
-            <div className="task-tile" onClick={() => handleEditClick(task)}>
-              <h3>{task.name}</h3>
-              <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
-              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-              <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-              {task.isLoading ? (
-                <div className="loader"></div>
-              ) : (
-                <>
-                  {task.status_id === 2 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 3);
-                      }}
-                    >
-                      Принять
-                    </button>
-                  )}
-                  {task.status_id === 3 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.uuid, 4);
-                      }}
-                    >
-                      Готово
-                    </button>
-                  )}
-                  {task.status_id === 4 && (
-                    <button className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600">
-                      В проверке
-                    </button>
-                  )}
-                  {task.status_id === 5 && <></>}
-                  {task.status_id === 6 && (
-                    <>
+        {tasks.map((task, index) => {
+          console.log("Rendering task:", task); // Логируем каждую задачу
+          return (
+            <div
+              key={task.id}
+              className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+                index === tasks.length - 1 ? "mb-5 last-task" : ""
+              }`}
+            >
+              <div className="task-tile" onClick={() => handleEditClick(task)}>
+                <h3>{task.name}</h3>
+                <p>
+                  Время отправки: {formatTimestamp(task.apperance_timestamp)}
+                </p>
+                <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
+                <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+                {task.status_id === 7 && <p>Оценка: {task.grade}</p>}
+                {task.isLoading ? (
+                  <div className="loader"></div>
+                ) : (
+                  <>
+                    {task.status_id === 2 && (
                       <button
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
@@ -317,13 +292,41 @@ function MainContent({ userUUID, userRole }) {
                       >
                         Принять
                       </button>
-                    </>
-                  )}
-                </>
-              )}
+                    )}
+                    {task.status_id === 3 && (
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 4);
+                        }}
+                      >
+                        Готово
+                      </button>
+                    )}
+                    {task.status_id === 4 && (
+                      <button className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600">
+                        В проверке
+                      </button>
+                    )}
+                    {task.status_id === 5 && <></>}
+                    {task.status_id === 6 && (
+                      <button
+                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleAcceptTask(task.uuid, 3);
+                        }}
+                      >
+                        Принять
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {modalOpen && selectedTask && (
         <div className="modal-overlay" onClick={closeModal}>
