@@ -14,32 +14,52 @@ function MainContent({ userUUID, userRole }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
+  // Function to get group name by UUID, wrapped in useCallback
+  const getGroupNameByUUID = useCallback(
+    (groupUUID) => {
+      const group = groups.find((g) => g.uuid === groupUUID);
+      return group ? group.name : "Unknown Group";
+    },
+    [groups]
+  );
+
+  // Function to filter tasks by search term and status ID
+  const filterTasksBySearchAndStatus = useCallback(
+    (tasksArray = [], searchTerm, statusId) => {
+      if (!tasksArray) {
+        console.error("Tasks array is null or undefined.");
+        return;
+      }
+
+      let filteredTasks = tasksArray;
+
+      if (statusId !== null) {
+        filteredTasks = filteredTasks.filter(
+          (task) => task.status_id === statusId
+        );
+      }
+
+      if (searchTerm.trim() !== "") {
+        filteredTasks = filteredTasks.filter((task) => {
+          const taskName = task.name || "";
+          const groupName = getGroupNameByUUID(task.group_uuid) || "";
+          return (
+            taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            groupName.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        });
+      }
+
+      setTasks(filteredTasks);
+    },
+    [getGroupNameByUUID]
+  );
+
+  // Function to fetch all tasks
   const fetchTasks = useCallback(async () => {
     try {
       setTasks([]);
-      let endpoint = "";
-      switch (activeStatusId) {
-        case 1:
-          endpoint = `/api/v1/tasks/new/${userUUID}`;
-          break;
-        case 2:
-          endpoint = `/api/v1/tasks/sent/${userUUID}`;
-          break;
-        case 3:
-          endpoint = `/api/v1/tasks/current/${userUUID}`;
-          break;
-        case 5:
-          endpoint = `/api/v1/tasks/review/${userUUID}`;
-          break;
-        case 6:
-          endpoint = `/api/v1/tasks/completed/${userUUID}`;
-          break;
-        case 7:
-          endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
-          break;
-        default:
-          endpoint = `/api/v1/tasks/new/${userUUID}`;
-      }
+      const endpoint = `/api/v1/tasks/all/${userUUID}`;
 
       const response = await axios.get(`https://taskback.emivn.io${endpoint}`, {
         headers: {
@@ -49,21 +69,20 @@ function MainContent({ userUUID, userRole }) {
 
       if (response.data && Array.isArray(response.data)) {
         setAllTasks(response.data);
-        filterTasksByStatus(response.data, activeStatusId);
+        filterTasksBySearchAndStatus(response.data, searchTerm, activeStatusId);
       } else {
         setTasks([]);
       }
     } catch (error) {
       console.error("Error fetching tasks:", error);
-
       setTasks([]);
     }
-  }, [activeStatusId, userUUID]);
+  }, [activeStatusId, userUUID, searchTerm, filterTasksBySearchAndStatus]);
 
   useEffect(() => {
     fetchGroups();
     fetchTasks();
-  }, [activeStatusId, userUUID, fetchTasks]);
+  }, [fetchTasks]);
 
   const fetchGroups = async () => {
     try {
@@ -111,17 +130,12 @@ function MainContent({ userUUID, userRole }) {
 
   const clearSearch = () => {
     setSearchTerm("");
-  };
-
-  const getGroupNameByUUID = (groupUUID) => {
-    const group = groups.find((g) => g.uuid === groupUUID);
-    return group ? group.name : "Unknown Group";
+    filterTasksBySearchAndStatus(allTasks, "", activeStatusId);
   };
 
   const handleFilterChange = (statusId) => {
     setActiveStatusId(statusId);
-    setTasks([]);
-    fetchTasks();
+    filterTasksBySearchAndStatus(allTasks, searchTerm, statusId);
   };
 
   const handleEditClick = (task) => {
@@ -176,49 +190,6 @@ function MainContent({ userUUID, userRole }) {
     setTasks(sortedTasks);
   };
 
-  const filterTasksByStatus = (tasksArray = [], statusId) => {
-    if (!tasksArray) {
-      console.error("Tasks array is null or undefined.");
-      return;
-    }
-    const filteredTasks = tasksArray.filter(
-      (task) => task.status_id === statusId
-    );
-    setTasks(filteredTasks);
-  };
-
-  const filterTasksBySearchAndStatus = (
-    tasksArray = [],
-    searchTerm,
-    statusId
-  ) => {
-    if (!tasksArray) {
-      console.error("Tasks array is null or undefined.");
-      return;
-    }
-
-    let filteredTasks = tasksArray;
-
-    if (statusId !== null) {
-      filteredTasks = filteredTasks.filter(
-        (task) => task.status_id === statusId
-      );
-    }
-
-    if (searchTerm.trim() !== "") {
-      filteredTasks = filteredTasks.filter((task) => {
-        const taskName = task.name || "";
-        const groupName = getGroupNameByUUID(task.group_uuid) || "";
-        return (
-          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          groupName.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-    }
-
-    setTasks(filteredTasks);
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <header>
@@ -262,7 +233,6 @@ function MainContent({ userUUID, userRole }) {
           </button>
         </div>
         {tasks.map((task, index) => {
-          console.log("Rendering task:", task); // Логируем каждую задачу
           return (
             <div
               key={task.id}
