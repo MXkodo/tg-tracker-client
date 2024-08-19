@@ -365,7 +365,11 @@ function MainContent() {
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-              <p>Исполнитель:{task.first_name}</p>
+              <p>Исполнитель: {task.first_name}</p>
+              {task.status_id === 7 && (
+                <p>Оценка: {task.grade || "Не указана"}</p>
+              )}{" "}
+              {/* Добавлено отображение оценки */}
               {task.isLoading ? (
                 <div className="loader"></div>
               ) : (
@@ -409,9 +413,9 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          setPendingTaskId(task.id); // Устанавливаем ID задачи для оценки
+                          setPendingTaskId(task.id);
                           setSelectedTask(task);
-                          setModalOpen(true); // Открываем модальное окно
+                          setModalOpen(true);
                         }}
                       >
                         Принята
@@ -428,19 +432,16 @@ function MainContent() {
                       </button>
                     </>
                   )}
-
                   {task.status_id === 6 && (
-                    <>
-                      <button
-                        className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAcceptTask(task.id, 3);
-                        }}
-                      >
-                        Принять
-                      </button>
-                    </>
+                    <button
+                      className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAcceptTask(task.id, 3);
+                      }}
+                    >
+                      Принять
+                    </button>
                   )}
                 </>
               )}
