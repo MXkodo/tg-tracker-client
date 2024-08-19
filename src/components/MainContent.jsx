@@ -452,76 +452,42 @@ function MainContent() {
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
                 {selectedTask && (
                   <>
-                    <h2 className="text-xl font-bold">Оцените задачу</h2>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Имя исполнителя
-                      </label>
-                      <p>
-                        {selectedTask.first_name} {selectedTask.last_name}
-                      </p>{" "}
-                      {/* Имя исполнителя */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Название задачи:
-                      </label>
-                      <p>{selectedTask.name}</p> {/* Название задачи */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Описание задачи:
-                      </label>
-                      <p>{selectedTask.description}</p> {/* Описание задачи */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Дедлайн:
-                      </label>
-                      <p>{formatTimestamp(selectedTask.deadline)}</p>{" "}
-                      {/* Дедлайн */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Время отправки:
-                      </label>
-                      <p>{formatTimestamp(selectedTask.apperance_timestamp)}</p>{" "}
-                      {/* Время отправки */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Группа:
-                      </label>
-                      <p>{getGroupNameByUUID(selectedTask.group_uuid)}</p>{" "}
-                      {/* Группа */}
-                    </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium">
-                        Оценка (1-100):
-                      </label>
-                      <input
-                        type="number"
-                        value={rating}
-                        onChange={handleRatingChange}
-                        className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
-                      />
-                    </div>
-                    <div className="flex justify-end mt-5">
-                      <button
-                        className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                        onClick={handleSaveGrade}
-                      >
-                        Сохранить
-                      </button>
-                      <button
-                        className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
-                        onClick={closeModal}
-                      >
-                        Закрыть
-                      </button>
-                    </div>
                     {pendingTaskId ? (
-                      <></>
+                      <>
+                        <h2 className="text-xl font-bold">Оцените задачу</h2>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Имя исполнителя
+                          </label>
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Оценка (1-100):
+                          </label>
+                          <input
+                            type="text"
+                            min="1"
+                            max="100"
+                            value={rating}
+                            onChange={handleRatingChange}
+                            className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
+                          />
+                        </div>
+                        <div className="flex justify-end mt-5">
+                          <button
+                            className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                            onClick={handleSaveGrade}
+                          >
+                            Сохранить
+                          </button>
+                          <button
+                            className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                            onClick={closeModal}
+                          >
+                            Закрыть
+                          </button>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
