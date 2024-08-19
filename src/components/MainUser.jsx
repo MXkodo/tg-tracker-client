@@ -14,7 +14,7 @@ function MainContent({ userUUID, userRole }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  // Function to get group name by UUID, wrapped in useCallback
+  // Функция для получения всех задач
   const getGroupNameByUUID = useCallback(
     (groupUUID) => {
       const group = groups.find((g) => g.uuid === groupUUID);
@@ -22,8 +22,6 @@ function MainContent({ userUUID, userRole }) {
     },
     [groups]
   );
-
-  // Function to filter tasks by search term and status ID
   const filterTasksBySearchAndStatus = useCallback(
     (tasksArray = [], searchTerm, statusId) => {
       if (!tasksArray) {
@@ -54,13 +52,9 @@ function MainContent({ userUUID, userRole }) {
     },
     [getGroupNameByUUID]
   );
-
-  // Function to fetch all tasks
   const fetchTasks = useCallback(async () => {
     try {
-      setTasks([]);
       const endpoint = `/api/v1/tasks/all/${userUUID}`;
-
       const response = await axios.get(`https://taskback.emivn.io${endpoint}`, {
         headers: {
           "ngrok-skip-browser-warning": "1",
@@ -77,7 +71,7 @@ function MainContent({ userUUID, userRole }) {
       console.error("Error fetching tasks:", error);
       setTasks([]);
     }
-  }, [activeStatusId, userUUID, searchTerm, filterTasksBySearchAndStatus]);
+  }, [userUUID, searchTerm, activeStatusId, filterTasksBySearchAndStatus]);
 
   useEffect(() => {
     fetchGroups();
@@ -196,7 +190,6 @@ function MainContent({ userUUID, userRole }) {
         <ScrollContainer
           onFilterChange={handleFilterChange}
           activeStatusId={activeStatusId}
-          userRole={userRole}
         />
       </header>
       <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
