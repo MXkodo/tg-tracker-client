@@ -81,10 +81,9 @@ function MainContent() {
       console.error("Error fetching groups:", error);
     }
   };
-
   const handleAcceptTask = async (taskId, status) => {
     if (status === 7) {
-      // Статус "В проверке", показываем модальное окно для оценки
+      console.log("Opening modal for task:", taskId); // Логирование
       setPendingTaskId(taskId);
       setSelectedTask(tasks.find((task) => task.uuid === taskId));
       setModalOpen(true);
@@ -145,27 +144,63 @@ function MainContent() {
     setModalOpen(true);
   };
 
-  const closeModal = async () => {
+  const closeModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
     setEditMode(false);
+  };
 
-    if (pendingTaskId) {
+  const handleSaveGrade = async () => {
+    if (selectedTask) {
       try {
+        // 1. Обновляем задачу
         const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks/status`,
+          `https://taskback.emivn.io/api/v1/tasks`,
           {
-            uuid: pendingTaskId,
-            status_id: 7, // Обновляем статус на Принята
-            rating: rating, // Передаем оценку
+            uuid: selectedTask.uuid,
+            name: taskName,
+            description: taskDescription,
           }
         );
-        console.log("Task rating updated:", response.data);
+        console.log("Task updated:", response.data);
 
-        setPendingTaskId(null);
-        refreshData();
+        // 2. Если есть ожидаемая задача, обновляем её оценку и статус
+        if (pendingTaskId) {
+          await axios.patch(
+            "https://taskback.emivn.io/api/v1/tasks/grade", // Путь для установки оценки
+            {
+              userUUID: selectedTask.user_uuid, // Замените на правильный userUUID
+              taskUUID: pendingTaskId,
+              grade: rating,
+            },
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "1",
+              },
+            }
+          );
+
+          await axios.patch(
+            "https://taskback.emivn.io/api/v1/tasks/status", // Путь для изменения статуса задачи
+            {
+              uuid: pendingTaskId,
+              status_id: 7, // Статус "Принята"
+            },
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "1",
+              },
+            }
+          );
+
+          console.log("Task rating updated and status changed to 7");
+          setPendingTaskId(null);
+        }
+
+        refreshData(); // Обновляем данные после успешного обновления
+        closeModal(); // Закрываем модальное окно после успешного сохранения
       } catch (error) {
-        console.error("Error updating task rating:", error);
+        console.error("Error updating task:", error);
       }
     }
   };
@@ -330,6 +365,7 @@ function MainContent() {
               <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
               <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+              <p>Исполнитель:{task.first_name}</p>
               {task.isLoading ? (
                 <div className="loader"></div>
               ) : (
@@ -339,7 +375,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 3);
+                        handleAcceptTask(task.id, 3);
                       }}
                     >
                       Принять
@@ -350,7 +386,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 4);
+                        handleAcceptTask(task.id, 4);
                       }}
                     >
                       Готово
@@ -361,7 +397,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 5);
+                        handleAcceptTask(task.id, 5);
                       }}
                     >
                       В проверке
@@ -373,7 +409,7 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 7);
+                          handleAcceptTask(task.id, 7);
                         }}
                       >
                         Принята
@@ -383,7 +419,7 @@ function MainContent() {
                         className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 6);
+                          handleAcceptTask(task.id, 6);
                         }}
                       >
                         Доработка
@@ -396,7 +432,7 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 3);
+                          handleAcceptTask(task.id, 3);
                         }}
                       >
                         Принять
@@ -423,15 +459,53 @@ function MainContent() {
                           <label className="block text-sm font-medium">
                             Имя исполнителя
                           </label>
+                          <p>
+                            {selectedTask.first_name} {selectedTask.last_name}
+                          </p>{" "}
+                          {/* Имя исполнителя */}
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Название задачи:
+                          </label>
+                          <p>{selectedTask.name}</p> {/* Название задачи */}
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Описание задачи:
+                          </label>
+                          <p>{selectedTask.description}</p>{" "}
+                          {/* Описание задачи */}
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Дедлайн:
+                          </label>
+                          <p>{formatTimestamp(selectedTask.deadline)}</p>{" "}
+                          {/* Дедлайн */}
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Время отправки:
+                          </label>
+                          <p>
+                            {formatTimestamp(selectedTask.apperance_timestamp)}
+                          </p>{" "}
+                          {/* Время отправки */}
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Группа:
+                          </label>
+                          <p>{getGroupNameByUUID(selectedTask.group_uuid)}</p>{" "}
+                          {/* Группа */}
                         </div>
                         <div className="mt-4">
                           <label className="block text-sm font-medium">
                             Оценка (1-100):
                           </label>
                           <input
-                            type="text"
-                            min="1"
-                            max="100"
+                            type="number"
                             value={rating}
                             onChange={handleRatingChange}
                             className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
@@ -440,7 +514,7 @@ function MainContent() {
                         <div className="flex justify-end mt-5">
                           <button
                             className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                            onClick={closeModal}
+                            onClick={handleSaveGrade}
                           >
                             Сохранить
                           </button>
