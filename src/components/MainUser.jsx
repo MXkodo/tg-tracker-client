@@ -32,10 +32,10 @@ function MainContent({ userUUID, userRole }) {
           endpoint = `/api/v1/tasks/review/${userUUID}`;
           break;
         case 6:
-          endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
+          endpoint = `/api/v1/tasks/completed/${userUUID}`;
           break;
         case 7:
-          endpoint = `/api/v1/tasks/completed/${userUUID}`;
+          endpoint = `/api/v1/tasks/incorrect/${userUUID}`;
           break;
         default:
           endpoint = `/api/v1/tasks/new/${userUUID}`;
