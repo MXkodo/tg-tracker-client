@@ -340,7 +340,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 3);
+                        handleAcceptTask(task.id, 3);
                       }}
                     >
                       Принять
@@ -351,7 +351,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 4);
+                        handleAcceptTask(task.id, 4);
                       }}
                     >
                       Готово
@@ -362,7 +362,7 @@ function MainContent() {
                       className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                       onClick={(event) => {
                         event.stopPropagation();
-                        handleAcceptTask(task.uuid, 5);
+                        handleAcceptTask(task.id, 5);
                       }}
                     >
                       В проверке
@@ -374,7 +374,7 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 7);
+                          handleAcceptTask(task.id, 7);
                         }}
                       >
                         Принята
@@ -384,7 +384,7 @@ function MainContent() {
                         className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 6);
+                          handleAcceptTask(task.id, 6);
                         }}
                       >
                         Доработка
@@ -397,7 +397,7 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 3);
+                          handleAcceptTask(task.id, 3);
                         }}
                       >
                         Принять
