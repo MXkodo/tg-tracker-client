@@ -409,7 +409,9 @@ function MainContent() {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.id, 7);
+                          setPendingTaskId(task.id); // Устанавливаем ID задачи для оценки
+                          setSelectedTask(task);
+                          setModalOpen(true); // Открываем модальное окно
                         }}
                       >
                         Принята
@@ -426,6 +428,7 @@ function MainContent() {
                       </button>
                     </>
                   )}
+
                   {task.status_id === 6 && (
                     <>
                       <button
