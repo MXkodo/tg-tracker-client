@@ -22,6 +22,7 @@ function MainContent({ userUUID, userRole }) {
     },
     [groups]
   );
+
   const filterTasksBySearchAndStatus = useCallback(
     (tasksArray = [], searchTerm, statusId) => {
       if (!tasksArray) {
@@ -52,6 +53,7 @@ function MainContent({ userUUID, userRole }) {
     },
     [getGroupNameByUUID]
   );
+
   const fetchTasks = useCallback(async () => {
     try {
       const endpoint = `/api/v1/tasks/all/${userUUID}`;
@@ -75,6 +77,9 @@ function MainContent({ userUUID, userRole }) {
 
   useEffect(() => {
     fetchGroups();
+  }, []);
+
+  useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
@@ -93,6 +98,10 @@ function MainContent({ userUUID, userRole }) {
       console.error("Error fetching groups:", error);
     }
   };
+
+  useEffect(() => {
+    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
+  }, [allTasks, searchTerm, activeStatusId, filterTasksBySearchAndStatus]);
 
   const refreshData = () => {
     fetchTasks();
@@ -119,17 +128,14 @@ function MainContent({ userUUID, userRole }) {
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
-    filterTasksBySearchAndStatus(allTasks, e.target.value, activeStatusId);
   };
 
   const clearSearch = () => {
     setSearchTerm("");
-    filterTasksBySearchAndStatus(allTasks, "", activeStatusId);
   };
 
   const handleFilterChange = (statusId) => {
     setActiveStatusId(statusId);
-    filterTasksBySearchAndStatus(allTasks, searchTerm, statusId);
   };
 
   const handleEditClick = (task) => {
@@ -182,6 +188,18 @@ function MainContent({ userUUID, userRole }) {
       return timestampB - timestampA;
     });
     setTasks(sortedTasks);
+  };
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "Не указано";
+
+    const date = new Date(timestamp);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
   };
 
   return (
@@ -329,17 +347,5 @@ function MainContent({ userUUID, userRole }) {
     </div>
   );
 }
-
-const formatTimestamp = (timestamp) => {
-  if (!timestamp) return "Не указано";
-
-  const date = new Date(timestamp);
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${day}.${month}.${year} ${hours}:${minutes}`;
-};
 
 export default MainContent;
