@@ -40,7 +40,7 @@ const GroupsPage = () => {
         ? "https://taskback.emivn.io/api/v1/groups"
         : viewMode === "users"
         ? "https://taskauth.emivn.io/api/v1/users"
-        : "https://taskauth.emivn.io/api/v1/tasks/rating";
+        : "https:///taskback.emivn.io/api/v1/tasks/rating";
 
     axios
       .get(apiUrl, {
