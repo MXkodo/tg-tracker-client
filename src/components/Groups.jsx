@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import DownloadButton from "./DownloadButton";
 
 const GroupsPage = () => {
   const [viewMode, setViewMode] = useState("groups");
@@ -430,7 +431,9 @@ const GroupsPage = () => {
 
       {viewMode === "rating" ? (
         <div>
-          <h1 className="text-xl font-bold mb-4">Рейтинг пользователей</h1>
+          <h1 className="text-xl font-bold mb-4">
+            Рейтинг пользователей <DownloadButton />
+          </h1>
           <ul className="space-y-2">
             {ratingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
