@@ -17,6 +17,7 @@ const GroupsPage = () => {
   const [itemName, setItemName] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [ratingData, setRatingData] = useState([]);
 
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupUsers, setGroupUsers] = useState([]);
@@ -36,8 +37,10 @@ const GroupsPage = () => {
     setIsLoading(true);
     const apiUrl =
       viewMode === "groups"
-        ? " https://taskback.emivn.io/api/v1/groups"
-        : "https://taskauth.emivn.io/api/v1/users";
+        ? "https://taskback.emivn.io/api/v1/groups"
+        : viewMode === "users"
+        ? "https://taskauth.emivn.io/api/v1/users"
+        : "https://taskauth.emivn.io/api/v1/users/rating";
 
     axios
       .get(apiUrl, {
@@ -46,7 +49,11 @@ const GroupsPage = () => {
         },
       })
       .then((response) => {
-        setItems(response.data || []);
+        if (viewMode === "rating") {
+          setRatingData(response.data || []);
+        } else {
+          setItems(response.data || []);
+        }
         setIsLoading(false);
       })
       .catch((error) => {
@@ -409,6 +416,14 @@ const GroupsPage = () => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
+            viewMode === "rating" ? "bg-green-500" : "bg-gray-700"
+          }`}
+          onClick={() => handleViewModeChange("rating")}
+        >
+          Рейтинг
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg ${
             viewMode === "users" ? "bg-green-500" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("users")}
@@ -417,7 +432,20 @@ const GroupsPage = () => {
         </button>
       </div>
 
-      {renderItemsList()}
+      {viewMode === "rating" ? (
+        <div>
+          <h1 className="text-xl font-bold mb-4">Рейтинг пользователей</h1>
+          <ul>
+            {ratingData.map((user) => (
+              <li key={user.uuid}>
+                {user.name}: {user.totalRating}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        renderItemsList()
+      )}
 
       <div className="w-full flex justify-center items-center">
         <button
@@ -459,6 +487,7 @@ const GroupsPage = () => {
           </div>
         </div>
       )}
+
       {showEditModal && userToEdit && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
