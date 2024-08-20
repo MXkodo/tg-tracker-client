@@ -429,13 +429,15 @@ const GroupsPage = () => {
       </div>
 
       {viewMode === "rating" ? (
-        <div className="fixed right-0 top-0 w-1/4 h-full p-4 bg-green-500 text-white">
+        <div>
           <h1 className="text-xl font-bold mb-4">Рейтинг пользователей</h1>
           <ul className="space-y-2">
             {ratingData.map((user) => (
-              <li key={user.uuid} className="flex justify-between">
+              <li key={user.uuid} className="flex justify-between items-center">
                 <span>{user.name}</span>
-                <span>{user.average_rating}</span>
+                <span className="bg-green-500 text-white px-2 py-1 rounded">
+                  {user.average_rating}
+                </span>
               </li>
             ))}
           </ul>
