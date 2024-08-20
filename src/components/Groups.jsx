@@ -222,10 +222,6 @@ const GroupsPage = () => {
     }
   };
 
-  const handleAddClick = () => {
-    setShowModal(true);
-  };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setItemName("");
@@ -433,12 +429,13 @@ const GroupsPage = () => {
       </div>
 
       {viewMode === "rating" ? (
-        <div>
+        <div className="fixed right-0 top-0 w-1/4 h-full p-4 bg-green-500 text-white">
           <h1 className="text-xl font-bold mb-4">Рейтинг пользователей</h1>
-          <ul>
+          <ul className="space-y-2">
             {ratingData.map((user) => (
-              <li key={user.uuid}>
-                {user.name}: {user.totalRating}
+              <li key={user.uuid} className="flex justify-between">
+                <span>{user.name}</span>
+                <span>{user.average_rating}</span>
               </li>
             ))}
           </ul>
@@ -446,16 +443,6 @@ const GroupsPage = () => {
       ) : (
         renderItemsList()
       )}
-
-      <div className="w-full flex justify-center items-center">
-        <button
-          type="button"
-          className="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold mb-12 w-full"
-          onClick={handleAddClick}
-        >
-          Добавить {viewMode === "groups" ? "группу" : "пользователя"}
-        </button>
-      </div>
 
       {showDeleteModal && itemToDelete && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
