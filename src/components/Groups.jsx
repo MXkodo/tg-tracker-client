@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import DownloadButton from "./DownloadButton";
+import DownloadButton from "./downloadButton";
 
 const GroupsPage = () => {
   const [viewMode, setViewMode] = useState("groups");
