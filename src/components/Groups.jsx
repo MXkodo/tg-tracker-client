@@ -419,7 +419,8 @@ const GroupsPage = () => {
             className="px-4 py-2 bg-green-500 text-white rounded-lg"
             onClick={() => setShowModal(true)}
           >
-            Добавить пользователя
+            Создание{" "}
+            {viewMode === "groups" ? " новой группы" : " нового пользователя"}
           </button>
         </div>
       </>
