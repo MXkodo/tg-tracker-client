@@ -173,6 +173,24 @@ const GroupsPage = () => {
     }
   };
 
+  const handleRemoveUserFromGroup = (uuid) => {
+    if (activeItem) {
+      axios
+        .delete(`https://taskback.emivn.io/api/v1/groups/user/${uuid}`, {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        })
+        .then(() => {
+          fetchGroupUsers(activeItem);
+        })
+        .catch((error) => {
+          console.error("Error removing user from group:", error);
+          setError("Ошибка при удалении пользователя из группы.");
+        });
+    }
+  };
+
   const fetchAvailableUsers = () => {
     axios
       .get("https://taskauth.emivn.io/api/v1/users", {
@@ -619,9 +637,15 @@ const GroupsPage = () => {
                 groupUsers.map((user) => (
                   <li
                     key={user.uuid}
-                    className="mb-2 border border-green-500 p-2 rounded-md shadow-md"
+                    className="mb-2 border border-green-500 p-2 rounded-md shadow-md flex justify-between items-center"
                   >
                     <span>{user.name}</span>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded"
+                      onClick={() => handleRemoveUserFromGroup(user.uuid)}
+                    >
+                      Удалить
+                    </button>
                   </li>
                 ))
               )}
