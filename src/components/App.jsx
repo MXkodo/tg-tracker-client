@@ -32,7 +32,7 @@ function App() {
               path="/"
               element={
                 userRole !== null && userUUID ? (
-                  userRole === 1 ? (
+                  userRole === 1 || 2 ? (
                     <MainContent role={userRole} userUUID={userUUID} />
                   ) : (
                     <MainUser role={userRole} userUUID={userUUID} />
@@ -43,7 +43,7 @@ function App() {
               }
             />
             <Route path="/add" element={<AddTaskPage />} />
-            <Route path="/group" element={<GroupsPage />} />
+            <Route path="/group" element={<GroupsPage userRole={userRole} />} />
           </Routes>
         </main>
         {userRole !== 0 && <Footer />}

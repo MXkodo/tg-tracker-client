@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DownloadButton from "./DownloadButtom";
 
-const GroupsPage = () => {
+const GroupsPage = ({ userRole }) => {
   const [viewMode, setViewMode] = useState("groups");
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -388,7 +388,13 @@ const GroupsPage = () => {
             className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
               activeItem === item.uuid ? "bg-green-500 text-black" : ""
             }`}
-            onClick={(e) => handleItemClick(item, e)}
+            onClick={(e) => {
+              if (userRole === 2) {
+                handleItemClick(item, e);
+              } else {
+                alert("Недостаточно прав");
+              }
+            }}
           >
             <div className="flex items-center cursor-pointer">
               <span>{item.name}</span>
@@ -397,17 +403,25 @@ const GroupsPage = () => {
                   А
                 </span>
               )}
+              {viewMode === "users" && item.role === 2 && (
+                <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                  А
+                </span>
+              )}
             </div>
             <div className="flex items-center">
-              <button
-                className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteItem(item.uuid);
-                }}
-              >
-                Удалить
-              </button>
+              {/* Условие для отображения кнопки удаления */}
+              {userRole === 2 && (
+                <button
+                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteItem(item.uuid);
+                  }}
+                >
+                  Удалить
+                </button>
+              )}
             </div>
           </li>
         ))
@@ -605,16 +619,18 @@ const GroupsPage = () => {
                     </option>
                   ))}
                 </select>
-                <div className="flex items-center mb-2">
-                  <input
-                    type="checkbox"
-                    id="isAdmin"
-                    checked={isAdmin}
-                    onChange={() => setIsAdmin(!isAdmin)}
-                    className="mr-2"
-                  />
-                  <label htmlFor="isAdmin">Админ</label>
-                </div>
+                {userRole !== 1 && (
+                  <div className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id="isAdmin"
+                      checked={isAdmin}
+                      onChange={() => setIsAdmin(!isAdmin)}
+                      className="mr-2"
+                    />
+                    <label htmlFor="isAdmin">Админ</label>
+                  </div>
+                )}
               </>
             )}
 
