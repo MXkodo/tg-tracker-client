@@ -5,7 +5,7 @@ const DownloadButton = () => {
     const { WebApp } = window.Telegram;
     WebApp.ready();
     const user = WebApp.initDataUnsafe.user;
-    const chatID = user.id;
+    const chatID = user.id.toString();
 
     console.log("Sending request with chatID:", chatID);
 
