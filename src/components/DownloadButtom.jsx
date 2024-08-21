@@ -5,19 +5,20 @@ const DownloadButton = () => {
     const { WebApp } = window.Telegram;
     WebApp.ready();
     const user = WebApp.initDataUnsafe.user;
-    const chatID = user.id; // Получаем chatID из данных пользователя
+    const chatID = user.id;
 
     axios({
-      url: `https://taskback.emivn.io/api/v1/tasks/download?chatID=${chatID}`, // Добавляем chatID в URL
-      method: "GET",
-      responseType: "blob",
+      url: `https://taskback.emivn.io/api/v1/tasks/download`,
+      method: "POST",
+      data: {
+        chatID: chatID,
+      },
     })
       .then((response) => {
-        // Выводим уведомление о том, что файл отправлен
         alert("Файл был отправлен вам в Telegram!");
       })
       .catch((error) => {
-        console.error("Ошибка при скачивании файла", error);
+        console.error("Ошибка при запросе к серверу", error);
       });
   };
 
