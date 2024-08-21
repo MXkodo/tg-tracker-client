@@ -412,6 +412,17 @@ const GroupsPage = () => {
           </li>
         ))
       )}
+      <>
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-green-500 text-white rounded-lg"
+            onClick={() => setShowModal(true)}
+          >
+            Добавить пользователя
+          </button>
+        </div>
+      </>
     </ul>
   );
 
