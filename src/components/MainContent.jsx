@@ -565,14 +565,16 @@ function MainContent() {
                         </p>
 
                         <div className="flex justify-end mt-5">
-                          {editMode && (
-                            <button
-                              className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
-                              onClick={handleSave}
-                            >
-                              Сохранить
-                            </button>
-                          )}
+                          {editMode &&
+                            selectedTask &&
+                            selectedTask.status_id === 1 && (
+                              <button
+                                className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                                onClick={handleSave}
+                              >
+                                Сохранить
+                              </button>
+                            )}
                           <button
                             className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                             onClick={closeModal}
