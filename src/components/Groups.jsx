@@ -389,7 +389,7 @@ const GroupsPage = ({ userRole }) => {
               activeItem === item.uuid ? "bg-green-500 text-black" : ""
             }`}
             onClick={(e) => {
-              if (userRole === 2) {
+              if (userRole === 2 || (viewMode === "groups" && userRole === 1)) {
                 handleItemClick(item, e);
               } else {
                 alert("Недостаточно прав");
@@ -411,7 +411,7 @@ const GroupsPage = ({ userRole }) => {
             </div>
             <div className="flex items-center">
               {/* Условие для отображения кнопки удаления */}
-              {userRole === 2 && (
+              {userRole === 2 && viewMode === "groups" && (
                 <button
                   className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
                   onClick={(e) => {
