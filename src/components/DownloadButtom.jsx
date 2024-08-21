@@ -7,14 +7,20 @@ const DownloadButton = () => {
     const user = WebApp.initDataUnsafe.user;
     const chatID = user.id;
 
+    console.log("Sending request with chatID:", chatID);
+
     axios({
       url: `https://taskback.emivn.io/api/v1/tasks/download`,
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       data: {
         chatID: chatID,
       },
     })
       .then((response) => {
+        console.log("Response:", response);
         alert("Файл был отправлен вам в Telegram!");
       })
       .catch((error) => {
