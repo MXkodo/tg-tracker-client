@@ -205,6 +205,30 @@ function MainContent() {
     }
   };
 
+  const handleResumeTask = async (taskId) => {
+    try {
+      await axios.patch(
+        `https://taskback.emivn.io/api/v1/tasks/status`,
+        {
+          uuid: taskId,
+          status_id: 3,
+          returned: true,
+        },
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        }
+      );
+
+      console.log("Task status updated to 3 and returned set to true");
+
+      refreshData();
+    } catch (error) {
+      console.error("Error resuming task:", error);
+    }
+  };
+
   const handleSave = async () => {
     if (selectedTask) {
       try {
@@ -356,9 +380,11 @@ function MainContent() {
         {tasks.map((task, index) => (
           <div
             key={task.id}
-            className={`mt-5 border border-[rgba(115,115,115,.31)] rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
-              index === tasks.length - 1 ? "mb-5 last-task" : ""
-            }`}
+            className={`mt-5 border rounded-[17px] p-1 mb-1 bg-[#737373] shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+              task.returned
+                ? "border-red-500"
+                : "border-[rgba(115,115,115,.31)]"
+            } ${index === tasks.length - 1 ? "mb-5 last-task" : ""}`}
           >
             <div className="task-tile" onClick={() => handleEditClick(task)}>
               <h3>{task.name}</h3>
@@ -368,8 +394,7 @@ function MainContent() {
               <p>Исполнитель: {task.first_name}</p>
               {task.status_id === 7 && (
                 <p>Оценка: {task.grade || "Не указана"}</p>
-              )}{" "}
-              {/* Добавлено отображение оценки */}
+              )}
               {task.isLoading ? (
                 <div className="loader"></div>
               ) : (
@@ -441,6 +466,17 @@ function MainContent() {
                       }}
                     >
                       Принять
+                    </button>
+                  )}
+                  {task.status_id === 8 && (
+                    <button
+                      className="resume-button mr-1 px-1 bg-blue-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-blue-600"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleResumeTask(task.id);
+                      }}
+                    >
+                      Возобновить
                     </button>
                   )}
                 </>
