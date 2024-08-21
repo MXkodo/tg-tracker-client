@@ -439,7 +439,7 @@ const GroupsPage = () => {
               <li key={user.uuid} className="flex justify-between items-center">
                 <span>{user.name}</span>
                 <span className="bg-green-500 text-white px-2 py-1 rounded">
-                  {user.average_rating}
+                  {Math.ceil(user.average_rating)}
                 </span>
               </li>
             ))}

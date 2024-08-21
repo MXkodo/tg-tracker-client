@@ -1,23 +1,20 @@
-import React from "react";
 import axios from "axios";
 
 const DownloadButton = () => {
   const handleDownload = () => {
+    const { WebApp } = window.Telegram;
+    WebApp.ready();
+    const user = WebApp.initDataUnsafe.user;
+    const chatID = user.id; // Получаем chatID из данных пользователя
+
     axios({
-      url: "https://taskback.emivn.io/api/v1/tasks/download",
+      url: `https://taskback.emivn.io/api/v1/tasks/download?chatID=${chatID}`, // Добавляем chatID в URL
       method: "GET",
       responseType: "blob",
     })
       .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "user_ratings.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        // Очистка ресурсов
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        // Выводим уведомление о том, что файл отправлен
+        alert("Файл был отправлен вам в Telegram!");
       })
       .catch((error) => {
         console.error("Ошибка при скачивании файла", error);
@@ -29,7 +26,7 @@ const DownloadButton = () => {
       onClick={handleDownload}
       className="bg-green-500 text-white py-2 px-4 rounded"
     >
-      Скачать рейтинг в Excel
+      Экспорт
     </button>
   );
 };
