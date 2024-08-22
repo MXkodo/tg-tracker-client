@@ -11,10 +11,10 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       const username = user ? user.username : null;
       const chatID = WebApp.initDataUnsafe.chat.id;
 
-      console.log("Telegram WebApp is ready.");
-      console.log("User:", user);
-      console.log("Username:", username);
-      console.log("Chat ID:", chatID);
+      alert("Telegram WebApp is ready.");
+      alert("User:", user);
+      alert("Username:", username);
+      alert("Chat ID:", chatID);
 
       if (username) {
         axios
@@ -22,28 +22,28 @@ function AuthCheck({ setUserRole, setUserUUID }) {
             username,
           })
           .then((response) => {
-            console.log("User data response:", response.data);
+            alert("User data response:", response.data);
 
             localStorage.setItem("authChecked", "true");
 
             const { role, uuid, chat_id } = response.data;
 
-            console.log("Role:", role);
-            console.log("UUID:", uuid);
-            console.log("Chat ID from response:", chat_id);
+            alert("Role:", role);
+            alert("UUID:", uuid);
+            alert("Chat ID from response:", chat_id);
 
             setUserRole(role);
             setUserUUID(uuid);
 
             // Обновляем chat_id, если оно пустое
             if (!chat_id && chatID) {
-              console.log("Updating chat ID...");
+              alert("Updating chat ID...");
               axios
                 .put(`https://taskauth.emivn.io/api/v1/users/chatid/${uuid}`, {
                   chat_id: chatID, // Используем chat_id вместо chatID
                 })
                 .then(() => {
-                  console.log("Chat ID updated successfully");
+                  alert("Chat ID updated successfully");
                 })
                 .catch((error) => {
                   console.error("Error updating chat ID:", error);
