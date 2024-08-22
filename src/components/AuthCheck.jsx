@@ -9,7 +9,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       WebApp.ready();
       const user = WebApp.initDataUnsafe.user;
       const username = user ? user.username : null;
-      const chatID = user.id;
+      const chatID = user.id.toString();
       console.log("Telegram WebApp is ready.");
       console.log("User:", user);
       console.log("Username:", username);
