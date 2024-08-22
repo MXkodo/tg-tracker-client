@@ -11,25 +11,38 @@ function AuthCheck({ setUserRole, setUserUUID }) {
       const username = user ? user.username : null;
       const chatID = WebApp.initDataUnsafe.chat.id;
 
+      console.log("Telegram WebApp is ready.");
+      console.log("User:", user);
+      console.log("Username:", username);
+      console.log("Chat ID:", chatID);
+
       if (username) {
         axios
           .post("https://taskauth.emivn.io/api/v1/user", {
             username,
           })
           .then((response) => {
+            console.log("User data response:", response.data);
+
             localStorage.setItem("authChecked", "true");
 
             const { role, uuid, chat_id } = response.data;
 
+            console.log("Role:", role);
+            console.log("UUID:", uuid);
+            console.log("Chat ID from response:", chat_id);
+
             setUserRole(role);
             setUserUUID(uuid);
 
+            // Обновляем chat_id, если оно пустое
             if (!chat_id && chatID) {
+              console.log("Updating chat ID...");
               axios
                 .put(`https://taskauth.emivn.io/api/v1/users/chatid/${uuid}`, {
-                  chatID: chatID,
+                  chat_id: chatID, // Используем chat_id вместо chatID
                 })
-                .then((response) => {
+                .then(() => {
                   console.log("Chat ID updated successfully");
                 })
                 .catch((error) => {
@@ -48,6 +61,8 @@ function AuthCheck({ setUserRole, setUserUUID }) {
             }
           });
       } else {
+        console.error("Username not found in Telegram");
+
         alert("Пользователь не найден в Telegram");
 
         if (window.Telegram && window.Telegram.WebApp) {
