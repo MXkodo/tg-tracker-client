@@ -497,25 +497,22 @@ const GroupsPage = ({ userRole }) => {
 
       {viewMode === "rating" ? (
         <div>
-          <h1 className="text-xl font-bold mb-4">
+          <h1 className="text-xl font-bold mb-4 flex items-center justify-between">
             Рейтинг пользователей <DownloadButton />
+            <div className="ml-4">
+              <select
+                id="filter"
+                value={filter}
+                onChange={handleFilterChange}
+                className="border border-gray-300 p-2 rounded-md text-black"
+              >
+                <option value="none">Фильтр</option>
+                <option value="ascending">По возрастанию рейтинга</option>
+                <option value="descending">По убыванию рейтинга</option>
+                <option value="alphabetical">По алфавиту имени</option>
+              </select>
+            </div>
           </h1>
-          <div className="mb-4">
-            <label htmlFor="filter" className="mr-2">
-              Фильтр:
-            </label>
-            <select
-              id="filter"
-              value={filter}
-              onChange={handleFilterChange}
-              className="border border-gray-300 p-2 rounded-md text-black"
-            >
-              <option value="none">Без фильтра</option>
-              <option value="ascending">По возрастанию рейтинга</option>
-              <option value="descending">По убыванию рейтинга</option>
-              <option value="alphabetical">По алфавиту имени</option>
-            </select>
-          </div>
           <ul className="space-y-2">
             {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
