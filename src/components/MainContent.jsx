@@ -153,16 +153,6 @@ function MainContent() {
   const handleSaveGrade = async () => {
     if (selectedTask) {
       try {
-        const response = await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks`,
-          {
-            uuid: selectedTask.uuid,
-            name: taskName,
-            description: taskDescription,
-          }
-        );
-        console.log("Task updated:", response.data);
-
         if (pendingTaskId) {
           await axios.patch(
             "https://taskback.emivn.io/api/v1/tasks/grade",
@@ -193,6 +183,16 @@ function MainContent() {
 
           console.log("Task rating updated and status changed to 7");
           setPendingTaskId(null);
+        } else {
+          const response = await axios.patch(
+            `https://taskback.emivn.io/api/v1/tasks`,
+            {
+              uuid: selectedTask.uuid,
+              name: taskName,
+              description: taskDescription,
+            }
+          );
+          console.log("Task updated:", response.data);
         }
 
         refreshData();
