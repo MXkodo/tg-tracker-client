@@ -115,7 +115,7 @@ function MainContent({ userUUID, userRole }) {
       );
 
       await axios.patch(`https://taskback.emivn.io/api/v1/tasks/status`, {
-        uuid: taskId,
+        uuid: Number(taskId),
         status_id: status,
         returned: false,
       });
