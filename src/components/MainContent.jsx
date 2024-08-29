@@ -249,12 +249,13 @@ function MainContent() {
 
   const handleRatingChange = (e) => {
     const value = e.target.value;
-
-    if (/^\d+$/.test(value)) {
+    if (/^\d*$/.test(value)) {
       const number = Number(value);
 
       if (number >= 1 && number <= 100) {
         setRating(number);
+      } else if (value === "") {
+        setRating("");
       }
     }
   };
