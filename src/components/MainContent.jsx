@@ -297,7 +297,7 @@ function MainContent() {
     const sortedTasks = [...tasks].sort((a, b) => {
       const timestampA = new Date(a.apperance_timestamp);
       const timestampB = new Date(b.apperance_timestamp);
-      return timestampB - timestampA;
+      return timestampA - timestampB;
     });
     setTasks(sortedTasks);
   };
