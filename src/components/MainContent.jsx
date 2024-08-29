@@ -240,7 +240,7 @@ function MainContent() {
         );
         console.log("Task updated:", response.data);
         refreshData();
-        closeModal(); // Закрыть модальное окно
+        closeModal();
       } catch (error) {
         console.error("Error updating task:", error);
       }

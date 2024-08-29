@@ -33,6 +33,7 @@ const GroupsPage = ({ userRole }) => {
   const [userToEdit, setUserToEdit] = useState(null);
   const [editUserName, setEditUserName] = useState("");
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
+  const [filter, setFilter] = useState("none");
 
   useEffect(() => {
     setIsLoading(true);
@@ -97,6 +98,9 @@ const GroupsPage = ({ userRole }) => {
       editTelegramUsername !== initialTelegramUsername ||
       isAdmin !== (userToEdit?.role === 1)
     );
+  };
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
   };
 
   const fetchGroupUsers = (groupId) => {
@@ -343,6 +347,24 @@ const GroupsPage = ({ userRole }) => {
         console.error(`Error deleting ${viewMode.slice(0, -1)}:`, error);
       });
   };
+  const getFilteredRatingData = () => {
+    switch (filter) {
+      case "ascending":
+        return [...ratingData].sort(
+          (a, b) => a.average_rating - b.average_rating
+        );
+      case "descending":
+        return [...ratingData].sort(
+          (a, b) => b.average_rating - a.average_rating
+        );
+      case "alphabetical":
+        return [...ratingData].sort((a, b) => a.name.localeCompare(b.name));
+      default:
+        return ratingData;
+    }
+  };
+
+  const filteredRatingData = getFilteredRatingData();
 
   const handleAddUserToGroup = () => {
     if (selectedUserId) {
@@ -478,8 +500,24 @@ const GroupsPage = ({ userRole }) => {
           <h1 className="text-xl font-bold mb-4">
             Рейтинг пользователей <DownloadButton />
           </h1>
+          <div className="mb-4">
+            <label htmlFor="filter" className="mr-2">
+              Фильтр:
+            </label>
+            <select
+              id="filter"
+              value={filter}
+              onChange={handleFilterChange}
+              className="border border-gray-300 p-2 rounded-md text-black"
+            >
+              <option value="none">Без фильтра</option>
+              <option value="ascending">По возрастанию рейтинга</option>
+              <option value="descending">По убыванию рейтинга</option>
+              <option value="alphabetical">По алфавиту имени</option>
+            </select>
+          </div>
           <ul className="space-y-2">
-            {ratingData.map((user) => (
+            {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
                 <span>{user.name}</span>
                 <span className="bg-green-500 text-white px-2 py-1 rounded">
