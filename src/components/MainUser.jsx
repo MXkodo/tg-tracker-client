@@ -110,12 +110,12 @@ function MainContent({ userUUID, userRole }) {
     try {
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.uuid === taskId ? { ...task, isLoading: true } : task
+          task.id === taskId ? { ...task, isLoading: true } : task
         )
       );
 
       await axios.patch(`https://taskback.emivn.io/api/v1/tasks/status`, {
-        uuid: Number(taskId),
+        uuid: taskId,
         status_id: status,
         returned: false,
       });
@@ -268,7 +268,7 @@ function MainContent({ userUUID, userRole }) {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 3);
+                          handleAcceptTask(task.id, 3);
                         }}
                       >
                         Принять
@@ -279,7 +279,7 @@ function MainContent({ userUUID, userRole }) {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 4);
+                          handleAcceptTask(task.id, 4);
                         }}
                       >
                         Готово
@@ -296,7 +296,7 @@ function MainContent({ userUUID, userRole }) {
                         className="accept-button mr-1 px-1 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.uuid, 3);
+                          handleAcceptTask(task.id, 3);
                         }}
                       >
                         Принять
