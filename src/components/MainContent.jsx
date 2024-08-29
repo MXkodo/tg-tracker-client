@@ -153,7 +153,6 @@ function MainContent() {
   const handleSaveGrade = async () => {
     if (selectedTask) {
       try {
-        // 1. Обновляем задачу
         const response = await axios.patch(
           `https://taskback.emivn.io/api/v1/tasks`,
           {
@@ -164,12 +163,11 @@ function MainContent() {
         );
         console.log("Task updated:", response.data);
 
-        // 2. Если есть ожидаемая задача, обновляем её оценку и статус
         if (pendingTaskId) {
           await axios.patch(
-            "https://taskback.emivn.io/api/v1/tasks/grade", // Путь для установки оценки
+            "https://taskback.emivn.io/api/v1/tasks/grade",
             {
-              userUUID: selectedTask.user_uuid, // Замените на правильный userUUID
+              userUUID: selectedTask.user_uuid,
               taskUUID: pendingTaskId,
               grade: rating,
             },
@@ -181,10 +179,10 @@ function MainContent() {
           );
 
           await axios.patch(
-            "https://taskback.emivn.io/api/v1/tasks/status", // Путь для изменения статуса задачи
+            "https://taskback.emivn.io/api/v1/tasks/status",
             {
               uuid: pendingTaskId,
-              status_id: 7, // Статус "Принята"
+              status_id: 7,
             },
             {
               headers: {
@@ -197,8 +195,8 @@ function MainContent() {
           setPendingTaskId(null);
         }
 
-        refreshData(); // Обновляем данные после успешного обновления
-        closeModal(); // Закрываем модальное окно после успешного сохранения
+        refreshData();
+        closeModal();
       } catch (error) {
         console.error("Error updating task:", error);
       }
@@ -250,7 +248,15 @@ function MainContent() {
   };
 
   const handleRatingChange = (e) => {
-    setRating(Number(e.target.value));
+    const value = e.target.value;
+
+    if (/^\d+$/.test(value)) {
+      const number = Number(value);
+
+      if (number >= 1 && number <= 100) {
+        setRating(number);
+      }
+    }
   };
 
   const handleSortChange = (e) => {
@@ -545,7 +551,7 @@ function MainContent() {
                             Оценка (1-100):
                           </label>
                           <input
-                            type="number"
+                            type="text"
                             value={rating}
                             onChange={handleRatingChange}
                             className="mt-1 p-1 rounded border border-gray-600 bg-gray-800"
