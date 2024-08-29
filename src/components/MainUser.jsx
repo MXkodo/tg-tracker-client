@@ -14,7 +14,6 @@ function MainContent({ userUUID, userRole }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  // Функция для получения всех задач
   const getGroupNameByUUID = useCallback(
     (groupUUID) => {
       const group = groups.find((g) => g.uuid === groupUUID);

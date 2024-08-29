@@ -32,10 +32,10 @@ function App() {
               path="/"
               element={
                 userRole !== null && userUUID ? (
-                  userRole === 1 || 2 ? (
-                    <MainContent role={userRole} userUUID={userUUID} />
-                  ) : (
+                  userRole === 0 ? (
                     <MainUser role={userRole} userUUID={userUUID} />
+                  ) : (
+                    <MainContent role={userRole} userUUID={userUUID} />
                   )
                 ) : (
                   renderLoadingAnimation()
