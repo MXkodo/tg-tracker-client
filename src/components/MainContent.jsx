@@ -170,23 +170,14 @@ function MainContent() {
   };
 
   const handleSaveComment = async () => {
-    console.log(
-      "handleSaveComment called with pendingTaskId:",
-      pendingTaskId,
-      "and comment:",
-      comment
-    );
-
     if (pendingTaskId && comment.trim()) {
       try {
-        console.log("Sending comment update request...");
         await axios.patch(
           `https://taskback.emivn.io/api/v1/tasks/comment/${pendingTaskId}`,
           { comment },
           { headers: { "ngrok-skip-browser-warning": "1" } }
         );
 
-        console.log("Sending status update request...");
         await axios.patch(
           "https://taskback.emivn.io/api/v1/tasks/status",
           { uuid: pendingTaskId, status_id: 6 },
@@ -202,8 +193,6 @@ function MainContent() {
           error
         );
       }
-    } else {
-      console.log("Pending task ID or comment is missing");
     }
   };
 
