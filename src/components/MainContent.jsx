@@ -692,7 +692,7 @@ function MainContent() {
                         </p>
                         <p className="whitespace-normal overflow-hidden max-w-full">
                           <strong>Дедлайн:</strong>{" "}
-                          {formatTimestamp(selectedTask.deadline_timestamp)}
+                          {formatTimestamp(selectedTask.deadline)}
                         </p>
                         <p className="whitespace-normal overflow-hidden max-w-full">
                           <strong>Оценка:</strong> {selectedTask.grade}
