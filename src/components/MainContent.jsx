@@ -172,10 +172,9 @@ function MainContent() {
           { headers: { "ngrok-skip-browser-warning": "1" } }
         );
 
-        // Обновление статуса задачи
         await axios.patch(
           "https://taskback.emivn.io/api/v1/tasks/status",
-          { uuid: pendingTaskId, status_id: 7 },
+          { uuid: pendingTaskId, status_id: 6 },
           { headers: { "ngrok-skip-browser-warning": "1" } }
         );
 
