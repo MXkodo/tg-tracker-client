@@ -171,9 +171,10 @@ function MainContent() {
 
   const handleSaveComment = async () => {
     if (pendingTaskId && comment.trim()) {
+      var id = pendingTaskId;
       try {
         await axios.patch(
-          `https://taskback.emivn.io/api/v1/tasks/comment/${pendingTaskId}`,
+          `https://taskback.emivn.io/api/v1/tasks/comment/${id}`,
           { comment },
           { headers: { "ngrok-skip-browser-warning": "1" } }
         );
