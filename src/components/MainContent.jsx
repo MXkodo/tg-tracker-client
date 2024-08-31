@@ -17,7 +17,9 @@ function MainContent() {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [rating, setRating] = useState(1);
-  const [pendingTaskId, setPendingTaskId] = useState(null); // ID задачи, для которой ожидается оценка
+  const [pendingTaskId, setPendingTaskId] = useState(null);
+  const [comment, setComment] = useState("");
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
 
   useEffect(() => {
     fetchGroups();
@@ -148,6 +150,45 @@ function MainContent() {
     setModalOpen(false);
     setSelectedTask(null);
     setEditMode(false);
+  };
+
+  const openCommentModal = (taskId) => {
+    setPendingTaskId(taskId);
+    setCommentModalOpen(true);
+  };
+
+  const closeCommentModal = () => {
+    setCommentModalOpen(false);
+    setComment("");
+    setPendingTaskId(null);
+  };
+
+  const handleSaveComment = async () => {
+    if (pendingTaskId && comment.trim()) {
+      try {
+        await axios.patch(
+          `https://taskback.emivn.io/api/v1/tasks/comment/${pendingTaskId}`,
+          { comment },
+          { headers: { "ngrok-skip-browser-warning": "1" } }
+        );
+
+        // Обновление статуса задачи
+        await axios.patch(
+          "https://taskback.emivn.io/api/v1/tasks/status",
+          { uuid: pendingTaskId, status_id: 7 },
+          { headers: { "ngrok-skip-browser-warning": "1" } }
+        );
+
+        console.log("Комментарий сохранен и статус обновлен");
+        refreshData();
+        closeCommentModal();
+      } catch (error) {
+        console.error(
+          "Ошибка при сохранении комментария или обновлении статуса:",
+          error
+        );
+      }
+    }
   };
 
   const handleSaveGrade = async () => {
@@ -457,7 +498,7 @@ function MainContent() {
                         className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.id, 6);
+                          openCommentModal(task.id);
                         }}
                       >
                         Доработка
@@ -492,6 +533,39 @@ function MainContent() {
           </div>
         ))}
       </div>
+      {commentModalOpen && (
+        <div className="modal-overlay" onClick={closeCommentModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 className="text-xl font-bold">Опишите причину</h2>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="mt-2 p-2 rounded border border-gray-600 bg-gray-800"
+                  rows="4"
+                  placeholder="Введите ваш комментарий"
+                />
+                <div className="flex justify-end mt-5">
+                  <button
+                    className="ml-2 px-5 py-2 bg-green-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-green-600"
+                    onClick={handleSaveComment}
+                  >
+                    Сохранить
+                  </button>
+                  <button
+                    className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
+                    onClick={closeCommentModal}
+                  >
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
