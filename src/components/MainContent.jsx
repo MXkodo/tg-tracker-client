@@ -690,6 +690,16 @@ function MainContent() {
                           <strong>Время отправки:</strong>{" "}
                           {formatTimestamp(selectedTask.apperance_timestamp)}
                         </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Дедлайн:</strong>{" "}
+                          {formatTimestamp(selectedTask.deadline_timestamp)}
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Оценка:</strong> {selectedTask.grade}
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Комментарий:</strong> {selectedTask.comment}
+                        </p>
 
                         <div className="flex justify-end mt-5">
                           {editMode &&
