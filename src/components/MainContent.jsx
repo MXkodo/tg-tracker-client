@@ -440,9 +440,13 @@ function MainContent() {
               <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
               <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
               <p>Исполнитель: {task.first_name}</p>
+              {task.comment !== "0" && task.comment && (
+                <p>Комментарий: {task.comment}</p>
+              )}
               {task.status_id === 7 && (
                 <p>Оценка: {task.grade || "Не указана"}</p>
               )}
+
               {task.isLoading ? (
                 <div className="loader"></div>
               ) : (
