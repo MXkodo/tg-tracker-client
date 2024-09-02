@@ -459,7 +459,7 @@ const GroupsPage = ({ userRole }) => {
 
     return data;
   };
-
+  const itemLabel = viewMode === "groups" ? "групп" : "пользователей";
   const filteredRatingData = filterRatingData();
   const filteredItems =
     viewMode === "groups" ? filterGroups(items) : filterUsers(items);
@@ -467,7 +467,7 @@ const GroupsPage = ({ userRole }) => {
   const renderItemsList = () => (
     <ul className="list-none pl-0">
       {filteredItems.length === 0 ? (
-        <p className="text-center">Нет доступных {viewMode.slice(0, -1)}.</p>
+        <p className="text-center">Нет доступных {itemLabel}.</p>
       ) : (
         filteredItems.map((item) => (
           <li
