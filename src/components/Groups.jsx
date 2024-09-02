@@ -827,7 +827,19 @@ const GroupsPage = ({ userRole }) => {
                     key={user.uuid}
                     className="mb-2 border border-green-500 p-2 rounded-md shadow-md flex justify-between items-center"
                   >
-                    <span>{user.name}</span>
+                    <div className="flex items-center">
+                      <span>{user.name}</span>
+                      {user.role === 1 && (
+                        <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
+                          А
+                        </span>
+                      )}
+                      {user.role === 2 && (
+                        <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                          А
+                        </span>
+                      )}
+                    </div>
                     <button
                       className="px-2 py-1 bg-red-500 text-white rounded"
                       onClick={() => handleRemoveUserFromGroup(user.uuid)}
