@@ -5,6 +5,8 @@ import DownloadButton from "./DownloadButtom";
 const GroupsPage = ({ userRole }) => {
   const [viewMode, setViewMode] = useState("groups");
   const [items, setItems] = useState([]);
+  const [users, setUsers] = useState([]); // Состояние для пользователей
+  const [groups, setGroups] = useState([]); // Состояние для групп
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
@@ -38,6 +40,7 @@ const GroupsPage = ({ userRole }) => {
   const [editUserName, setEditUserName] = useState("");
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
   const [filter, setFilter] = useState("none");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -46,7 +49,7 @@ const GroupsPage = ({ userRole }) => {
         ? "https://taskback.emivn.io/api/v1/groups"
         : viewMode === "users"
         ? "https://taskauth.emivn.io/api/v1/users"
-        : "https:///taskback.emivn.io/api/v1/tasks/rating";
+        : "https://taskback.emivn.io/api/v1/tasks/rating";
 
     axios
       .get(apiUrl, {
@@ -57,9 +60,12 @@ const GroupsPage = ({ userRole }) => {
       .then((response) => {
         if (viewMode === "rating") {
           setRatingData(response.data || []);
+        } else if (viewMode === "users") {
+          setUsers(response.data || []);
         } else {
-          setItems(response.data || []);
+          setGroups(response.data || []);
         }
+        setItems(response.data || []); // Обновите состояние items
         setIsLoading(false);
       })
       .catch((error) => {
@@ -86,6 +92,7 @@ const GroupsPage = ({ userRole }) => {
         });
     }
   }, [viewMode]);
+
   useEffect(() => {
     if (userToEdit) {
       setEditUserName(userToEdit.name);
@@ -95,6 +102,22 @@ const GroupsPage = ({ userRole }) => {
       setIsAdmin(userToEdit.role === 1);
     }
   }, [userToEdit]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const getFilteredUsers = () => {
+    return users.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const getFilteredGroups = () => {
+    return groups.filter((group) =>
+      group.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
 
   const hasChanges = () => {
     return (
@@ -531,6 +554,33 @@ const GroupsPage = ({ userRole }) => {
           Пользователи
         </button>
       </div>
+      <input
+        type="text"
+        placeholder={
+          viewMode === "groups" ? "Поиск по группе" : "Поиск по имени"
+        }
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+
+      {viewMode === "users" && (
+        <div>
+          {getFilteredUsers().map((user) => (
+            <div key={user.id}>{user.name}</div>
+          ))}
+        </div>
+      )}
+
+      {viewMode === "groups" && (
+        <div>
+          {getFilteredGroups().map((group) => (
+            <div key={group.id}>{group.name}</div>
+          ))}
+        </div>
+      )}
 
       {viewMode === "rating" ? (
         <div>
