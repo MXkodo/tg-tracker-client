@@ -534,7 +534,17 @@ const GroupsPage = ({ userRole }) => {
           Пользователи
         </button>
       </div>
-
+      <div className="flex flex-col mb-5">
+        <input
+          type="text"
+          placeholder={`Поиск по ${
+            viewMode === "users" ? "пользователям" : "группам"
+          }`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+        />
+      </div>
       {viewMode === "rating" ? (
         <div>
           <h1 className="text-xl font-bold mb-4">
@@ -563,17 +573,6 @@ const GroupsPage = ({ userRole }) => {
               </li>
             ))}
           </ul>
-          <div className="flex flex-col mb-5">
-            <input
-              type="text"
-              placeholder={`Поиск по ${
-                viewMode === "users" ? "пользователям" : "группам"
-              }`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 p-2 rounded-md mb-4 text-black"
-            />
-          </div>
         </div>
       ) : (
         renderItemsList()
