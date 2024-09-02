@@ -361,6 +361,7 @@ const GroupsPage = ({ userRole }) => {
   };
 
   const handleConfirmationCodeSubmit = () => {
+    console.log("Confirmation Code:", confirmationCode);
     axios
       .delete(`https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}`, {
         headers: { "ngrok-skip-browser-warning": "1" },
