@@ -573,19 +573,14 @@ const GroupsPage = ({ userRole }) => {
               <option value="descending">По убыванию рейтинга</option>
               <option value="alphabetical">По алфавиту имени</option>
             </select>
+            <input
+              type="text"
+              placeholder="Поиск по пользователям"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md ml-4 text-black"
+            />
           </div>
-          {viewMode === "rating" && (
-            <div className="flex flex-col mb-5">
-              <input
-                type="text"
-                placeholder="Поиск по пользователям"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border border-gray-300 p-2 rounded-md mb-4 text-black"
-              />
-            </div>
-          )}
-
           <ul className="space-y-2">
             {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
