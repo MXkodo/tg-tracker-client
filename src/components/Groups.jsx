@@ -29,6 +29,10 @@ const GroupsPage = ({ userRole }) => {
   const [availableGroups, setAvailableGroups] = useState([]);
   const [selectedGroupForUser, setSelectedGroupForUser] = useState("");
 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [confirmationCode, setConfirmationCode] = useState("");
+  const [isDeletingGroup, setIsDeletingGroup] = useState(false);
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [editUserName, setEditUserName] = useState("");
@@ -127,6 +131,20 @@ const GroupsPage = ({ userRole }) => {
     setEditUserName(user.name);
     setEditTelegramUsername(user.username || "");
     setShowEditModal(true);
+  };
+
+  const initiateDeleteProcess = () => {
+    axios
+      .post(
+        `https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}/initiate-deletion`
+      )
+      .then(() => {
+        setIsDeletingGroup(true);
+        setShowConfirmationModal(true);
+      })
+      .catch((error) => {
+        console.error("Ошибка при инициации удаления:", error);
+      });
   };
 
   const handleEditInputChange = (event) => {
@@ -320,20 +338,35 @@ const GroupsPage = ({ userRole }) => {
   };
 
   const confirmDeleteItem = () => {
-    const apiUrl =
-      viewMode === "groups"
-        ? ` https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}`
-        : `https://taskauth.emivn.io/api/v1/users`;
+    if (viewMode === "groups") {
+      // Для групп сначала инициируем процесс удаления
+      initiateDeleteProcess();
+    } else {
+      // Для пользователей удаляем сразу
+      axios
+        .delete(`https://taskauth.emivn.io/api/v1/users/${itemToDelete.uuid}`, {
+          headers: { "ngrok-skip-browser-warning": "1" },
+          data: { username: itemToDelete.username },
+        })
+        .then(() => {
+          const updatedItems = items.filter(
+            (item) => item.uuid !== itemToDelete.uuid
+          );
+          setItems(updatedItems);
+          setItemToDelete(null);
+          setShowDeleteModal(false);
+        })
+        .catch((error) => {
+          console.error("Ошибка при удалении пользователя:", error);
+        });
+    }
+  };
 
-    const requestData =
-      viewMode === "users" ? { username: itemToDelete.username } : {};
-
+  const handleConfirmationCodeSubmit = () => {
     axios
-      .request({
-        url: apiUrl,
-        method: "DELETE",
-        data: requestData,
+      .delete(`https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}`, {
         headers: { "ngrok-skip-browser-warning": "1" },
+        params: { code: confirmationCode },
       })
       .then(() => {
         const updatedItems = items.filter(
@@ -341,12 +374,14 @@ const GroupsPage = ({ userRole }) => {
         );
         setItems(updatedItems);
         setItemToDelete(null);
+        setShowConfirmationModal(false);
         setShowDeleteModal(false);
       })
       .catch((error) => {
-        console.error(`Error deleting ${viewMode.slice(0, -1)}:`, error);
+        console.error("Ошибка при удалении группы:", error);
       });
   };
+
   const getFilteredRatingData = () => {
     switch (filter) {
       case "ascending":
@@ -551,6 +586,39 @@ const GroupsPage = ({ userRole }) => {
                 type="button"
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
                 onClick={() => setShowDeleteModal(false)}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirmationModal && isDeletingGroup && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
+            <h2 className="text-lg font-bold mb-4">Подтверждение удаления</h2>
+            <p className="mb-4">
+              Введите код подтверждения, отправленный вам по СМС:
+            </p>
+            <input
+              type="text"
+              value={confirmationCode}
+              onChange={(e) => setConfirmationCode(e.target.value)}
+              className="mb-4 p-2 border rounded"
+            />
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
+                onClick={handleConfirmationCodeSubmit}
+              >
+                Подтвердить
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                onClick={() => setShowConfirmationModal(false)}
               >
                 Отмена
               </button>
