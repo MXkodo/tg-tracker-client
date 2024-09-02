@@ -38,7 +38,6 @@ const GroupsPage = ({ userRole }) => {
   const [editUserName, setEditUserName] = useState("");
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
   const [filter, setFilter] = useState("none");
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -194,14 +193,6 @@ const GroupsPage = ({ userRole }) => {
           setError("Ошибка при обновлении пользователя.");
         });
     }
-  };
-  const getFilteredItems = () => {
-    return items.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handleRemoveUserFromGroup = (uuid) => {
@@ -445,61 +436,56 @@ const GroupsPage = ({ userRole }) => {
     </div>
   );
 
-  const renderItemsList = () => {
-    const filteredItems = getFilteredItems();
-
-    return (
-      <ul className="list-none pl-0">
-        {filteredItems.length === 0 ? (
-          <p className="text-center">Нет доступных {viewMode.slice(0, -1)}.</p>
-        ) : (
-          filteredItems.map((item) => (
-            <li
-              key={item.uuid}
-              className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
-                activeItem === item.uuid ? "bg-green-500 text-black" : ""
-              }`}
-              onClick={(e) => {
-                if (
-                  userRole === 2 ||
-                  (viewMode === "groups" && userRole === 1)
-                ) {
-                  handleItemClick(item, e);
-                } else {
-                  alert("Недостаточно прав");
-                }
-              }}
-            >
-              <div className="flex items-center cursor-pointer">
-                <span>{item.name}</span>
-                {viewMode === "users" && item.role === 1 && (
-                  <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
-                    А
-                  </span>
-                )}
-                {viewMode === "users" && item.role === 2 && (
-                  <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
-                    А
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center">
-                {/* Условие для отображения кнопки удаления */}
-                {userRole === 2 && (
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteItem(item.uuid);
-                    }}
-                  >
-                    Удалить
-                  </button>
-                )}
-              </div>
-            </li>
-          ))
-        )}
+  const renderItemsList = () => (
+    <ul className="list-none pl-0">
+      {items.length === 0 ? (
+        <p className="text-center">Нет доступных {viewMode.slice(0, -1)}.</p>
+      ) : (
+        items.map((item) => (
+          <li
+            key={item.uuid}
+            className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+              activeItem === item.uuid ? "bg-green-500 text-black" : ""
+            }`}
+            onClick={(e) => {
+              if (userRole === 2 || (viewMode === "groups" && userRole === 1)) {
+                handleItemClick(item, e);
+              } else {
+                alert("Недостаточно прав");
+              }
+            }}
+          >
+            <div className="flex items-center cursor-pointer">
+              <span>{item.name}</span>
+              {viewMode === "users" && item.role === 1 && (
+                <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
+                  А
+                </span>
+              )}
+              {viewMode === "users" && item.role === 2 && (
+                <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                  А
+                </span>
+              )}
+            </div>
+            <div className="flex items-center">
+              {/* Условие для отображения кнопки удаления */}
+              {userRole === 2 && (
+                <button
+                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteItem(item.uuid);
+                  }}
+                >
+                  Удалить
+                </button>
+              )}
+            </div>
+          </li>
+        ))
+      )}
+      <>
         <div className="flex justify-end mt-4">
           <button
             type="button"
@@ -510,9 +496,9 @@ const GroupsPage = ({ userRole }) => {
             {viewMode === "groups" ? " новой группы" : " нового пользователя"}
           </button>
         </div>
-      </ul>
-    );
-  };
+      </>
+    </ul>
+  );
 
   if (isLoading) return renderLoadingAnimation();
   if (error) return <p>Error: {error}</p>;
@@ -563,15 +549,6 @@ const GroupsPage = ({ userRole }) => {
               <option value="descending">По убыванию рейтинга</option>
               <option value="alphabetical">По алфавиту имени</option>
             </select>
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="Поиск..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            {isLoading ? renderLoadingAnimation() : renderItemsList()}
           </div>
           <ul className="space-y-2">
             {filteredRatingData.map((user) => (
