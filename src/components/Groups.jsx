@@ -38,6 +38,7 @@ const GroupsPage = ({ userRole }) => {
   const [editUserName, setEditUserName] = useState("");
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
   const [filter, setFilter] = useState("none");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -436,12 +437,16 @@ const GroupsPage = ({ userRole }) => {
     </div>
   );
 
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const renderItemsList = () => (
     <ul className="list-none pl-0">
-      {items.length === 0 ? (
+      {filteredItems.length === 0 ? (
         <p className="text-center">Нет доступных {viewMode.slice(0, -1)}.</p>
       ) : (
-        items.map((item) => (
+        filteredItems.map((item) => (
           <li
             key={item.uuid}
             className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
@@ -485,18 +490,16 @@ const GroupsPage = ({ userRole }) => {
           </li>
         ))
       )}
-      <>
-        <div className="flex justify-end mt-4">
-          <button
-            type="button"
-            className="px-4 py-2 bg-green-500 text-white rounded-lg"
-            onClick={() => setShowModal(true)}
-          >
-            Создание{" "}
-            {viewMode === "groups" ? " новой группы" : " нового пользователя"}
-          </button>
-        </div>
-      </>
+      <div className="flex justify-end mt-4">
+        <button
+          type="button"
+          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+          onClick={() => setShowModal(true)}
+        >
+          Создание{" "}
+          {viewMode === "groups" ? " новой группы" : " нового пользователя"}
+        </button>
+      </div>
     </ul>
   );
 
@@ -560,6 +563,17 @@ const GroupsPage = ({ userRole }) => {
               </li>
             ))}
           </ul>
+          <div className="flex flex-col mb-5">
+            <input
+              type="text"
+              placeholder={`Поиск по ${
+                viewMode === "users" ? "пользователям" : "группам"
+              }`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+            />
+          </div>
         </div>
       ) : (
         renderItemsList()
