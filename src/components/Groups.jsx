@@ -107,6 +107,19 @@ const GroupsPage = ({ userRole }) => {
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
+  const filterGroups = (groups) => {
+    if (!searchTerm) return groups;
+    return groups.filter((group) =>
+      group.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const filterUsers = (users) => {
+    if (!searchTerm) return users;
+    return users.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
 
   const fetchGroupUsers = (groupId) => {
     axios
@@ -245,6 +258,7 @@ const GroupsPage = ({ userRole }) => {
 
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
+    setSearchTerm("");
     setActiveItem(null);
   };
 
@@ -437,9 +451,8 @@ const GroupsPage = ({ userRole }) => {
     </div>
   );
 
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems =
+    viewMode === "groups" ? filterGroups(items) : filterUsers(items);
 
   const renderItemsList = () => (
     <ul className="list-none pl-0">
@@ -474,7 +487,6 @@ const GroupsPage = ({ userRole }) => {
               )}
             </div>
             <div className="flex items-center">
-              {/* Условие для отображения кнопки удаления */}
               {userRole === 2 && (
                 <button
                   className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
@@ -505,6 +517,31 @@ const GroupsPage = ({ userRole }) => {
 
   if (isLoading) return renderLoadingAnimation();
   if (error) return <p>Error: {error}</p>;
+  const filterRatingData = () => {
+    let data = ratingData;
+
+    if (searchTerm) {
+      data = data.filter((user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    switch (filter) {
+      case "ascending":
+        data = [...data].sort((a, b) => a.average_rating - b.average_rating);
+        break;
+      case "descending":
+        data = [...data].sort((a, b) => b.average_rating - a.average_rating);
+        break;
+      case "alphabetical":
+        data = [...data].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+
+    return data;
+  };
 
   return (
     <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
@@ -556,7 +593,7 @@ const GroupsPage = ({ userRole }) => {
           />
         </div>
       )}
-      {viewMode === "rating" ? (
+      {viewMode === "rating" && (
         <div>
           <h1 className="text-xl font-bold mb-4">
             Рейтинг пользователей <DownloadButton />
@@ -592,9 +629,8 @@ const GroupsPage = ({ userRole }) => {
             ))}
           </ul>
         </div>
-      ) : (
-        renderItemsList()
       )}
+      {viewMode !== "rating" && renderItemsList()}
 
       {showDeleteModal && itemToDelete && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
