@@ -374,9 +374,11 @@ const GroupsPage = ({ userRole }) => {
         setItemToDelete(null);
         setShowConfirmationModal(false);
         setShowDeleteModal(false);
+        setConfirmationCode("");
       })
       .catch((error) => {
         alert("Неверный код подтверждения");
+        setConfirmationCode("");
         console.error("Ошибка при удалении группы:", error);
       });
   };
