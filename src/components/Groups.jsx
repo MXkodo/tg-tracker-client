@@ -574,6 +574,18 @@ const GroupsPage = ({ userRole }) => {
               <option value="alphabetical">По алфавиту имени</option>
             </select>
           </div>
+          {viewMode === "rating" && (
+            <div className="flex flex-col mb-5">
+              <input
+                type="text"
+                placeholder="Поиск по пользователям"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+              />
+            </div>
+          )}
+
           {searchTerm && (
             <div className="flex flex-col mb-5">
               <input
