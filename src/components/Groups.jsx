@@ -562,36 +562,41 @@ const GroupsPage = ({ userRole }) => {
             Рейтинг пользователей <DownloadButton />
           </h1>
           <div className="flex items-center mb-4">
-            <div className="mr-4">
-              <select
-                id="filter"
-                value={filter}
-                onChange={handleFilterChange}
-                className="border border-gray-300 p-2 rounded-md text-black"
-              >
-                <option value="none">Фильтр</option>
-                <option value="ascending">По возрастанию рейтинга</option>
-                <option value="descending">По убыванию рейтинга</option>
-                <option value="alphabetical">По алфавиту имени</option>
-              </select>
-            </div>
-            <button
-              type="button"
-              className="px-4 py-2 bg-green-500 text-white rounded-lg"
-              onClick={() => setShowModal(true)}
-            >
-              Добавить пользователя
-            </button>
-          </div>
-          <div className="flex flex-col mb-5">
-            <input
-              type="text"
-              placeholder="Поиск по пользователям"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+            <select
+              id="filter"
+              value={filter}
+              onChange={handleFilterChange}
               className="border border-gray-300 p-2 rounded-md text-black"
-            />
+            >
+              <option value="none">Фильтр</option>
+              <option value="ascending">По возрастанию рейтинга</option>
+              <option value="descending">По убыванию рейтинга</option>
+              <option value="alphabetical">По алфавиту имени</option>
+            </select>
           </div>
+          {viewMode === "rating" && (
+            <div className="flex flex-col mb-5">
+              <input
+                type="text"
+                placeholder="Поиск по пользователям"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+              />
+            </div>
+          )}
+
+          {searchTerm && (
+            <div className="flex flex-col mb-5">
+              <input
+                type="text"
+                placeholder="Поиск по пользователям"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+              />
+            </div>
+          )}
           <ul className="space-y-2">
             {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
