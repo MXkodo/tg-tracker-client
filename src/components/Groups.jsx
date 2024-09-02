@@ -399,25 +399,6 @@ const GroupsPage = ({ userRole }) => {
       });
   };
 
-  const getFilteredRatingData = () => {
-    switch (filter) {
-      case "ascending":
-        return [...ratingData].sort(
-          (a, b) => a.average_rating - b.average_rating
-        );
-      case "descending":
-        return [...ratingData].sort(
-          (a, b) => b.average_rating - a.average_rating
-        );
-      case "alphabetical":
-        return [...ratingData].sort((a, b) => a.name.localeCompare(b.name));
-      default:
-        return ratingData;
-    }
-  };
-
-  const filteredRatingData = getFilteredRatingData();
-
   const handleAddUserToGroup = () => {
     if (selectedUserId) {
       axios
@@ -450,7 +431,36 @@ const GroupsPage = ({ userRole }) => {
       <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-green-500"></div>
     </div>
   );
+  const getFilteredRatingData = () => {
+    switch (filter) {
+      case "ascending":
+        return [...ratingData].sort(
+          (a, b) => a.average_rating - b.average_rating
+        );
+      case "descending":
+        return [...ratingData].sort(
+          (a, b) => b.average_rating - a.average_rating
+        );
+      case "alphabetical":
+        return [...ratingData].sort((a, b) => a.name.localeCompare(b.name));
+      default:
+        return ratingData;
+    }
+  };
 
+  const filterRatingData = () => {
+    let data = getFilteredRatingData();
+
+    if (searchTerm) {
+      data = data.filter((user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return data;
+  };
+
+  const filteredRatingData = filterRatingData();
   const filteredItems =
     viewMode === "groups" ? filterGroups(items) : filterUsers(items);
 
@@ -517,31 +527,6 @@ const GroupsPage = ({ userRole }) => {
 
   if (isLoading) return renderLoadingAnimation();
   if (error) return <p>Error: {error}</p>;
-  const filterRatingData = () => {
-    let data = ratingData;
-
-    if (searchTerm) {
-      data = data.filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    switch (filter) {
-      case "ascending":
-        data = [...data].sort((a, b) => a.average_rating - b.average_rating);
-        break;
-      case "descending":
-        data = [...data].sort((a, b) => b.average_rating - a.average_rating);
-        break;
-      case "alphabetical":
-        data = [...data].sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      default:
-        break;
-    }
-
-    return data;
-  };
 
   return (
     <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
@@ -593,7 +578,7 @@ const GroupsPage = ({ userRole }) => {
           />
         </div>
       )}
-      {viewMode === "rating" && (
+      {viewMode === "rating" ? (
         <div>
           <h1 className="text-xl font-bold mb-4">
             Рейтинг пользователей <DownloadButton />
@@ -610,12 +595,14 @@ const GroupsPage = ({ userRole }) => {
               <option value="descending">По убыванию рейтинга</option>
               <option value="alphabetical">По алфавиту имени</option>
             </select>
+          </div>
+          <div className="flex flex-col mb-5">
             <input
               type="text"
               placeholder="Поиск по пользователям"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 p-2 rounded-md ml-4 text-black"
+              className="border border-gray-300 p-2 rounded-md mb-4 text-black"
             />
           </div>
           <ul className="space-y-2">
@@ -629,9 +616,9 @@ const GroupsPage = ({ userRole }) => {
             ))}
           </ul>
         </div>
+      ) : (
+        renderItemsList()
       )}
-      {viewMode !== "rating" && renderItemsList()}
-
       {showDeleteModal && itemToDelete && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
