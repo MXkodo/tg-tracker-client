@@ -339,10 +339,8 @@ const GroupsPage = ({ userRole }) => {
 
   const confirmDeleteItem = () => {
     if (viewMode === "groups") {
-      // Для групп сначала инициируем процесс удаления
       initiateDeleteProcess();
     } else {
-      // Для пользователей удаляем сразу
       axios
         .delete(`https://taskauth.emivn.io/api/v1/users/${itemToDelete.uuid}`, {
           headers: { "ngrok-skip-browser-warning": "1" },
@@ -378,6 +376,7 @@ const GroupsPage = ({ userRole }) => {
         setShowDeleteModal(false);
       })
       .catch((error) => {
+        alert("Неверный код подтверждения");
         console.error("Ошибка при удалении группы:", error);
       });
   };
@@ -605,8 +604,9 @@ const GroupsPage = ({ userRole }) => {
               type="text"
               value={confirmationCode}
               onChange={(e) => setConfirmationCode(e.target.value)}
-              className="mb-4 p-2 border rounded"
+              className="mb-4 p-2 border rounded text-lg font-bold text-black"
             />
+
             <div className="flex justify-end">
               <button
                 type="button"
