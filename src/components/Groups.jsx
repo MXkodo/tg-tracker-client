@@ -41,6 +41,9 @@ const GroupsPage = ({ userRole, userUUID }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    console.log("viewMode:", viewMode);
+    console.log("userRole:", userRole);
+    console.log("userUUID:", userUUID);
     setIsLoading(true);
     let apiUrl;
 
@@ -192,7 +195,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
           {
             name: editUserName,
             username: editTelegramUsername,
-            role: isAdmin ? 1 : 0, // Установка role в зависимости от состояния чекбокса
+            role: isAdmin ? 1 : 0,
           },
           {
             headers: {
@@ -201,7 +204,6 @@ const GroupsPage = ({ userRole, userUUID }) => {
           }
         )
         .then(() => {
-          // Обновляем список пользователей
           return axios.get("https://taskauth.emivn.io/api/v1/users", {
             headers: {
               "ngrok-skip-browser-warning": "1",
