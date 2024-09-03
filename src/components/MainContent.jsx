@@ -5,7 +5,7 @@ import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
-function MainContent({ userRole, userUUID }) {
+function MainContent({ userRole, adminUUID }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -31,7 +31,7 @@ function MainContent({ userRole, userUUID }) {
         let url = "";
 
         if (userRole === 1) {
-          url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
+          url = `https://taskback.emivn.io/api/v1/tasks/${adminUUID}`;
         } else {
           url = "https://taskback.emivn.io/api/v1/tasks";
         }
@@ -51,7 +51,7 @@ function MainContent({ userRole, userUUID }) {
 
     fetchTasks();
     fetchGroups();
-  }, [activeStatusId, userRole, userUUID]);
+  }, [activeStatusId, userRole, adminUUID]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
