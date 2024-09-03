@@ -29,7 +29,7 @@ function MainContent({ userRole, adminUUID }) {
     const fetchTasks = async () => {
       try {
         let url = "";
-
+        console.log("Fetching from userRole:", userRole);
         if (userRole === 1) {
           url = `https://taskback.emivn.io/api/v1/tasks/${adminUUID}`;
         } else {
