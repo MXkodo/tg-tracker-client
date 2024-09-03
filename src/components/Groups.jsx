@@ -252,7 +252,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         const allUsers = response.data || [];
 
         return axios
-          .get("https://taskback.emivn.io/api/v1/groups/users", {
+          .get("https://taskback.emivn.io/users/in", {
             headers: {
               "ngrok-skip-browser-warning": "1",
             },
