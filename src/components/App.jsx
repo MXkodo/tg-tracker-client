@@ -45,7 +45,7 @@ function App() {
             <Route path="/add" element={<AddTaskPage />} />
             <Route
               path="/group"
-              element={<GroupsPage userRole={userRole} userUUID={userUUID} />}
+              element={<GroupsPage role={userRole} adminUUID={userUUID} />}
             />
           </Routes>
         </main>

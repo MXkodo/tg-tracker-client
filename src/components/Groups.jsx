@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DownloadButton from "./DownloadButtom";
 
-const GroupsPage = ({ userRole, userUUID }) => {
+const GroupsPage = ({ role, adminUUID }) => {
   const [viewMode, setViewMode] = useState("groups");
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,13 +42,13 @@ const GroupsPage = ({ userRole, userUUID }) => {
 
   useEffect(() => {
     console.log("viewMode:", viewMode);
-    console.log("userRole:", userRole);
-    console.log("userUUID:", userUUID);
+    console.log("userRole:", role);
+    console.log("userUUID:", adminUUID);
     setIsLoading(true);
     let apiUrl;
 
-    if (viewMode === "groups" && userRole === 1 && userUUID) {
-      apiUrl = `https://taskback.emivn.io/api/v1/groups/${userUUID}`;
+    if (viewMode === "groups" && role === 1 && adminUUID) {
+      apiUrl = `https://taskback.emivn.io/api/v1/groups/${adminUUID}`;
     } else if (viewMode === "rating") {
       apiUrl = "https://taskback.emivn.io/api/v1/tasks/rating";
     } else if (viewMode === "users") {
@@ -82,7 +82,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
         setError(error.message);
         setIsLoading(false);
       });
-  }, [viewMode, userRole, userUUID]);
+  }, [viewMode, role, adminUUID]);
 
   useEffect(() => {
     if (viewMode === "users") {
@@ -325,7 +325,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
 
     const requestData =
       viewMode === "groups"
-        ? { name: itemName, admin_uuid: userUUID }
+        ? { name: itemName, admin_uuid: adminUUID }
         : {
             name: itemName,
             username: telegramUsername,
@@ -501,7 +501,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
               activeItem === item.uuid ? "bg-green-500 text-black" : ""
             }`}
             onClick={(e) => {
-              if (userRole === 2 || (viewMode === "groups" && userRole === 1)) {
+              if (role === 2 || (viewMode === "groups" && adminUUID === 1)) {
                 handleItemClick(item, e);
               } else {
                 alert("Недостаточно прав");
@@ -522,7 +522,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
               )}
             </div>
             <div className="flex items-center">
-              {userRole === 2 && (
+              {role === 2 && (
                 <button
                   className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
                   onClick={(e) => {
@@ -804,7 +804,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
                     </option>
                   ))}
                 </select>
-                {userRole !== 1 && (
+                {role !== 1 && (
                   <div className="flex items-center mb-2">
                     <input
                       type="checkbox"

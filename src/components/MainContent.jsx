@@ -34,16 +34,14 @@ const MainContent = ({ userRole, userUUID }) => {
       try {
         let url = "";
 
-        if (userRole === 1 && userUUID) {
+        if (userRole === 1) {
           url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
         } else {
           url = "https://taskback.emivn.io/api/v1/tasks";
         }
-
         console.log("Fetching from adminUUID:", userUUID);
         console.log("Fetching from userRole:", userRole);
         console.log("Fetching from URL:", url);
-
         const response = await axios.get(url, {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -58,7 +56,8 @@ const MainContent = ({ userRole, userUUID }) => {
     };
 
     fetchTasks();
-  }, [activeStatusId]);
+    fetchGroups();
+  }, [activeStatusId, userRole, userUUID]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
