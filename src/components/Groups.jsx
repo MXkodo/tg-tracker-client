@@ -40,37 +40,18 @@ const GroupsPage = ({ userRole, userUUID }) => {
   const [filter, setFilter] = useState("none");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [constantUserUUID, setConstantUserUUID] = useState(null);
-
-  useEffect(() => {
-    if (userUUID && constantUserUUID === null) {
-      setConstantUserUUID(userUUID);
-    }
-  }, [userUUID, constantUserUUID]);
-
   useEffect(() => {
     setIsLoading(true);
     let apiUrl;
 
-    // Используем constantUserUUID вместо userUUID
-    if (userRole === 1) {
-      apiUrl =
-        viewMode === "groups" && constantUserUUID
-          ? `https://taskback.emivn.io/api/v1/groups/${constantUserUUID}`
-          : viewMode === "rating"
-          ? "https://taskback.emivn.io/api/v1/tasks/rating"
-          : viewMode === "users"
-          ? "https://taskauth.emivn.io/api/v1/users"
-          : null;
-    } else {
-      apiUrl =
-        viewMode === "groups"
-          ? "https://taskback.emivn.io/api/v1/groups"
-          : viewMode === "users"
-          ? "https://taskauth.emivn.io/api/v1/users"
-          : viewMode === "rating"
-          ? "https://taskback.emivn.io/api/v1/tasks/rating"
-          : null;
+    if (viewMode === "groups" && userRole === 1 && userUUID) {
+      apiUrl = `https://taskback.emivn.io/api/v1/groups/${userUUID}`;
+    } else if (viewMode === "rating") {
+      apiUrl = "https://taskback.emivn.io/api/v1/tasks/rating";
+    } else if (viewMode === "users") {
+      apiUrl = "https://taskauth.emivn.io/api/v1/users";
+    } else if (viewMode === "groups") {
+      apiUrl = "https://taskback.emivn.io/api/v1/groups";
     }
 
     if (!apiUrl) {
@@ -98,7 +79,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
         setError(error.message);
         setIsLoading(false);
       });
-  }, [viewMode, userRole, constantUserUUID]);
+  }, [viewMode, userRole, userUUID]);
 
   useEffect(() => {
     if (viewMode === "users") {
