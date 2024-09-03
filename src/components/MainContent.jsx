@@ -35,6 +35,9 @@ const MainContent = ({ userRole, userUUID }) => {
         let url = "";
 
         if (userRole === 1) {
+          if (!isValidUUID(userUUID)) {
+            throw new Error("Invalid UUID format.");
+          }
           url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
         } else {
           url = "https://taskback.emivn.io/api/v1/tasks";
@@ -96,6 +99,12 @@ const MainContent = ({ userRole, userUUID }) => {
       console.error("Error fetching groups:", error);
     }
   };
+  const isValidUUID = (uuid) => {
+    const uuidPattern =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    return uuidPattern.test(uuid);
+  };
+
   const handleAcceptTask = async (taskId, status) => {
     console.log(
       "handleAcceptTask called with taskId:",
