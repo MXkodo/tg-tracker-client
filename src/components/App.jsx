@@ -35,7 +35,7 @@ function App() {
                   userRole === 0 ? (
                     <MainUser role={userRole} userUUID={userUUID} />
                   ) : (
-                    <MainContent role={userRole} userUUID={userUUID} />
+                    <MainContent userRole={userRole} userUUID={userUUID} />
                   )
                 ) : (
                   renderLoadingAnimation()
