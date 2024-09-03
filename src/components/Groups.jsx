@@ -227,22 +227,23 @@ const GroupsPage = ({ userRole, userUUID }) => {
     }
   };
 
-  const handleRemoveUserFromGroup = (uuid) => {
-    if (activeItem) {
-      axios
-        .delete(`https://taskback.emivn.io/api/v1/groups/user/${uuid}`, {
+  const handleRemoveUserFromGroup = (userUUID, groupUUID) => {
+    axios
+      .delete(
+        `https://taskback.emivn.io/api/v1/groups/user/${userUUID}/${groupUUID}`,
+        {
           headers: {
             "ngrok-skip-browser-warning": "1",
           },
-        })
-        .then(() => {
-          fetchGroupUsers(activeItem);
-        })
-        .catch((error) => {
-          console.error("Error removing user from group:", error);
-          setError("Ошибка при удалении пользователя из группы.");
-        });
-    }
+        }
+      )
+      .then(() => {
+        fetchGroupUsers(activeItem);
+      })
+      .catch((error) => {
+        console.error("Error removing user from group:", error);
+        setError("Ошибка при удалении пользователя из группы.");
+      });
   };
 
   const fetchAvailableUsers = () => {
@@ -871,7 +872,9 @@ const GroupsPage = ({ userRole, userUUID }) => {
                     </div>
                     <button
                       className="px-2 py-1 bg-red-500 text-white rounded"
-                      onClick={() => handleRemoveUserFromGroup(user.uuid)}
+                      onClick={() =>
+                        handleRemoveUserFromGroup(user.uuid, activeItem)
+                      }
                     >
                       Удалить
                     </button>
