@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DownloadButton from "./DownloadButtom";
 
-const GroupsPage = ({ userRole }) => {
+const GroupsPage = ({ userRole, userUUID }) => {
   const [viewMode, setViewMode] = useState("groups");
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -300,11 +300,11 @@ const GroupsPage = ({ userRole }) => {
 
     const requestData =
       viewMode === "groups"
-        ? { name: itemName }
+        ? { name: itemName, admin_uuid: userUUID }
         : {
             name: itemName,
             username: telegramUsername,
-            role: isAdmin ? 1 : 0, // Установка role в зависимости от состояния чекбокса
+            role: isAdmin ? 1 : 0,
           };
 
     axios
