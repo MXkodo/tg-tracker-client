@@ -34,14 +34,16 @@ const MainContent = ({ userRole, userUUID }) => {
       try {
         let url = "";
 
-        if (userRole === 1) {
+        if (userRole === 1 && userUUID) {
           url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
         } else {
           url = "https://taskback.emivn.io/api/v1/tasks";
         }
+
         console.log("Fetching from adminUUID:", userUUID);
         console.log("Fetching from userRole:", userRole);
         console.log("Fetching from URL:", url);
+
         const response = await axios.get(url, {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -56,8 +58,7 @@ const MainContent = ({ userRole, userUUID }) => {
     };
 
     fetchTasks();
-    fetchGroups();
-  }, [activeStatusId, userRole, userUUID]);
+  }, [activeStatusId]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
@@ -104,7 +105,7 @@ const MainContent = ({ userRole, userUUID }) => {
       status
     );
     if (status === 7) {
-      console.log("Opening modal for task:", taskId); // Логирование
+      console.log("Opening modal for task:", taskId);
       setPendingTaskId(taskId);
       setSelectedTask(tasks.find((task) => task.uuid === taskId));
       setModalOpen(true);
