@@ -5,7 +5,7 @@ import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
-function MainContent() {
+function MainContent({ userRole, userUUID }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -26,25 +26,30 @@ function MainContent() {
   }, [activeStatusId]);
 
   useEffect(() => {
-    const fetchAllTasks = async () => {
+    const fetchTasks = async () => {
       try {
-        const response = await axios.get(
-          "https://taskback.emivn.io/api/v1/tasks",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
+        let url = "https://taskback.emivn.io/api/v1/tasks";
+
+        if (userRole === 1) {
+          url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
+        }
+
+        const response = await axios.get(url, {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        });
+
         setAllTasks(response.data || []);
         filterTasksByStatus(response.data, activeStatusId);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     };
-    fetchAllTasks();
+
+    fetchTasks();
     fetchGroups();
-  }, [activeStatusId]);
+  }, [activeStatusId, userRole, userUUID]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
