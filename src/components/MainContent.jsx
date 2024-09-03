@@ -5,7 +5,7 @@ import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
-function MainContent({ userRole, userUUID }) {
+const MainContent = ({ userRole, userUUID }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -743,7 +743,7 @@ function MainContent({ userRole, userUUID }) {
       )}
     </div>
   );
-}
+};
 
 const formatTimestamp = (timestamp) => {
   if (!timestamp) return "Не указано";
