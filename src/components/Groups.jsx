@@ -40,13 +40,23 @@ const GroupsPage = ({ userRole, userUUID }) => {
   const [filter, setFilter] = useState("none");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [constantUserUUID, setConstantUserUUID] = useState(null);
+
+  useEffect(() => {
+    if (userUUID && constantUserUUID === null) {
+      setConstantUserUUID(userUUID);
+    }
+  }, [userUUID, constantUserUUID]);
+
   useEffect(() => {
     setIsLoading(true);
     let apiUrl;
+
+    // Используем constantUserUUID вместо userUUID
     if (userRole === 1) {
       apiUrl =
-        viewMode === "groups" && userUUID
-          ? `https://taskback.emivn.io/api/v1/groups/${userUUID}`
+        viewMode === "groups" && constantUserUUID
+          ? `https://taskback.emivn.io/api/v1/groups/${constantUserUUID}`
           : viewMode === "rating"
           ? "https://taskback.emivn.io/api/v1/tasks/rating"
           : viewMode === "users"
@@ -88,7 +98,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
         setError(error.message);
         setIsLoading(false);
       });
-  }, [viewMode, userRole, userUUID]);
+  }, [viewMode, userRole, constantUserUUID]);
 
   useEffect(() => {
     if (viewMode === "users") {
