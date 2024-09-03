@@ -28,10 +28,12 @@ function MainContent({ userRole, userUUID }) {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        let url = "https://taskback.emivn.io/api/v1/tasks";
+        let url = "";
 
         if (userRole === 1) {
           url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
+        } else {
+          url = "https://taskback.emivn.io/api/v1/tasks";
         }
 
         const response = await axios.get(url, {
