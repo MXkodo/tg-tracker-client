@@ -50,7 +50,7 @@ const GroupsPage = ({ role, adminUUID }) => {
     if (viewMode === "groups" && role === 1 && adminUUID) {
       apiUrl = `https://taskback.emivn.io/api/v1/groups/${adminUUID}`;
     } else if (viewMode === "rating") {
-      apiUrl = "https://taskback.emivn.io/api/v1/tasks/rating";
+      apiUrl = "https://taskback.emivn.io/api/v1/rating";
     } else if (viewMode === "users") {
       apiUrl = "https://taskauth.emivn.io/api/v1/users";
     } else if (viewMode === "groups") {
