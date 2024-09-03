@@ -5,7 +5,7 @@ import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
 
-function MainContent({ userRole, adminUUID }) {
+function MainContent({ userRole, userUUID }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -24,18 +24,22 @@ function MainContent({ userRole, adminUUID }) {
   useEffect(() => {
     fetchGroups();
   }, [activeStatusId]);
-
+  useEffect(() => {
+    console.log("Inside MainContent");
+    console.log("userRole in MainContent:", userRole);
+    console.log("userUUID in MainContent:", userUUID);
+  }, [userRole, userUUID]);
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         let url = "";
 
         if (userRole === 1) {
-          url = `https://taskback.emivn.io/api/v1/tasks/${adminUUID}`;
+          url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
         } else {
           url = "https://taskback.emivn.io/api/v1/tasks";
         }
-        console.log("Fetching from adminUUID:", adminUUID);
+        console.log("Fetching from adminUUID:", userUUID);
         console.log("Fetching from userRole:", userRole);
         console.log("Fetching from URL:", url);
         const response = await axios.get(url, {
@@ -53,7 +57,7 @@ function MainContent({ userRole, adminUUID }) {
 
     fetchTasks();
     fetchGroups();
-  }, [activeStatusId, userRole, adminUUID]);
+  }, [activeStatusId, userRole, userUUID]);
 
   useEffect(() => {
     filterTasksByStatus(allTasks, activeStatusId);
