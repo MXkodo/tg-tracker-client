@@ -49,6 +49,8 @@ const GroupsPage = ({ userRole, userUUID }) => {
           ? `https://taskback.emivn.io/api/v1/groups/${userUUID}`
           : viewMode === "rating"
           ? "https://taskback.emivn.io/api/v1/tasks/rating"
+          : viewMode === "users"
+          ? "https://taskauth.emivn.io/api/v1/users"
           : null;
     } else {
       apiUrl =
