@@ -42,12 +42,32 @@ const GroupsPage = ({ userRole, userUUID }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    const apiUrl =
-      viewMode === "groups"
-        ? "https://taskback.emivn.io/api/v1/groups"
-        : viewMode === "users"
-        ? "https://taskauth.emivn.io/api/v1/users"
-        : "https:///taskback.emivn.io/api/v1/tasks/rating";
+    let apiUrl;
+    if (userRole === 1) {
+      // Если роль 1, используем URL с UUID
+      apiUrl =
+        viewMode === "groups" && userUUID
+          ? `https://taskback.emivn.io/api/v1/groups/${userUUID}`
+          : viewMode === "rating"
+          ? "https://taskback.emivn.io/api/v1/tasks/rating"
+          : null;
+    } else {
+      // Для других ролей или по умолчанию
+      apiUrl =
+        viewMode === "groups"
+          ? "https://taskback.emivn.io/api/v1/groups"
+          : viewMode === "users"
+          ? "https://taskauth.emivn.io/api/v1/users"
+          : viewMode === "rating"
+          ? "https://taskback.emivn.io/api/v1/tasks/rating"
+          : null;
+    }
+
+    if (!apiUrl) {
+      setError("Invalid API URL");
+      setIsLoading(false);
+      return;
+    }
 
     axios
       .get(apiUrl, {
@@ -68,7 +88,7 @@ const GroupsPage = ({ userRole, userUUID }) => {
         setError(error.message);
         setIsLoading(false);
       });
-  }, [viewMode]);
+  }, [viewMode, userRole, userUUID]);
 
   useEffect(() => {
     if (viewMode === "users") {
