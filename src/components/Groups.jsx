@@ -264,6 +264,14 @@ const GroupsPage = ({ userRole, userUUID }) => {
           .then((groupUsersResponse) => {
             const groupUserUUIDs = groupUsersResponse.data || [];
 
+            if (!Array.isArray(groupUserUUIDs)) {
+              console.error(
+                "Expected array of UUIDs but received:",
+                groupUserUUIDs
+              );
+              return;
+            }
+
             const usersNotInAnyGroup = allUsers.filter(
               (user) => !groupUserUUIDs.includes(user.uuid)
             );
@@ -271,6 +279,9 @@ const GroupsPage = ({ userRole, userUUID }) => {
             setAvailableUsers(usersNotInAnyGroup);
             setShowUserSelectModal(true);
           });
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   };
 
