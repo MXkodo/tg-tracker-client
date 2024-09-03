@@ -135,25 +135,6 @@ const GroupsPage = ({ role, adminUUID }) => {
     );
   };
 
-  const fetchGroupUsers = (groupId) => {
-    axios
-      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
-        headers: {
-          "ngrok-skip-browser-warning": "1",
-        },
-      })
-      .then((response) => {
-        setGroupUsers(response.data || []);
-        setShowGroupModal(true);
-      })
-      .catch((error) => {
-        console.error(`Error fetching users for group ${groupId}:`, error);
-        setError(
-          "Ошибка при получении пользователей группы. Проверьте сервер."
-        );
-      });
-  };
-
   const handleEditUser = (user) => {
     setUserToEdit(user);
     setEditUserName(user.name);
@@ -250,37 +231,32 @@ const GroupsPage = ({ role, adminUUID }) => {
       })
       .then((response) => {
         const allUsers = response.data || [];
-
-        return axios
-          .get("https://taskback.emivn.io/users/in", {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          })
-          .then((groupUsersResponse) => {
-            const groupUserUUIDs = groupUsersResponse.data || [];
-
-            if (!Array.isArray(groupUserUUIDs)) {
-              console.error(
-                "Expected array of UUIDs but received:",
-                groupUserUUIDs
-              );
-              return;
-            }
-
-            const usersNotInAnyGroup = allUsers.filter(
-              (user) => !groupUserUUIDs.includes(user.uuid)
-            );
-
-            setAvailableUsers(usersNotInAnyGroup);
-            setShowUserSelectModal(true);
-          });
+        setAvailableUsers(allUsers);
+        setShowUserSelectModal(true);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
 
+  const fetchGroupUsers = (groupId) => {
+    axios
+      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
+      .then((response) => {
+        setGroupUsers(response.data || []);
+        setShowGroupModal(true);
+      })
+      .catch((error) => {
+        console.error(`Error fetching users for group ${groupId}:`, error);
+        setError(
+          "Ошибка при получении пользователей группы. Проверьте сервер."
+        );
+      });
+  };
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setSearchTerm("");
