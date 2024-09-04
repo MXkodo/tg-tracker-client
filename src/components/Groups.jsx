@@ -146,7 +146,8 @@ const GroupsPage = ({ role, adminUUID }) => {
   const initiateDeleteProcess = () => {
     axios
       .post(
-        `https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}/initiate-deletion`
+        `https://taskback.emivn.io/api/v1/groups/${itemToDelete.uuid}/initiate-deletion`,
+        { adminUUID }
       )
       .then(() => {
         setIsDeletingGroup(true);
