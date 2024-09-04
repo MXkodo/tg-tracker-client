@@ -477,11 +477,7 @@ const GroupsPage = ({ role, adminUUID }) => {
               activeItem === item.uuid ? "bg-green-500 text-black" : ""
             }`}
             onClick={(e) => {
-              if (role === 2 || (viewMode === "groups" && adminUUID === 1)) {
-                handleItemClick(item, e);
-              } else {
-                alert("Недостаточно прав");
-              }
+              handleItemClick(item, e);
             }}
           >
             <div className="flex items-center cursor-pointer">
