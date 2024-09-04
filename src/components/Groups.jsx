@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DownloadButton from "./DownloadButtom";
+import backgroundImage from "../img/Back.png";
 
 const GroupsPage = ({ role, adminUUID }) => {
   const [viewMode, setViewMode] = useState("groups");
@@ -526,7 +527,14 @@ const GroupsPage = ({ role, adminUUID }) => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
+    <div
+      className="mx-auto p-5 rounded-lg shadow-md h-screen text-white font-sans"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="flex justify-between mb-5">
         <button
           className={`px-4 py-2 rounded-lg ${
