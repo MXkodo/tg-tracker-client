@@ -487,28 +487,6 @@ const MainContent = ({ userRole, userUUID }) => {
                 <div className="loader"></div>
               ) : (
                 <>
-                  {task.status_id === 2 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.id, 3);
-                      }}
-                    >
-                      Принять
-                    </button>
-                  )}
-                  {task.status_id === 3 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.id, 4);
-                      }}
-                    >
-                      Готово
-                    </button>
-                  )}
                   {task.status_id === 4 && (
                     <button
                       className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
@@ -544,17 +522,6 @@ const MainContent = ({ userRole, userUUID }) => {
                         Доработка
                       </button>
                     </>
-                  )}
-                  {task.status_id === 6 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.id, 3);
-                      }}
-                    >
-                      Принять
-                    </button>
                   )}
                   {task.status_id === 8 && (
                     <button
