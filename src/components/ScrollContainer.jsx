@@ -19,7 +19,7 @@ function ScrollContainer({ onFilterChange, activeStatusId }) {
   };
 
   return (
-    <div className="flex overflow-x-auto p-2 bg-zinc-800 h-[6vh]">
+    <div className="flex overflow-x-auto p-2 bg-black h-[6vh]">
       {buttons.map((button, index) => (
         <Button
           key={index}
@@ -27,7 +27,7 @@ function ScrollContainer({ onFilterChange, activeStatusId }) {
           isActive={button.statusId === activeStatusId}
           onClick={() => handleButtonClick(button.statusId)}
           className={`px-6 py-6 mr-2 bg-gray-700 rounded-full cursor-pointer transition-colors duration-300 whitespace-nowrap ${
-            button.statusId === activeStatusId ? "bg-green-500" : ""
+            button.statusId === activeStatusId ? "bg-yellow-500" : ""
           }`}
         />
       ))}
