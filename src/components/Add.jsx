@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/Add.css";
 import backgroundImage from "../img/Back.png";
 
-const AddTaskPage = () => {
+const AddTaskPage = ({ role, adminUUID }) => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [executor, setExecutor] = useState("");
@@ -14,14 +14,16 @@ const AddTaskPage = () => {
   useEffect(() => {
     const fetchExecutors = async () => {
       try {
-        const response = await fetch(
-          "https://taskback.emivn.io/api/v1/groups",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "1",
-            },
-          }
-        );
+        const url =
+          role === 1
+            ? `https://taskback.emivn.io/api/v1/groups/${adminUUID}`
+            : `https://taskback.emivn.io/api/v1/groups`;
+
+        const response = await fetch(url, {
+          headers: {
+            "ngrok-skip-browser-warning": "1",
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Ошибка при загрузке исполнителей!");
@@ -35,7 +37,7 @@ const AddTaskPage = () => {
     };
 
     fetchExecutors();
-  }, []);
+  }, [role, adminUUID]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

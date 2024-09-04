@@ -42,7 +42,10 @@ function App() {
                 )
               }
             />
-            <Route path="/add" element={<AddTaskPage />} />
+            <Route
+              path="/add"
+              element={<AddTaskPage role={userRole} adminUUID={userUUID} />}
+            />
             <Route
               path="/group"
               element={<GroupsPage role={userRole} adminUUID={userUUID} />}
