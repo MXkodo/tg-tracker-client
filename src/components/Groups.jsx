@@ -430,7 +430,7 @@ const GroupsPage = ({ role, adminUUID }) => {
 
   const renderLoadingAnimation = () => (
     <div className="flex items-center justify-center h-screen">
-      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-green-500"></div>
+      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-yellow-500"></div>
     </div>
   );
   const getFilteredRatingData = () => {
@@ -474,8 +474,8 @@ const GroupsPage = ({ role, adminUUID }) => {
         filteredItems.map((item) => (
           <li
             key={item.uuid}
-            className={`mt-5 border border-green-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
-              activeItem === item.uuid ? "bg-green-500 text-black" : ""
+            className={`mt-5 border border-yellow-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+              activeItem === item.uuid ? "bg-yellow-500 text-black" : ""
             }`}
             onClick={(e) => {
               handleItemClick(item, e);
@@ -484,7 +484,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex items-center cursor-pointer">
               <span>{item.name}</span>
               {viewMode === "users" && item.role === 1 && (
-                <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
+                <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
                   А
                 </span>
               )}
@@ -513,7 +513,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       <div className="flex justify-end mt-4">
         <button
           type="button"
-          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+          className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
           onClick={() => setShowModal(true)}
         >
           Создание{" "}
@@ -538,7 +538,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       <div className="flex justify-between mb-5">
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "groups" ? "bg-green-500" : "bg-gray-700"
+            viewMode === "groups" ? "bg-yellow-500" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("groups")}
         >
@@ -546,7 +546,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "rating" ? "bg-green-500" : "bg-gray-700"
+            viewMode === "rating" ? "bg-yellow-500" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("rating")}
         >
@@ -554,7 +554,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "users" ? "bg-green-500" : "bg-gray-700"
+            viewMode === "users" ? "bg-yellow-500" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("users")}
         >
@@ -614,7 +614,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
                 <span>{user.name}</span>
-                <span className="bg-green-500 text-white px-2 py-1 rounded">
+                <span className="bg-yellow-500 text-white px-2 py-1 rounded">
                   {Math.ceil(user.average_rating)}
                 </span>
               </li>
@@ -727,7 +727,7 @@ const GroupsPage = ({ role, adminUUID }) => {
               {hasChanges() && (
                 <button
                   type="button"
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
                   onClick={handleSaveEditUser}
                 >
                   Сохранить
@@ -802,7 +802,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
                 onClick={handleSaveItem}
               >
                 Сохранить
@@ -830,12 +830,12 @@ const GroupsPage = ({ role, adminUUID }) => {
                 groupUsers.map((user) => (
                   <li
                     key={user.uuid}
-                    className="mb-2 border border-green-500 p-2 rounded-md shadow-md flex justify-between items-center"
+                    className="mb-2 border border-yellow-500 p-2 rounded-md shadow-md flex justify-between items-center"
                   >
                     <div className="flex items-center">
                       <span>{user.name}</span>
                       {user.role === 1 && (
-                        <span className="ml-2 text-sm bg-green-500 text-black px-2 py-1 rounded-full">
+                        <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
                           А
                         </span>
                       )}
@@ -860,7 +860,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
                 onClick={fetchAvailableUsers}
               >
                 Добавить пользователя
@@ -897,7 +897,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-green-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
                 onClick={handleAddUserToGroup}
               >
                 Добавить в группу
