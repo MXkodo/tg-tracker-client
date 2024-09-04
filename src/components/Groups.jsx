@@ -495,7 +495,7 @@ const GroupsPage = ({ role, adminUUID }) => {
                 </span>
               )}
               {viewMode === "group" &&
-                adminUUID !== "00000000-0000-0000-0000-000000000000" && (
+                item.admin_uuid !== "00000000-0000-0000-0000-000000000000" && (
                   <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
                     TEST
                   </span>
