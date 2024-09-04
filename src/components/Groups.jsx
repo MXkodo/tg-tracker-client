@@ -360,7 +360,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       initiateDeleteProcess();
     } else {
       axios
-        .delete(`https://taskauth.emivn.io/api/v1/users/${itemToDelete.uuid}`, {
+        .delete(`https://taskauth.emivn.io/api/v1/users`, {
           headers: { "ngrok-skip-browser-warning": "1" },
           data: { username: itemToDelete.username },
         })
