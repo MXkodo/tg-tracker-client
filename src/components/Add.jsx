@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Add.css";
+import backgroundImage from "../img/Back.png";
 
 const AddTaskPage = () => {
   const [taskName, setTaskName] = useState("");
@@ -14,7 +15,7 @@ const AddTaskPage = () => {
     const fetchExecutors = async () => {
       try {
         const response = await fetch(
-          " https://taskback.emivn.io/api/v1/groups",
+          "https://taskback.emivn.io/api/v1/groups",
           {
             headers: {
               "ngrok-skip-browser-warning": "1",
@@ -55,7 +56,7 @@ const AddTaskPage = () => {
     };
 
     try {
-      const response = await fetch(" https://taskback.emivn.io/api/v1/tasks", {
+      const response = await fetch("https://taskback.emivn.io/api/v1/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +97,10 @@ const AddTaskPage = () => {
   };
 
   return (
-    <div className="mx-auto p-5 bg-zinc-900 rounded-lg shadow-md h-screen text-white font-sans">
+    <div
+      className="mx-auto p-5 bg-cover bg-center rounded-lg shadow-md h-screen text-white font-sans"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
         <label className="block mb-2">
           <input
