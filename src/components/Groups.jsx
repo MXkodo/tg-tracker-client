@@ -636,13 +636,15 @@ const GroupsPage = ({ role, adminUUID }) => {
               {itemToDelete.name}"? В таком случае удалятся и связанные задачи.
             </p>
             <div className="flex justify-end">
-              <button
-                type="button"
-                className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
-                onClick={confirmDeleteItem}
-              >
-                Удалить
-              </button>
+              {(role !== 1 || itemToDelete.role === 0) && (
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
+                  onClick={confirmDeleteItem}
+                >
+                  Удалить
+                </button>
+              )}
               <button
                 type="button"
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
