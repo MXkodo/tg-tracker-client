@@ -109,7 +109,7 @@ const AddTaskPage = () => {
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500 focus:outline-none"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500 focus:outline-none"
             placeholder="Введите заголовок задачи"
           />
         </label>
@@ -120,7 +120,7 @@ const AddTaskPage = () => {
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-zinc-800 focus:border-green-500 focus:outline-none"
+            className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-black focus:border-yellow-500 focus:outline-none"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
@@ -129,7 +129,7 @@ const AddTaskPage = () => {
             value={executor}
             onChange={handleExecutorChange}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
           >
             <option value="">Выберите исполнителя</option>
             {executorsList.length > 0 &&
@@ -148,7 +148,7 @@ const AddTaskPage = () => {
             value={sendTime}
             onChange={handleSendTimeChange}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
             placeholder="Выберите время отправки"
           />
         </label>
@@ -160,12 +160,12 @@ const AddTaskPage = () => {
             value={deadline}
             onChange={handleSendDeadline}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-zinc-800 focus:border-green-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
           />
         </label>
         <button
           type="submit"
-          className="px-4 py-2 bg-green-500 text-white rounded-lg mt-5 font-bold"
+          className="px-4 py-2 bg-yellow-500 text-white rounded-lg mt-5 font-bold"
           disabled={isLoading}
         >
           {isLoading ? "Отправка..." : "Сохранить"}

@@ -4,6 +4,7 @@ import ScrollContainer from "./ScrollContainerUser";
 import "../styles/MainContent.css";
 import ClearIcon from "../img/Clear.png";
 import UpdateIcon from "../img/Update.png";
+import backgroundImage from "../img/Back.png";
 
 function MainContent({ userUUID, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -210,7 +211,14 @@ function MainContent({ userUUID, userRole }) {
           activeStatusId={activeStatusId}
         />
       </header>
-      <div className="flex flex-col flex-grow bg-[#525252] rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]">
+      <div
+        className="flex flex-col flex-grow rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="flex items-center mr-0">
           <input
             id="search"
