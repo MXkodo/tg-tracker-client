@@ -496,7 +496,9 @@ const GroupsPage = ({ role, adminUUID }) => {
               )}
               {viewMode === "group" &&
                 adminUUID !== "00000000-0000-0000-0000-000000000000" && (
-                  <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full"></span>
+                  <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
+                    TEST
+                  </span>
                 )}
             </div>
             <div className="flex items-center">
