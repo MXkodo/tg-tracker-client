@@ -270,6 +270,10 @@ const GroupsPage = ({ role, adminUUID }) => {
       viewMode === "users" &&
       !event.target.classList.contains("delete-btn")
     ) {
+      if (role === 1) {
+        alert("Недостаточно прав для редактирования пользователя");
+        return;
+      }
       handleEditUser(item);
     } else {
       setActiveItem(item.uuid);
