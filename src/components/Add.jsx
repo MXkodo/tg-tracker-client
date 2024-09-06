@@ -77,6 +77,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
 
     const formattedSendTime = new Date(sendTime).toISOString();
     const deadlineFormatted = new Date(deadline).toISOString();
+    const userUUID = executorUser || "00000000-0000-0000-0000-000000000000";
 
     const taskData = {
       name: taskName,
@@ -84,9 +85,9 @@ const AddTaskPage = ({ role, adminUUID }) => {
       status_id: 1,
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
-      group_uuid: executorGroup, // UUID группы
-      user_uuid: executorUser, // UUID пользователя
-      result: 1, // всегда 1
+      group_uuid: executorGroup,
+      user_uuid: userUUID,
+      result: 1,
       filter:
         assignmentType === "users"
           ? 0
@@ -115,7 +116,6 @@ const AddTaskPage = ({ role, adminUUID }) => {
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
 
-      // Сброс полей после успешного сохранения
       setTaskName("");
       setTaskDescription("");
       setExecutorGroup("");
@@ -123,7 +123,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
       setSendTime("");
       setDeadline("");
       setAssignmentType("users");
-      setSelectedGroup(""); // Сбрасываем выбранную группу
+      setSelectedGroup("");
       setGroupUsers([]);
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
@@ -139,7 +139,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
     if (selectedType !== "specific") {
       setSelectedGroup("");
       setGroupUsers([]);
-      setExecutorUser(""); // Сбросим выбранного пользователя
+      setExecutorUser("");
     }
   };
 
