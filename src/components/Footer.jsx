@@ -16,10 +16,10 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-yellow-500 p-5 flex justify-center items-center h-[15vh] fixed inset-x-0 bottom-0 w-full box-border">
+    <footer className="bg-custom-yellow p-5 flex justify-center items-center h-[15vh] fixed inset-x-0 bottom-0 w-full box-border">
       <button
         onClick={handleAddClick}
-        className="flex-1 text-black bg-yellow-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold  transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center"
+        className="flex-1 text-black bg-custom-yellow h-[15vh] w-[15vh] rounded-lg text-base font-semibold  transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center"
       >
         <div className="flex flex-col items-center justify-center">
           <img src={addImage} alt="Добавить" />
@@ -27,7 +27,7 @@ const Footer = () => {
         </div>
       </button>
       <Link to="/" className="">
-        <button className="flex-1 text-black bg-yellow-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center">
+        <button className="flex-1 text-black bg-custom-yellow h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
             <img className="mt-1" src={homeImage} alt="Главная" />
             <span>Главная</span>
@@ -36,7 +36,7 @@ const Footer = () => {
       </Link>
       <button
         onClick={handleGroupClick}
-        className="flex-1 text-black bg-yellow-500 h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center"
+        className="flex-1 text-black bg-custom-yellow h-[15vh] w-[15vh] rounded-lg text-base font-semibold transition duration-300 ease-in-out hover:bg-yellow-700 flex flex-col items-center justify-center"
       >
         <div className="flex flex-col items-center justify-center">
           <img src={groupImage} alt="Календарь" />

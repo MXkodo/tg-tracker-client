@@ -111,7 +111,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500 focus:outline-none"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow focus:outline-none"
             placeholder="Введите заголовок задачи"
           />
         </label>
@@ -122,7 +122,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             onChange={(e) => setTaskDescription(e.target.value)}
             rows="4"
             required
-            className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-black focus:border-yellow-500 focus:outline-none"
+            className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-black focus:border-custom-yellow focus:outline-none"
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
@@ -131,7 +131,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             value={executor}
             onChange={handleExecutorChange}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
           >
             <option value="">Выберите исполнителя</option>
             {executorsList.length > 0 &&
@@ -150,7 +150,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             value={sendTime}
             onChange={handleSendTimeChange}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
             placeholder="Выберите время отправки"
           />
         </label>
@@ -162,12 +162,12 @@ const AddTaskPage = ({ role, adminUUID }) => {
             value={deadline}
             onChange={handleSendDeadline}
             required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-yellow-500"
+            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
           />
         </label>
         <button
           type="submit"
-          className="px-4 py-2 bg-yellow-500 text-white rounded-lg mt-5 font-bold"
+          className="px-4 py-2 bg-custom-yellow text-white rounded-lg mt-5 font-bold"
           disabled={isLoading}
         >
           {isLoading ? "Отправка..." : "Сохранить"}

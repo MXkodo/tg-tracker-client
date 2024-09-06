@@ -18,7 +18,7 @@ function App() {
 
   const renderLoadingAnimation = () => (
     <div className="flex items-center justify-center h-screen">
-      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-yellow-500"></div>
+      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-custom-yellow"></div>
     </div>
   );
 

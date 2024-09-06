@@ -14,6 +14,8 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [initialUserName, setInitialUserName] = useState("");
   const [initialTelegramUsername, setInitialTelegramUsername] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [userToRemove, setUserToRemove] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [itemName, setItemName] = useState("");
@@ -205,23 +207,39 @@ const GroupsPage = ({ role, adminUUID }) => {
     }
   };
 
-  const handleRemoveUserFromGroup = (userUUID, groupUUID) => {
-    axios
-      .delete(
-        `https://taskback.emivn.io/api/v1/groups/user/${userUUID}/${groupUUID}`,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "1",
-          },
-        }
-      )
-      .then(() => {
-        fetchGroupUsers(activeItem);
-      })
-      .catch((error) => {
-        console.error("Error removing user from group:", error);
-        setError("Ошибка при удалении пользователя из группы.");
-      });
+  const handleRemoveUserFromGroup = (userUUID) => {
+    setUserToRemove(userUUID);
+    setShowConfirmModal(true);
+  };
+
+  const confirmRemoveUser = () => {
+    if (userToRemove) {
+      axios
+        .delete(
+          `https://taskback.emivn.io/api/v1/groups/user/${userToRemove}/${activeItem}`,
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "1",
+            },
+          }
+        )
+        .then(() => {
+          fetchGroupUsers(activeItem);
+          setShowConfirmModal(false);
+          setUserToRemove(null);
+        })
+        .catch((error) => {
+          console.error("Error removing user from group:", error);
+          setError("Ошибка при удалении пользователя из группы.");
+          setShowConfirmModal(false);
+          setUserToRemove(null);
+        });
+    }
+  };
+
+  const cancelRemoveUser = () => {
+    setShowConfirmModal(false);
+    setUserToRemove(null);
   };
 
   const fetchAvailableUsers = () => {
@@ -435,7 +453,7 @@ const GroupsPage = ({ role, adminUUID }) => {
 
   const renderLoadingAnimation = () => (
     <div className="flex items-center justify-center h-screen">
-      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-yellow-500"></div>
+      <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-custom-yellow"></div>
     </div>
   );
   const getFilteredRatingData = () => {
@@ -479,8 +497,8 @@ const GroupsPage = ({ role, adminUUID }) => {
         filteredItems.map((item) => (
           <li
             key={item.uuid}
-            className={`mt-5 border border-yellow-500 rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
-              activeItem === item.uuid ? "bg-yellow-500 text-black" : ""
+            className={`mt-5 border border-custom-yellow rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+              activeItem === item.uuid ? "bg-custom-yellow text-black" : ""
             }`}
             onClick={(e) => {
               handleItemClick(item, e);
@@ -489,7 +507,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex items-center cursor-pointer">
               <span>{item.name}</span>
               {viewMode === "users" && item.role === 1 && (
-                <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
+                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
                   А
                 </span>
               )}
@@ -500,7 +518,7 @@ const GroupsPage = ({ role, adminUUID }) => {
                 </span>
               )}
               {viewMode === "groups" && item.admin_uuid === adminUUID && (
-                <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full"></span>
+                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
               )}
             </div>
             <div className="flex items-center">
@@ -522,7 +540,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       <div className="flex justify-end mt-4">
         <button
           type="button"
-          className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
+          className="px-4 py-2 bg-custom-yellow text-white rounded-lg"
           onClick={() => setShowModal(true)}
         >
           Создание{" "}
@@ -547,7 +565,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       <div className="flex justify-between mb-5">
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "groups" ? "bg-yellow-500" : "bg-gray-700"
+            viewMode === "groups" ? "bg-custom-yellow" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("groups")}
         >
@@ -555,7 +573,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "rating" ? "bg-yellow-500" : "bg-gray-700"
+            viewMode === "rating" ? "bg-custom-yellow" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("rating")}
         >
@@ -563,7 +581,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
-            viewMode === "users" ? "bg-yellow-500" : "bg-gray-700"
+            viewMode === "users" ? "bg-custom-yellow" : "bg-gray-700"
           }`}
           onClick={() => handleViewModeChange("users")}
         >
@@ -623,7 +641,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             {filteredRatingData.map((user) => (
               <li key={user.uuid} className="flex justify-between items-center">
                 <span>{user.name}</span>
-                <span className="bg-yellow-500 text-white px-2 py-1 rounded">
+                <span className="bg-custom-yellow text-white px-2 py-1 rounded">
                   {Math.ceil(user.average_rating)}
                 </span>
               </li>
@@ -737,7 +755,7 @@ const GroupsPage = ({ role, adminUUID }) => {
               {hasChanges() && (
                 <button
                   type="button"
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
+                  className="px-4 py-2 bg-custom-yellow text-white rounded-lg mr-2"
                   onClick={handleSaveEditUser}
                 >
                   Сохранить
@@ -812,7 +830,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-custom-yellow text-white rounded-lg mr-2"
                 onClick={handleSaveItem}
               >
                 Сохранить
@@ -837,44 +855,48 @@ const GroupsPage = ({ role, adminUUID }) => {
               {groupUsers.length === 0 ? (
                 <p className="text-center">В этой группе нет пользователей.</p>
               ) : (
-                groupUsers.map((user) => (
-                  <li
-                    key={user.uuid}
-                    className="mb-2 border border-yellow-500 p-2 rounded-md shadow-md flex justify-between items-center"
-                  >
-                    <div className="flex items-center">
-                      <span>{user.name}</span>
-                      {user.role === 1 && (
-                        <span className="ml-2 text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
-                          А
-                        </span>
-                      )}
-                      {user.role === 2 && (
-                        <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
-                          А
-                        </span>
-                      )}
-                    </div>
-                    {(role === 1 &&
-                      (user.role === 0 || user.uuid === adminUUID)) ||
-                    role !== 1 ? (
-                      <button
-                        className="px-2 py-1 bg-red-500 text-white rounded"
-                        onClick={() =>
-                          handleRemoveUserFromGroup(user.uuid, activeItem)
-                        }
-                      >
-                        Удалить
-                      </button>
-                    ) : null}
-                  </li>
-                ))
+                groupUsers
+                  .sort((a, b) => {
+                    if (a.role === 1 || a.role === 2) return -1;
+                    if (b.role === 1 || b.role === 2) return 1;
+                    return 0;
+                  })
+                  .map((user) => (
+                    <li
+                      key={user.uuid}
+                      className="mb-2 border border-custom-yellow p-2 rounded-md shadow-md flex justify-between items-center"
+                    >
+                      <div className="flex items-center">
+                        <span>{user.name}</span>
+                        {user.role === 1 && (
+                          <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
+                            А
+                          </span>
+                        )}
+                        {user.role === 2 && (
+                          <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                            А
+                          </span>
+                        )}
+                      </div>
+                      {(role === 1 &&
+                        (user.role === 0 || user.uuid === adminUUID)) ||
+                      role !== 1 ? (
+                        <button
+                          className="px-2 py-1 bg-red-500 text-white rounded"
+                          onClick={() => handleRemoveUserFromGroup(user.uuid)}
+                        >
+                          Удалить
+                        </button>
+                      ) : null}
+                    </li>
+                  ))
               )}
             </ul>
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-custom-yellow text-white rounded-lg mr-2"
                 onClick={fetchAvailableUsers}
               >
                 Добавить пользователя
@@ -885,6 +907,32 @@ const GroupsPage = ({ role, adminUUID }) => {
                 onClick={() => setShowGroupModal(false)}
               >
                 Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно подтверждения */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
+            <h2 className="text-lg font-bold mb-4">Подтверждение удаления</h2>
+            <p className="mb-4">Действительно удалить пользователя?</p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
+                onClick={confirmRemoveUser}
+              >
+                Принять
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                onClick={cancelRemoveUser}
+              >
+                Отмена
               </button>
             </div>
           </div>
@@ -911,7 +959,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-custom-yellow text-white rounded-lg mr-2"
                 onClick={handleAddUserToGroup}
               >
                 Добавить в группу

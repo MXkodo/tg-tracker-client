@@ -31,7 +31,7 @@ const DownloadButton = () => {
   return (
     <button
       onClick={handleDownload}
-      className="bg-yellow-500 text-white py-2 px-4 rounded"
+      className="bg-custom-yellow text-white py-2 px-4 rounded"
     >
       Экспорт
     </button>

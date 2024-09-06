@@ -237,7 +237,7 @@ function MainContent({ userUUID, userRole }) {
           )}
 
           <select
-            className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-yellow-500 border-none cursor-pointer text-white font-semibold transition-colors duration-300"
+            className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-custom-yellow border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
           >
             <option value="group">По группе</option>
@@ -245,7 +245,7 @@ function MainContent({ userUUID, userRole }) {
             <option value="timestamp">По времени</option>
           </select>
           <button
-            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-yellow-500 border-none cursor-pointer transition-colors duration-300 hover:bg-yellow-700"
+            className="icon-button rounded-[10px] ml-2 h-[5vh] bg-custom-yellow border-none cursor-pointer transition-colors duration-300 hover:bg-yellow-700"
             onClick={refreshData}
           >
             <img src={UpdateIcon} alt="Update" />
@@ -275,7 +275,7 @@ function MainContent({ userUUID, userRole }) {
                   <>
                     {task.status_id === 2 && (
                       <button
-                        className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                        className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                         onClick={(event) => {
                           event.stopPropagation();
                           handleAcceptTask(task.id, 3);
@@ -286,7 +286,7 @@ function MainContent({ userUUID, userRole }) {
                     )}
                     {task.status_id === 3 && (
                       <button
-                        className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                        className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                         onClick={(event) => {
                           event.stopPropagation();
                           handleAcceptTask(task.id, 4);
@@ -296,14 +296,14 @@ function MainContent({ userUUID, userRole }) {
                       </button>
                     )}
                     {task.status_id === 4 && (
-                      <button className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600">
+                      <button className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600">
                         В проверке
                       </button>
                     )}
                     {task.status_id === 5 && <></>}
                     {task.status_id === 6 && (
                       <button
-                        className="accept-button mr-1 px-1 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                        className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                         onClick={(event) => {
                           event.stopPropagation();
                           handleAcceptTask(task.id, 3);
@@ -343,7 +343,7 @@ function MainContent({ userUUID, userRole }) {
                 </p>
                 <div className="flex justify-end mt-5">
                   <button
-                    className="ml-2 px-5 py-2 bg-yellow-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                    className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={closeModal}
                   >
                     Закрыть
