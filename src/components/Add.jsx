@@ -149,114 +149,117 @@ const AddTaskPage = ({ role, adminUUID }) => {
       className="relative mx-auto p-5 bg-cover bg-center rounded-lg shadow-md h-screen text-white font-sans"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="max-h-screen overflow-y-auto pb-46">
-        <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
-          <label className="block mb-2">
-            <input
-              type="text"
-              name="taskName"
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow focus:outline-none"
-              placeholder="Введите заголовок задачи"
-            />
-          </label>
-          <label className="block mb-2">
-            <textarea
-              name="taskDescription"
-              value={taskDescription}
-              onChange={(e) => setTaskDescription(e.target.value)}
-              rows="4"
-              required
-              className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-black focus:border-custom-yellow focus:outline-none"
-              placeholder="Введите описание задачи"
-            ></textarea>
-          </label>
-          <div className="flex flex-col md:flex-row md:space-x-4">
-            <div className="flex-1">
-              <label className="block mb-2">
-                <select
-                  value={assignmentType}
-                  onChange={handleAssignmentTypeChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-                >
-                  <option value="users">Пользователям</option>
-                  <option value="admins">Админам</option>
-                  <option value="everyone">Всем</option>
-                  <option value="specific">Точечно</option>
-                </select>
-              </label>
-            </div>
-            <div className="flex-1">
-              <label className="block mb-2">
-                <select
-                  value={executor}
-                  onChange={handleExecutorChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-                >
-                  <option value="">Выберите группу</option>
-                  {executorsList.length > 0 &&
-                    executorsList.map((group) => (
-                      <option key={group.uuid} value={group.uuid}>
-                        {group.name}
-                      </option>
-                    ))}
-                </select>
-              </label>
-              {assignmentType === "specific" && (
-                <label className="block mb-2 mt-2">
+      <div className="max-h-screen overflow-y-auto pb-16">
+        <div className="mb-16">
+          {" "}
+          <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
+            <label className="block mb-2">
+              <input
+                type="text"
+                name="taskName"
+                value={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow focus:outline-none"
+                placeholder="Введите заголовок задачи"
+              />
+            </label>
+            <label className="block mb-2">
+              <textarea
+                name="taskDescription"
+                value={taskDescription}
+                onChange={(e) => setTaskDescription(e.target.value)}
+                rows="4"
+                required
+                className="w-full px-4 py-2 resize-y min-h-12 border border-gray-300 rounded-lg text-center bg-black focus:border-custom-yellow focus:outline-none"
+                placeholder="Введите описание задачи"
+              ></textarea>
+            </label>
+            <div className="flex flex-col md:flex-row md:space-x-4">
+              <div className="flex-1">
+                <label className="block mb-2">
                   <select
-                    value={executor}
-                    onChange={(e) => setExecutor(e.target.value)}
+                    value={assignmentType}
+                    onChange={handleAssignmentTypeChange}
                     required
                     className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
                   >
-                    <option value="">Выберите пользователя</option>
-                    {groupUsers.length > 0 &&
-                      groupUsers.map((user) => (
-                        <option key={user.uuid} value={user.uuid}>
-                          {user.name}
+                    <option value="users">Пользователям</option>
+                    <option value="admins">Админам</option>
+                    <option value="everyone">Всем</option>
+                    <option value="specific">Точечно</option>
+                  </select>
+                </label>
+              </div>
+              <div className="flex-1">
+                <label className="block mb-2">
+                  <select
+                    value={executor}
+                    onChange={handleExecutorChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                  >
+                    <option value="">Выберите группу</option>
+                    {executorsList.length > 0 &&
+                      executorsList.map((group) => (
+                        <option key={group.uuid} value={group.uuid}>
+                          {group.name}
                         </option>
                       ))}
                   </select>
                 </label>
-              )}
+                {assignmentType === "specific" && (
+                  <label className="block mb-2 mt-2">
+                    <select
+                      value={executor}
+                      onChange={(e) => setExecutor(e.target.value)}
+                      required
+                      className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                    >
+                      <option value="">Выберите пользователя</option>
+                      {groupUsers.length > 0 &&
+                        groupUsers.map((user) => (
+                          <option key={user.uuid} value={user.uuid}>
+                            {user.name}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                )}
+              </div>
             </div>
-          </div>
-          <label className="block mb-2">
-            Время отправки:
-            <input
-              type="datetime-local"
-              name="sendTime"
-              value={sendTime}
-              onChange={handleSendTimeChange}
-              required
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-              placeholder="Выберите время отправки"
-            />
-          </label>
-          <label className="block mb-2">
-            Дедлайн:
-            <input
-              type="datetime-local"
-              name="deadline"
-              value={deadline}
-              onChange={handleSendDeadline}
-              required
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-            />
-          </label>
-          <button
-            type="submit"
-            className="px-4 py-2  bg-custom-yellow text-white rounded-lg mt-5 font-bold"
-            disabled={isLoading}
-          >
-            {isLoading ? "Отправка..." : "Сохранить"}
-          </button>
-        </form>
+            <label className="block mb-2">
+              Время отправки:
+              <input
+                type="datetime-local"
+                name="sendTime"
+                value={sendTime}
+                onChange={handleSendTimeChange}
+                required
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                placeholder="Выберите время отправки"
+              />
+            </label>
+            <label className="block mb-2">
+              Дедлайн:
+              <input
+                type="datetime-local"
+                name="deadline"
+                value={deadline}
+                onChange={handleSendDeadline}
+                required
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+              />
+            </label>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-custom-yellow text-white rounded-lg mt-5 font-bold"
+              disabled={isLoading}
+            >
+              {isLoading ? "Отправка..." : "Сохранить"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
