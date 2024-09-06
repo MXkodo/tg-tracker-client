@@ -12,8 +12,8 @@ const AddTaskPage = ({ role, adminUUID }) => {
   const [sendTime, setSendTime] = useState("");
   const [deadline, setDeadline] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [assignmentType, setAssignmentType] = useState("users"); // Тип назначения
-  const [selectedGroup, setSelectedGroup] = useState(""); // Выбранная группа
+  const [assignmentType, setAssignmentType] = useState("users");
+  const [selectedGroup, setSelectedGroup] = useState("");
 
   useEffect(() => {
     const fetchExecutors = async () => {
@@ -30,13 +30,13 @@ const AddTaskPage = ({ role, adminUUID }) => {
         });
 
         if (!response.ok) {
-          throw new Error("Ошибка при загрузке исполнителей!");
+          throw new Error("Ошибка при загрузке групп!");
         }
 
         const data = await response.json();
         setExecutorsList(data || []);
       } catch (error) {
-        console.error("Ошибка при загрузке исполнителей:", error.message);
+        console.error("Ошибка при загрузке групп:", error.message);
       }
     };
 
@@ -81,7 +81,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
       status_id: 1,
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
-      group_uuid: assignmentType === "specific" ? executor : "", // Выбор исполнителя в зависимости от типа назначения
+      group_uuid: assignmentType === "specific" ? executor : "",
       result: 1,
     };
 
@@ -101,7 +101,6 @@ const AddTaskPage = ({ role, adminUUID }) => {
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
 
-      // Сброс состояния формы
       setTaskName("");
       setTaskDescription("");
       setExecutor("");
@@ -116,6 +115,30 @@ const AddTaskPage = ({ role, adminUUID }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAssignmentTypeChange = (event) => {
+    setAssignmentType(event.target.value);
+    if (event.target.value !== "specific") {
+      setSelectedGroup("");
+      setGroupUsers([]);
+    }
+  };
+
+  const handleExecutorChange = (event) => {
+    const selectedValue = event.target.value;
+    setExecutor(selectedValue);
+    if (assignmentType === "specific") {
+      setSelectedGroup(selectedValue);
+    }
+  };
+
+  const handleSendTimeChange = (event) => {
+    setSendTime(event.target.value);
+  };
+
+  const handleSendDeadline = (event) => {
+    setDeadline(event.target.value);
   };
 
   return (
@@ -146,64 +169,60 @@ const AddTaskPage = ({ role, adminUUID }) => {
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
-        <label className="block mb-2">
-          <select
-            value={assignmentType}
-            onChange={(e) => setAssignmentType(e.target.value)}
-            required
-            className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-          >
-            <option value="users">Пользователям</option>
-            <option value="admins">Админам</option>
-            <option value="everyone">Всем</option>
-            <option value="specific">Точечно</option>
-          </select>
-        </label>
-        {assignmentType === "specific" && (
-          <>
-            <label className="block mb-2">
+        <div className="flex space-x-4">
+          <label className="block mb-2 flex-1">
+            <select
+              value={assignmentType}
+              onChange={handleAssignmentTypeChange}
+              required
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+            >
+              <option value="users">Пользователям</option>
+              <option value="admins">Админам</option>
+              <option value="everyone">Всем</option>
+              <option value="specific">Точечно</option>
+            </select>
+          </label>
+          <label className="block mb-2 flex-1">
+            <select
+              value={executor}
+              onChange={handleExecutorChange}
+              required
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+            >
+              <option value="">Выберите группу</option>
+              {executorsList.length > 0 &&
+                executorsList.map((group) => (
+                  <option key={group.uuid} value={group.uuid}>
+                    {group.name}
+                  </option>
+                ))}
+            </select>
+            {assignmentType === "specific" && selectedGroup && (
               <select
-                value={selectedGroup}
-                onChange={(e) => setSelectedGroup(e.target.value)}
+                value={executor}
+                onChange={(e) => setExecutor(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow mt-2"
               >
-                <option value="">Выберите группу</option>
-                {executorsList.length > 0 &&
-                  executorsList.map((group) => (
-                    <option key={group.uuid} value={group.uuid}>
-                      {group.name}
+                <option value="">Выберите пользователя</option>
+                {groupUsers.length > 0 &&
+                  groupUsers.map((user) => (
+                    <option key={user.uuid} value={user.uuid}>
+                      {user.name}
                     </option>
                   ))}
               </select>
-            </label>
-            {selectedGroup && (
-              <label className="block mb-2">
-                <select
-                  value={executor}
-                  onChange={(e) => setExecutor(e.target.value)}
-                  required
-                  className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-                >
-                  <option value="">Выберите пользователя</option>
-                  {groupUsers.length > 0 &&
-                    groupUsers.map((user) => (
-                      <option key={user.uuid} value={user.uuid}>
-                        {user.name}
-                      </option>
-                    ))}
-                </select>
-              </label>
             )}
-          </>
-        )}
+          </label>
+        </div>
         <label className="block mb-2">
           Время отправки:
           <input
             type="datetime-local"
             name="sendTime"
             value={sendTime}
-            onChange={(e) => setSendTime(e.target.value)}
+            onChange={handleSendTimeChange}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
             placeholder="Выберите время отправки"
@@ -215,7 +234,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             type="datetime-local"
             name="deadline"
             value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
+            onChange={handleSendDeadline}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
           />
