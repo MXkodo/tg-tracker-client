@@ -149,7 +149,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
       className="relative mx-auto p-5 bg-cover bg-center rounded-lg shadow-md h-screen text-white font-sans"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="max-h-screen overflow-y-auto pb-16">
+      <div className="max-h-screen overflow-y-auto mb-16">
         <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
           <label className="block mb-2">
             <input
@@ -251,7 +251,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
           </label>
           <button
             type="submit"
-            className="px-4 py-2 mb-30 bg-custom-yellow text-white rounded-lg mt-5 font-bold"
+            className="px-4 py-2  bg-custom-yellow text-white rounded-lg mt-5 font-bold"
             disabled={isLoading}
           >
             {isLoading ? "Отправка..." : "Сохранить"}
