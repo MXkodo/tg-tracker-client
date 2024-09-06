@@ -6,7 +6,8 @@ import backgroundImage from "../img/Back.png";
 const AddTaskPage = ({ role, adminUUID }) => {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const [executor, setExecutor] = useState("");
+  const [executorGroup, setExecutorGroup] = useState("");
+  const [executorUser, setExecutorUser] = useState("");
   const [executorsList, setExecutorsList] = useState([]);
   const [groupUsers, setGroupUsers] = useState([]);
   const [sendTime, setSendTime] = useState("");
@@ -77,18 +78,15 @@ const AddTaskPage = ({ role, adminUUID }) => {
     const formattedSendTime = new Date(sendTime).toISOString();
     const deadlineFormatted = new Date(deadline).toISOString();
 
-    const selectedGroupUUID = executor;
-    const selectedUserUUID = assignmentType === "specific" ? executor : "";
-
     const taskData = {
       name: taskName,
       description: taskDescription,
       status_id: 1,
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
-      group_uuid: selectedGroupUUID,
-      user_uuid: selectedUserUUID,
-      result: 1,
+      group_uuid: executorGroup, // UUID группы
+      user_uuid: executorUser, // UUID пользователя
+      result: 1, // всегда 1
       filter:
         assignmentType === "users"
           ? 0
@@ -117,13 +115,15 @@ const AddTaskPage = ({ role, adminUUID }) => {
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
 
+      // Сброс полей после успешного сохранения
       setTaskName("");
       setTaskDescription("");
-      setExecutor("");
+      setExecutorGroup("");
+      setExecutorUser("");
       setSendTime("");
       setDeadline("");
       setAssignmentType("users");
-      setSelectedGroup("");
+      setSelectedGroup(""); // Сбрасываем выбранную группу
       setGroupUsers([]);
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
@@ -139,15 +139,20 @@ const AddTaskPage = ({ role, adminUUID }) => {
     if (selectedType !== "specific") {
       setSelectedGroup("");
       setGroupUsers([]);
+      setExecutorUser(""); // Сбросим выбранного пользователя
     }
   };
 
-  const handleExecutorChange = (event) => {
-    const selectedValue = event.target.value;
-    setExecutor(selectedValue);
+  const handleExecutorGroupChange = (event) => {
+    const selectedGroup = event.target.value;
+    setExecutorGroup(selectedGroup);
     if (assignmentType === "specific") {
-      setSelectedGroup(selectedValue);
+      setSelectedGroup(selectedGroup);
     }
+  };
+
+  const handleExecutorUserChange = (event) => {
+    setExecutorUser(event.target.value);
   };
 
   const handleSendTimeChange = (event) => {
@@ -165,7 +170,6 @@ const AddTaskPage = ({ role, adminUUID }) => {
     >
       <div className="max-h-screen overflow-y-auto pb-16">
         <div className="mb-16">
-          {" "}
           <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
             <label className="block mb-2">
               <input
@@ -208,8 +212,8 @@ const AddTaskPage = ({ role, adminUUID }) => {
               <div className="flex-1">
                 <label className="block mb-2">
                   <select
-                    value={executor}
-                    onChange={handleExecutorChange}
+                    value={executorGroup}
+                    onChange={handleExecutorGroupChange}
                     required
                     className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
                   >
@@ -225,8 +229,8 @@ const AddTaskPage = ({ role, adminUUID }) => {
                 {assignmentType === "specific" && (
                   <label className="block mb-2 mt-2">
                     <select
-                      value={executor}
-                      onChange={(e) => setExecutor(e.target.value)}
+                      value={executorUser}
+                      onChange={handleExecutorUserChange}
                       required
                       className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
                     >
