@@ -250,7 +250,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
         </label>
         <button
           type="submit"
-          className="px-4 py-2 bg-custom-yellow text-white rounded-lg mt-5 font-bold"
+          className="px-4 py-2 mb-5 bg-custom-yellow text-white rounded-lg mt-5 font-bold"
           disabled={isLoading}
         >
           {isLoading ? "Отправка..." : "Сохранить"}
