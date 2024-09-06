@@ -46,6 +46,8 @@ const AddTaskPage = ({ role, adminUUID }) => {
   useEffect(() => {
     if (assignmentType === "specific" && selectedGroup) {
       fetchGroupUsers(selectedGroup);
+    } else if (assignmentType === "specific") {
+      setGroupUsers([]);
     }
   }, [assignmentType, selectedGroup]);
 
@@ -118,8 +120,9 @@ const AddTaskPage = ({ role, adminUUID }) => {
   };
 
   const handleAssignmentTypeChange = (event) => {
-    setAssignmentType(event.target.value);
-    if (event.target.value !== "specific") {
+    const selectedType = event.target.value;
+    setAssignmentType(selectedType);
+    if (selectedType !== "specific") {
       setSelectedGroup("");
       setGroupUsers([]);
     }
@@ -169,52 +172,58 @@ const AddTaskPage = ({ role, adminUUID }) => {
             placeholder="Введите описание задачи"
           ></textarea>
         </label>
-        <div className="flex space-x-4">
-          <label className="block mb-2 flex-1">
-            <select
-              value={assignmentType}
-              onChange={handleAssignmentTypeChange}
-              required
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-            >
-              <option value="users">Пользователям</option>
-              <option value="admins">Админам</option>
-              <option value="everyone">Всем</option>
-              <option value="specific">Точечно</option>
-            </select>
-          </label>
-          <label className="block mb-2 flex-1">
-            <select
-              value={executor}
-              onChange={handleExecutorChange}
-              required
-              className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
-            >
-              <option value="">Выберите группу</option>
-              {executorsList.length > 0 &&
-                executorsList.map((group) => (
-                  <option key={group.uuid} value={group.uuid}>
-                    {group.name}
-                  </option>
-                ))}
-            </select>
-            {assignmentType === "specific" && selectedGroup && (
+        <div className="flex flex-col md:flex-row md:space-x-4">
+          <div className="flex-1">
+            <label className="block mb-2">
+              <select
+                value={assignmentType}
+                onChange={handleAssignmentTypeChange}
+                required
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+              >
+                <option value="users">Пользователям</option>
+                <option value="admins">Админам</option>
+                <option value="everyone">Всем</option>
+                <option value="specific">Точечно</option>
+              </select>
+            </label>
+          </div>
+          <div className="flex-1">
+            <label className="block mb-2">
               <select
                 value={executor}
-                onChange={(e) => setExecutor(e.target.value)}
+                onChange={handleExecutorChange}
                 required
-                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow mt-2"
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
               >
-                <option value="">Выберите пользователя</option>
-                {groupUsers.length > 0 &&
-                  groupUsers.map((user) => (
-                    <option key={user.uuid} value={user.uuid}>
-                      {user.name}
+                <option value="">Выберите группу</option>
+                {executorsList.length > 0 &&
+                  executorsList.map((group) => (
+                    <option key={group.uuid} value={group.uuid}>
+                      {group.name}
                     </option>
                   ))}
               </select>
+            </label>
+            {assignmentType === "specific" && (
+              <label className="block mb-2 mt-2">
+                <select
+                  value={executor}
+                  onChange={(e) => setExecutor(e.target.value)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                >
+                  <option value="">Выберите пользователя</option>
+                  {groupUsers.length > 0 &&
+                    groupUsers.map((user) => (
+                      <option key={user.uuid} value={user.uuid}>
+                        {user.name}
+                      </option>
+                    ))}
+                </select>
+              </label>
             )}
-          </label>
+          </div>
         </div>
         <label className="block mb-2">
           Время отправки:
