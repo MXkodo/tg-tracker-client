@@ -88,7 +88,8 @@ const AddTaskPage = ({ role, adminUUID }) => {
       deadline: deadlineFormatted,
       group_uuid: selectedGroupUUID,
       user_uuid: selectedUserUUID,
-      result:
+      result: 1,
+      filter:
         assignmentType === "users"
           ? 0
           : assignmentType === "admins"
