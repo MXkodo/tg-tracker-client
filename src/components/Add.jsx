@@ -77,14 +77,27 @@ const AddTaskPage = ({ role, adminUUID }) => {
     const formattedSendTime = new Date(sendTime).toISOString();
     const deadlineFormatted = new Date(deadline).toISOString();
 
+    const selectedGroupUUID = executor;
+    const selectedUserUUID = assignmentType === "specific" ? executor : "";
+
     const taskData = {
       name: taskName,
       description: taskDescription,
       status_id: 1,
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
-      group_uuid: assignmentType === "specific" ? executor : "",
-      result: 1,
+      group_uuid: selectedGroupUUID,
+      user_uuid: selectedUserUUID,
+      result:
+        assignmentType === "users"
+          ? 0
+          : assignmentType === "admins"
+          ? 1
+          : assignmentType === "everyone"
+          ? 2
+          : assignmentType === "specific"
+          ? 3
+          : 0,
     };
 
     try {
