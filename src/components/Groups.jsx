@@ -355,7 +355,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         }
       })
       .then(() => {
-        // Обновляем список
         return axios.get(apiUrl, {
           headers: {
             "ngrok-skip-browser-warning": "1",
@@ -913,7 +912,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         </div>
       )}
 
-      {/* Модальное окно подтверждения */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">

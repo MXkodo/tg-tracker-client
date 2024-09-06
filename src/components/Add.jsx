@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../styles/Add.css";
 import backgroundImage from "../img/Back.png";
 
@@ -7,9 +8,12 @@ const AddTaskPage = ({ role, adminUUID }) => {
   const [taskDescription, setTaskDescription] = useState("");
   const [executor, setExecutor] = useState("");
   const [executorsList, setExecutorsList] = useState([]);
+  const [groupUsers, setGroupUsers] = useState([]);
   const [sendTime, setSendTime] = useState("");
   const [deadline, setDeadline] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [assignmentType, setAssignmentType] = useState("users"); // Тип назначения
+  const [selectedGroup, setSelectedGroup] = useState(""); // Выбранная группа
 
   useEffect(() => {
     const fetchExecutors = async () => {
@@ -39,6 +43,30 @@ const AddTaskPage = ({ role, adminUUID }) => {
     fetchExecutors();
   }, [role, adminUUID]);
 
+  useEffect(() => {
+    if (assignmentType === "specific" && selectedGroup) {
+      fetchGroupUsers(selectedGroup);
+    }
+  }, [assignmentType, selectedGroup]);
+
+  const fetchGroupUsers = (groupId) => {
+    axios
+      .get(`https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
+      .then((response) => {
+        setGroupUsers(response.data || []);
+      })
+      .catch((error) => {
+        console.error(
+          `Ошибка при получении пользователей группы ${groupId}:`,
+          error
+        );
+      });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -53,7 +81,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
       status_id: 1,
       apperance_timestamp: formattedSendTime,
       deadline: deadlineFormatted,
-      group_uuid: executor,
+      group_uuid: assignmentType === "specific" ? executor : "", // Выбор исполнителя в зависимости от типа назначения
       result: 1,
     };
 
@@ -73,29 +101,21 @@ const AddTaskPage = ({ role, adminUUID }) => {
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
 
+      // Сброс состояния формы
       setTaskName("");
       setTaskDescription("");
       setExecutor("");
       setSendTime("");
       setDeadline("");
+      setAssignmentType("users");
+      setSelectedGroup("");
+      setGroupUsers([]);
     } catch (error) {
       console.error("Ошибка при сохранении задачи:", error.message);
-      alert("Ошибка при сохранении задачи:", error.message);
+      alert("Ошибка при сохранении задачи: " + error.message);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleExecutorChange = (event) => {
-    setExecutor(event.target.value);
-  };
-
-  const handleSendTimeChange = (event) => {
-    setSendTime(event.target.value);
-  };
-
-  const handleSendDeadline = (event) => {
-    setDeadline(event.target.value);
   };
 
   return (
@@ -128,27 +148,62 @@ const AddTaskPage = ({ role, adminUUID }) => {
         </label>
         <label className="block mb-2">
           <select
-            value={executor}
-            onChange={handleExecutorChange}
+            value={assignmentType}
+            onChange={(e) => setAssignmentType(e.target.value)}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
           >
-            <option value="">Выберите исполнителя</option>
-            {executorsList.length > 0 &&
-              executorsList.map((executor) => (
-                <option key={executor.uuid} value={executor.uuid}>
-                  {executor.name}
-                </option>
-              ))}
+            <option value="users">Пользователям</option>
+            <option value="admins">Админам</option>
+            <option value="everyone">Всем</option>
+            <option value="specific">Точечно</option>
           </select>
         </label>
+        {assignmentType === "specific" && (
+          <>
+            <label className="block mb-2">
+              <select
+                value={selectedGroup}
+                onChange={(e) => setSelectedGroup(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+              >
+                <option value="">Выберите группу</option>
+                {executorsList.length > 0 &&
+                  executorsList.map((group) => (
+                    <option key={group.uuid} value={group.uuid}>
+                      {group.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            {selectedGroup && (
+              <label className="block mb-2">
+                <select
+                  value={executor}
+                  onChange={(e) => setExecutor(e.target.value)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
+                >
+                  <option value="">Выберите пользователя</option>
+                  {groupUsers.length > 0 &&
+                    groupUsers.map((user) => (
+                      <option key={user.uuid} value={user.uuid}>
+                        {user.name}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            )}
+          </>
+        )}
         <label className="block mb-2">
           Время отправки:
           <input
             type="datetime-local"
             name="sendTime"
             value={sendTime}
-            onChange={handleSendTimeChange}
+            onChange={(e) => setSendTime(e.target.value)}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
             placeholder="Выберите время отправки"
@@ -160,7 +215,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
             type="datetime-local"
             name="deadline"
             value={deadline}
-            onChange={handleSendDeadline}
+            onChange={(e) => setDeadline(e.target.value)}
             required
             className="w-full px-4 py-2 border border-gray-400 rounded-lg text-center text-white bg-black focus:border-custom-yellow"
           />
