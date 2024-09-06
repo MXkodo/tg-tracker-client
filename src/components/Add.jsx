@@ -149,7 +149,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
       className="relative mx-auto p-5 bg-cover bg-center rounded-lg shadow-md h-screen text-white font-sans"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="max-h-screen overflow-y-auto mb-16">
+      <div className="max-h-screen overflow-y-auto pb-46">
         <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
           <label className="block mb-2">
             <input
