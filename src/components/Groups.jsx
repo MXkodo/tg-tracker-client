@@ -352,6 +352,20 @@ const GroupsPage = ({ role, adminUUID }) => {
               },
             }
           );
+        } else if (viewMode === "groups" && role === 1) {
+          const groupUUID = response.data.uuid;
+          return axios.post(
+            "https://taskback.emivn.io/api/v1/groups/add-user",
+            {
+              user_uuid: adminUUID,
+              group_uuid: groupUUID,
+            },
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "1",
+              },
+            }
+          );
         }
       })
       .then(() => {
@@ -366,7 +380,8 @@ const GroupsPage = ({ role, adminUUID }) => {
         handleCloseModal();
       })
       .catch((error) => {
-        console.error(`Error adding ${viewMode.slice(0, -1)}:`, error);
+        console.error(`Ошибка при добавлении ${viewMode.slice(0, -1)}:`, error);
+        setError("Произошла ошибка.");
       });
   };
 
