@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../styles/Add.css";
 import backgroundImage from "../img/Back.png";
@@ -15,7 +15,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [assignmentType, setAssignmentType] = useState("users");
   const [selectedGroup, setSelectedGroup] = useState("");
-
+  const formRef = useRef(null);
   useEffect(() => {
     const fetchExecutors = async () => {
       try {
@@ -115,7 +115,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
 
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
-
+      formRef.current.reset();
       setTaskName("");
       setTaskDescription("");
       setExecutorGroup("");
