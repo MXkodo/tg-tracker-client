@@ -15,7 +15,9 @@ const AddTaskPage = ({ role, adminUUID }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [assignmentType, setAssignmentType] = useState("users");
   const [selectedGroup, setSelectedGroup] = useState("");
+
   const formRef = useRef(null);
+
   useEffect(() => {
     const fetchExecutors = async () => {
       try {
@@ -115,6 +117,7 @@ const AddTaskPage = ({ role, adminUUID }) => {
 
       console.log("Задача сохранена!");
       alert("Задача успешно создана");
+
       formRef.current.reset();
       setTaskName("");
       setTaskDescription("");
@@ -170,7 +173,11 @@ const AddTaskPage = ({ role, adminUUID }) => {
     >
       <div className="max-h-screen overflow-y-auto pb-16">
         <div className="mb-16">
-          <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col space-y-5"
+            onSubmit={handleSubmit}
+            ref={formRef}
+          >
             <label className="block mb-2">
               <input
                 type="text"
