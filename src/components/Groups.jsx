@@ -537,6 +537,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         <p className="text-center">Нет доступных {itemLabel}.</p>
       ) : (
         filteredItems.map((item) => {
+          // Найдите группы, в которых состоит этот пользователь
           const groups = Object.keys(groupUsers).filter((groupId) =>
             groupUsers[groupId].some((user) => user.uuid === item.uuid)
           );
@@ -580,15 +581,22 @@ const GroupsPage = ({ role, adminUUID }) => {
               </div>
               <div className="flex items-center">
                 {role === 2 && (
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteItem(item.uuid);
-                    }}
-                  >
-                    Удалить
-                  </button>
+                  <div className="flex items-center">
+                    {groupNames && (
+                      <span className="text-sm text-white mr-2">
+                        {groupNames}
+                      </span>
+                    )}
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteItem(item.uuid);
+                      }}
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 )}
               </div>
             </li>
