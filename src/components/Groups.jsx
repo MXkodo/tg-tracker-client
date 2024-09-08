@@ -537,7 +537,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         <p className="text-center">Нет доступных {itemLabel}.</p>
       ) : (
         filteredItems.map((item) => {
-          // Найдите группы, в которых состоит этот пользователь
           const groups = Object.keys(groupUsers).filter((groupId) =>
             groupUsers[groupId].some((user) => user.uuid === item.uuid)
           );
@@ -574,9 +573,6 @@ const GroupsPage = ({ role, adminUUID }) => {
                 )}
                 {viewMode === "groups" && item.admin_uuid === adminUUID && (
                   <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
-                )}
-                {viewMode === "users" && groupNames && (
-                  <span className="ml-2 text-sm text-white">{groupNames}</span>
                 )}
               </div>
               <div className="flex items-center">
