@@ -559,7 +559,7 @@ const GroupsPage = ({ role, adminUUID }) => {
                 handleItemClick(item, e);
               }}
             >
-              <div className="flex items-center cursor-pointer">
+              <div className="flex items-center">
                 <span>{item.name}</span>
                 {viewMode === "users" && item.role === 1 && (
                   <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
@@ -583,15 +583,18 @@ const GroupsPage = ({ role, adminUUID }) => {
               </div>
               <div className="flex items-center">
                 {role === 2 && (
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteItem(item.uuid);
-                    }}
-                  >
-                    Удалить
-                  </button>
+                  <div className="flex items-center">
+                    <span className="text-gray-700 mr-2">{groupNames}</span>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteItem(item.uuid);
+                      }}
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 )}
               </div>
             </li>
