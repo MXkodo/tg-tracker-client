@@ -96,34 +96,7 @@ const GroupsPage = ({ role, adminUUID }) => {
           },
         })
         .then((response) => {
-          const groups = response.data || [];
-          setAvailableGroups(groups);
-
-          const groupRequests = groups.map((group) =>
-            axios.get(
-              `https://taskback.emivn.io/api/v1/groups/${group.uuid}/users`,
-              {
-                headers: {
-                  "ngrok-skip-browser-warning": "1",
-                },
-              }
-            )
-          );
-
-          Promise.all(groupRequests)
-            .then((responses) => {
-              const usersInGroups = responses.reduce((acc, response, index) => {
-                const group = groups[index];
-                acc[group.uuid] = response.data || [];
-                return acc;
-              }, {});
-
-              setGroupUsers(usersInGroups);
-            })
-            .catch((error) => {
-              console.error("Error fetching users for groups:", error);
-              setError("Ошибка при получении пользователей групп.");
-            });
+          setAvailableGroups(response.data || []);
         })
         .catch((error) => {
           console.error("Error fetching groups:", error);
@@ -131,7 +104,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         });
     }
   }, [viewMode]);
-
   useEffect(() => {
     if (userToEdit) {
       setEditUserName(userToEdit.name);
@@ -536,68 +508,48 @@ const GroupsPage = ({ role, adminUUID }) => {
       {filteredItems.length === 0 ? (
         <p className="text-center">Нет доступных {itemLabel}.</p>
       ) : (
-        filteredItems.map((item) => {
-          const groups = Object.keys(groupUsers).filter((groupId) =>
-            groupUsers[groupId].some((user) => user.uuid === item.uuid)
-          );
+        filteredItems.map((item) => (
+          <li
+            key={item.uuid}
+            className={`mt-5 border border-custom-yellow rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+              activeItem === item.uuid ? "bg-custom-yellow text-black" : ""
+            }`}
+            onClick={(e) => {
+              handleItemClick(item, e);
+            }}
+          >
+            <div className="flex items-center cursor-pointer">
+              <span>{item.name}</span>
+              {viewMode === "users" && item.role === 1 && (
+                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
+                  А
+                </span>
+              )}
 
-          const groupNames = groups
-            .map(
-              (groupId) =>
-                availableGroups.find((group) => group.uuid === groupId)?.name
-            )
-            .filter((name) => name)
-            .join(", ");
-
-          return (
-            <li
-              key={item.uuid}
-              className={`mt-5 border border-custom-yellow rounded-lg p-2 mb-1 shadow-md flex items-center justify-between ${
-                activeItem === item.uuid ? "bg-custom-yellow text-black" : ""
-              }`}
-              onClick={(e) => {
-                handleItemClick(item, e);
-              }}
-            >
-              <div className="flex items-center">
-                <span className="text-white">{item.name}</span>
-                {viewMode === "users" && item.role === 1 && (
-                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
-                    А
-                  </span>
-                )}
-                {viewMode === "users" && item.role === 2 && (
-                  <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
-                    А
-                  </span>
-                )}
-                {viewMode === "groups" && item.admin_uuid === adminUUID && (
-                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
-                )}
-              </div>
-              <div className="flex items-center">
-                {role === 2 && (
-                  <div className="flex items-center">
-                    {groupNames && (
-                      <span className="text-sm text-white mr-2">
-                        {groupNames}
-                      </span>
-                    )}
-                    <button
-                      className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteItem(item.uuid);
-                      }}
-                    >
-                      Удалить
-                    </button>
-                  </div>
-                )}
-              </div>
-            </li>
-          );
-        })
+              {viewMode === "users" && item.role === 2 && (
+                <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                  А
+                </span>
+              )}
+              {viewMode === "groups" && item.admin_uuid === adminUUID && (
+                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
+              )}
+            </div>
+            <div className="flex items-center">
+              {role === 2 && (
+                <button
+                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteItem(item.uuid);
+                  }}
+                >
+                  Удалить
+                </button>
+              )}
+            </div>
+          </li>
+        ))
       )}
       <div className="flex justify-end mt-4">
         <button
