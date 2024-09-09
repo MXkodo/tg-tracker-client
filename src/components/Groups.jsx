@@ -44,9 +44,7 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
   const [filter, setFilter] = useState("none");
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterName, setFilterName] = useState("");
-  const [filterGroup, setFilterGroup] = useState("");
-  const [filterRole, setFilterRole] = useState("descending");
+  const [filterType, setFilterType] = useState("none");
 
   useEffect(() => {
     console.log("viewMode:", viewMode);
@@ -129,6 +127,11 @@ const GroupsPage = ({ role, adminUUID }) => {
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
+
+  const NewhandleFilterChange = (event) => {
+    setFilterType(event.target.value);
+  };
+
   const filterGroups = (groups) => {
     if (!searchTerm) return groups;
     return groups.filter((group) =>
@@ -529,33 +532,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         });
     }
   };
-  const applyNewFilters = (users) => {
-    let filtered = users;
-
-    if (filterName) {
-      filtered = filtered.filter((user) =>
-        user.name.toLowerCase().includes(filterName.toLowerCase())
-      );
-    }
-
-    if (filterGroup) {
-      filtered = filtered.filter((user) =>
-        getGroupNameForUser(user.uuid)
-          .toLowerCase()
-          .includes(filterGroup.toLowerCase())
-      );
-    }
-
-    filtered = filtered.sort((a, b) => {
-      if (filterRole === "descending") {
-        return b.role - a.role;
-      } else {
-        return a.role - b.role;
-      }
-    });
-
-    return filtered;
-  };
 
   const renderLoadingAnimation = () => (
     <div className="flex items-center justify-center h-screen">
@@ -577,6 +553,43 @@ const GroupsPage = ({ role, adminUUID }) => {
       default:
         return ratingData;
     }
+  };
+
+  const applyNewFilters = (users) => {
+    let filtered = users;
+
+    switch (filterType) {
+      case "name_asc":
+        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name_desc":
+        filtered = filtered.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "group_asc":
+        filtered = filtered.sort((a, b) => {
+          const groupA = getGroupNameForUser(a.uuid).toLowerCase();
+          const groupB = getGroupNameForUser(b.uuid).toLowerCase();
+          return groupA.localeCompare(groupB);
+        });
+        break;
+      case "group_desc":
+        filtered = filtered.sort((a, b) => {
+          const groupA = getGroupNameForUser(a.uuid).toLowerCase();
+          const groupB = getGroupNameForUser(b.uuid).toLowerCase();
+          return groupB.localeCompare(groupA);
+        });
+        break;
+      case "role_desc":
+        filtered = filtered.sort((a, b) => b.role - a.role);
+        break;
+      case "role_asc":
+        filtered = filtered.sort((a, b) => a.role - b.role);
+        break;
+      default:
+        break;
+    }
+
+    return filtered;
   };
 
   const filterRatingData = () => {
@@ -731,33 +744,19 @@ const GroupsPage = ({ role, adminUUID }) => {
             className="border border-gray-300 p-2 rounded-md mb-4 text-black"
           />
           <div className="flex mb-5">
-            <input
-              type="text"
-              placeholder="Фильтр по имени"
-              value={filterName}
-              onChange={(e) => setFilterName(e.target.value)}
-              className="border border-gray-300 p-2 rounded-md text-black"
-            />
-
-            <input
-              type="text"
-              placeholder="Фильтр по группе"
-              value={filterGroup}
-              onChange={(e) => setFilterGroup(e.target.value)}
-              className="border border-gray-300 p-2 rounded-md text-black ml-2"
-            />
             <select
-              id="filter-role"
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value)}
-              className="border border-gray-300 p-2 rounded-md text-black ml-2"
+              id="filter"
+              value={filterType}
+              onChange={NewhandleFilterChange}
+              className="border border-gray-300 p-2 rounded-md text-black"
             >
-              <option value="descending">
-                По роли (от большего к меньшему)
-              </option>
-              <option value="ascending">
-                По роли (от меньшего к большему)
-              </option>
+              <option value="none">Фильтр</option>
+              <option value="name_asc">Имя (А - Я)</option>
+              <option value="name_desc">Имя (Я - А)</option>
+              <option value="group_asc">Группа (А - Я)</option>
+              <option value="group_desc">Группа (Я - А)</option>
+              <option value="role_asc">Роль (меньше к большему)</option>
+              <option value="role_desc">Роль (больший к меньшему)</option>
             </select>
           </div>
         </div>
