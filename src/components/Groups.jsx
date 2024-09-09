@@ -376,7 +376,15 @@ const GroupsPage = ({ role, adminUUID }) => {
     setItemName("");
     setTelegramUsername("");
   };
-
+  const getGroupNameForUser = (userUUID) => {
+    for (const [groupId, users] of Object.entries(groupUsersMap)) {
+      if (users.some((user) => user.uuid === userUUID)) {
+        const group = availableGroups.find((g) => g.uuid === groupId);
+        return group ? group.name : "";
+      }
+    }
+    return "";
+  };
   const handleInputChange = (event) => {
     if (event.target.name === "itemName") {
       setItemName(event.target.value);
@@ -609,16 +617,6 @@ const GroupsPage = ({ role, adminUUID }) => {
     viewMode === "groups"
       ? filterGroups(items)
       : applyNewFilters(filterUsers(items));
-
-  const getGroupNameForUser = (userUUID) => {
-    for (const [groupId, users] of Object.entries(groupUsersMap)) {
-      if (users.some((user) => user.uuid === userUUID)) {
-        const group = availableGroups.find((g) => g.uuid === groupId);
-        return group ? group.name : "";
-      }
-    }
-    return "";
-  };
 
   const renderItemsList = () => (
     <ul className="list-none pl-0">
