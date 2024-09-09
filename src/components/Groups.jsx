@@ -9,6 +9,7 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
+  const [userGroups, setUserGroups] = useState({});
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -261,7 +262,7 @@ const GroupsPage = ({ role, adminUUID }) => {
 
   const fetchGroupUsers = (groupId) => {
     axios
-      .get(` https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+      .get(`https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
         headers: {
           "ngrok-skip-browser-warning": "1",
         },
@@ -269,6 +270,17 @@ const GroupsPage = ({ role, adminUUID }) => {
       .then((response) => {
         setGroupUsers(response.data || []);
         setShowGroupModal(true);
+
+        const userGroupsData = {};
+        response.data.forEach((user) => {
+          if (!userGroupsData[user.uuid]) {
+            userGroupsData[user.uuid] = { groupName: null, groupId: groupId };
+          }
+        });
+        setUserGroups((prevState) => ({
+          ...prevState,
+          ...userGroupsData,
+        }));
       })
       .catch((error) => {
         console.error(`Error fetching users for group ${groupId}:`, error);
@@ -277,6 +289,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         );
       });
   };
+
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setSearchTerm("");
@@ -535,21 +548,21 @@ const GroupsPage = ({ role, adminUUID }) => {
               )}
             </div>
             <div className="flex items-center">
-              {viewMode === "users" && item.group && item.group.name ? (
-                <span className="ml-2 text-sm">{item.group.name}</span>
-              ) : (
-                <span className="ml-2 text-sm"></span>
-              )}
               {role === 2 && (
-                <button
-                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteItem(item.uuid);
-                  }}
-                >
-                  Удалить
-                </button>
+                <>
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteItem(item.uuid);
+                    }}
+                  >
+                    Удалить
+                  </button>
+                  {!userGroups[item.uuid]?.groupName && (
+                    <span className="ml-2">{item.name}</span>
+                  )}
+                </>
               )}
             </div>
           </li>
