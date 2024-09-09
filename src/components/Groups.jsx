@@ -9,8 +9,7 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
-
-  const [userGroupInfo, setUserGroupInfo] = useState({});
+  const [groupUsersMap, setGroupUsersMap] = useState({});
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -269,22 +268,13 @@ const GroupsPage = ({ role, adminUUID }) => {
         },
       })
       .then((response) => {
-        setGroupUsers(response.data || []);
-        setShowGroupModal(true);
-
-        const userGroupInfoData = {};
-        response.data.forEach((user) => {
-          if (!userGroupInfoData[user.uuid]) {
-            userGroupInfoData[user.uuid] = {
-              groupName: null,
-              groupId: groupId,
-            };
-          }
-        });
-        setUserGroupInfo((prevState) => ({
-          ...prevState,
-          ...userGroupInfoData,
+        const users = response.data || [];
+        setGroupUsersMap((prevMap) => ({
+          ...prevMap,
+          [groupId]: users,
         }));
+        setGroupUsers(users);
+        setShowGroupModal(true);
       })
       .catch((error) => {
         console.error(`Error fetching users for group ${groupId}:`, error);
@@ -293,7 +283,6 @@ const GroupsPage = ({ role, adminUUID }) => {
         );
       });
   };
-
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setSearchTerm("");
@@ -520,6 +509,16 @@ const GroupsPage = ({ role, adminUUID }) => {
   const filteredItems =
     viewMode === "groups" ? filterGroups(items) : filterUsers(items);
 
+  const getGroupNameForUser = (userUUID) => {
+    for (const [groupId, users] of Object.entries(groupUsersMap)) {
+      if (users.some((user) => user.uuid === userUUID)) {
+        const group = availableGroups.find((g) => g.uuid === groupId);
+        return group ? group.name : "Нет группы";
+      }
+    }
+    return "Нет группы";
+  };
+
   const renderItemsList = () => (
     <ul className="list-none pl-0">
       {filteredItems.length === 0 ? (
@@ -552,23 +551,21 @@ const GroupsPage = ({ role, adminUUID }) => {
               )}
             </div>
             <div className="flex items-center">
+              {viewMode === "users" && (
+                <span className="ml-2 text-sm">
+                  {getGroupNameForUser(item.uuid)}
+                </span>
+              )}
               {role === 2 && (
-                <>
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteItem(item.uuid);
-                    }}
-                  >
-                    Удалить
-                  </button>
-                  {userGroupInfo[item.uuid]?.groupName && (
-                    <span className="ml-2">
-                      {userGroupInfo[item.uuid].groupName}
-                    </span>
-                  )}
-                </>
+                <button
+                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteItem(item.uuid);
+                  }}
+                >
+                  Удалить
+                </button>
               )}
             </div>
           </li>
