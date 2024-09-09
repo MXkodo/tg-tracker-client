@@ -608,7 +608,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             </div>
             <div className="flex items-center">
               {viewMode === "users" && (
-                <span className="ml-1 text-sm">
+                <span className="mr-2 text-sm">
                   {getGroupNameForUser(item.uuid)}
                 </span>
               )}
