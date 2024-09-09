@@ -525,7 +525,6 @@ const GroupsPage = ({ role, adminUUID }) => {
                   А
                 </span>
               )}
-
               {viewMode === "users" && item.role === 2 && (
                 <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
                   А
@@ -536,6 +535,11 @@ const GroupsPage = ({ role, adminUUID }) => {
               )}
             </div>
             <div className="flex items-center">
+              {viewMode === "users" && item.group && item.group.name ? (
+                <span className="ml-2 text-sm">{item.group.name}</span>
+              ) : (
+                <span className="ml-2 text-sm"></span>
+              )}
               {role === 2 && (
                 <button
                   className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
