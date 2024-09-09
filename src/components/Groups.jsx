@@ -513,10 +513,10 @@ const GroupsPage = ({ role, adminUUID }) => {
     for (const [groupId, users] of Object.entries(groupUsersMap)) {
       if (users.some((user) => user.uuid === userUUID)) {
         const group = availableGroups.find((g) => g.uuid === groupId);
-        return group ? group.name : "Нет группы";
+        return group ? group.name : "";
       }
     }
-    return "Нет группы";
+    return "";
   };
 
   const renderItemsList = () => (
@@ -552,7 +552,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             </div>
             <div className="flex items-center">
               {viewMode === "users" && (
-                <span className="ml-2 text-sm">
+                <span className="ml-1 text-sm">
                   {getGroupNameForUser(item.uuid)}
                 </span>
               )}
