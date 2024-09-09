@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import DownloadButton from "./DownloadButtom";
 import backgroundImage from "../img/Back.png";
@@ -17,6 +17,7 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [initialTelegramUsername, setInitialTelegramUsername] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToRemove, setUserToRemove] = useState(null);
+  const [allGroups, setAllGroups] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [itemName, setItemName] = useState("");
@@ -242,6 +243,61 @@ const GroupsPage = ({ role, adminUUID }) => {
     setShowConfirmModal(false);
     setUserToRemove(null);
   };
+
+  const fetchAllGroups = useCallback(() => {
+    axios
+      .get("https://taskback.emivn.io/api/v1/groups", {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
+      .then((response) => {
+        setAllGroups(response.data || []);
+      })
+      .catch((error) => {
+        console.error("Ошибка при получении групп:", error);
+        setError("Ошибка при получении групп.");
+      });
+  }, []);
+
+  const fetchUsersForAllGroups = useCallback(() => {
+    const groupIds = allGroups.map((group) => group.uuid);
+
+    const fetchUsersPromises = groupIds.map((groupId) =>
+      axios.get(`https://taskback.emivn.io/api/v1/groups/${groupId}/users`, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      })
+    );
+
+    Promise.all(fetchUsersPromises)
+      .then((responses) => {
+        const usersMap = responses.reduce((acc, response, index) => {
+          const groupId = groupIds[index];
+          acc[groupId] = response.data || [];
+          return acc;
+        }, {});
+
+        setGroupUsersMap(usersMap);
+      })
+      .catch((error) => {
+        console.error("Ошибка при получении пользователей групп:", error);
+        setError("Ошибка при получении пользователей групп.");
+      });
+  }, [allGroups]);
+
+  useEffect(() => {
+    if (viewMode === "users") {
+      fetchAllGroups();
+    }
+  }, [viewMode, fetchAllGroups]);
+
+  useEffect(() => {
+    if (allGroups.length > 0) {
+      fetchUsersForAllGroups();
+    }
+  }, [allGroups, fetchUsersForAllGroups]);
 
   const fetchAvailableUsers = () => {
     axios
