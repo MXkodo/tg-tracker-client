@@ -9,7 +9,8 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
-  const [userGroups, setUserGroups] = useState({});
+
+  const [userGroupInfo, setUserGroupInfo] = useState({});
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -271,15 +272,18 @@ const GroupsPage = ({ role, adminUUID }) => {
         setGroupUsers(response.data || []);
         setShowGroupModal(true);
 
-        const userGroupsData = {};
+        const userGroupInfoData = {};
         response.data.forEach((user) => {
-          if (!userGroupsData[user.uuid]) {
-            userGroupsData[user.uuid] = { groupName: null, groupId: groupId };
+          if (!userGroupInfoData[user.uuid]) {
+            userGroupInfoData[user.uuid] = {
+              groupName: null,
+              groupId: groupId,
+            };
           }
         });
-        setUserGroups((prevState) => ({
+        setUserGroupInfo((prevState) => ({
           ...prevState,
-          ...userGroupsData,
+          ...userGroupInfoData,
         }));
       })
       .catch((error) => {
@@ -559,8 +563,10 @@ const GroupsPage = ({ role, adminUUID }) => {
                   >
                     Удалить
                   </button>
-                  {!userGroups[item.uuid]?.groupName && (
-                    <span className="ml-2">{item.name}</span>
+                  {userGroupInfo[item.uuid]?.groupName && (
+                    <span className="ml-2">
+                      {userGroupInfo[item.uuid].groupName}
+                    </span>
                   )}
                 </>
               )}
