@@ -753,8 +753,8 @@ const GroupsPage = ({ role, adminUUID }) => {
               <option value="name_desc">Имя (Я - А)</option>
               <option value="group_asc">Группа (А - Я)</option>
               <option value="group_desc">Группа (Я - А)</option>
-              <option value="role_asc">Роль (меньше к большему)</option>
-              <option value="role_desc">Роль (больший к меньшему)</option>
+              <option value="role_asc">Роль (Пользователи)</option>
+              <option value="role_desc">Роль (Админы)</option>
             </select>
           </div>
         </div>
