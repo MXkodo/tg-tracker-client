@@ -44,6 +44,9 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [editTelegramUsername, setEditTelegramUsername] = useState("");
   const [filter, setFilter] = useState("none");
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterName, setFilterName] = useState("");
+  const [filterGroup, setFilterGroup] = useState("");
+  const [filterRole, setFilterRole] = useState("descending");
 
   useEffect(() => {
     console.log("viewMode:", viewMode);
@@ -526,6 +529,33 @@ const GroupsPage = ({ role, adminUUID }) => {
         });
     }
   };
+  const applyNewFilters = (users) => {
+    let filtered = users;
+
+    if (filterName) {
+      filtered = filtered.filter((user) =>
+        user.name.toLowerCase().includes(filterName.toLowerCase())
+      );
+    }
+
+    if (filterGroup) {
+      filtered = filtered.filter((user) =>
+        getGroupNameForUser(user.uuid)
+          .toLowerCase()
+          .includes(filterGroup.toLowerCase())
+      );
+    }
+
+    filtered = filtered.sort((a, b) => {
+      if (filterRole === "descending") {
+        return b.role - a.role;
+      } else {
+        return a.role - b.role;
+      }
+    });
+
+    return filtered;
+  };
 
   const renderLoadingAnimation = () => (
     <div className="flex items-center justify-center h-screen">
@@ -563,7 +593,9 @@ const GroupsPage = ({ role, adminUUID }) => {
   const itemLabel = viewMode === "groups" ? "групп" : "пользователей";
   const filteredRatingData = filterRatingData();
   const filteredItems =
-    viewMode === "groups" ? filterGroups(items) : filterUsers(items);
+    viewMode === "groups"
+      ? filterGroups(items)
+      : applyNewFilters(filterUsers(items));
 
   const getGroupNameForUser = (userUUID) => {
     for (const [groupId, users] of Object.entries(groupUsersMap)) {
@@ -698,6 +730,36 @@ const GroupsPage = ({ role, adminUUID }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border border-gray-300 p-2 rounded-md mb-4 text-black"
           />
+          <div className="flex mb-5">
+            <input
+              type="text"
+              placeholder="Фильтр по имени"
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md text-black"
+            />
+
+            <input
+              type="text"
+              placeholder="Фильтр по группе"
+              value={filterGroup}
+              onChange={(e) => setFilterGroup(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md text-black ml-2"
+            />
+            <select
+              id="filter-role"
+              value={filterRole}
+              onChange={(e) => setFilterRole(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md text-black ml-2"
+            >
+              <option value="descending">
+                По роли (от большего к меньшему)
+              </option>
+              <option value="ascending">
+                По роли (от меньшего к большему)
+              </option>
+            </select>
+          </div>
         </div>
       )}
       {viewMode === "rating" ? (
