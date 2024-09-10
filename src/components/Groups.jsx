@@ -798,7 +798,9 @@ const GroupsPage = ({ role, adminUUID }) => {
                 >
                   <span>{user.name}</span>
                   <span className="bg-custom-yellow text-white px-2 py-1 rounded">
-                    {Math.ceil(user.average_rating)}
+                    {Math.ceil(user.average_rating) === 1
+                      ? 0
+                      : Math.ceil(user.average_rating)}
                   </span>
                 </li>
               ))}
