@@ -697,8 +697,8 @@ const GroupsPage = ({ role, adminUUID }) => {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-black opacity-90" />
-      <div className="relative h-full overflow-auto p-5 bg-white bg-opacity-80 rounded-lg shadow-md">
+      <div className="absolute inset-0 " />
+      <div className="relative h-full overflow-auto p-5 rounded-lg shadow-md">
         <div className="flex justify-between mb-5">
           <button
             className={`px-4 py-2 rounded-lg ${
