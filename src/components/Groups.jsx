@@ -671,7 +671,7 @@ const GroupsPage = ({ role, adminUUID }) => {
             </li>
           ))
         )}
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-4 mb-6">
           <button
             type="button"
             className="px-4 py-2 bg-custom-yellow text-white rounded-lg"
