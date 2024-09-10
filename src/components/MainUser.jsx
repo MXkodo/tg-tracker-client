@@ -359,7 +359,7 @@ function MainContent({ userUUID, userRole }) {
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
                 <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
-                  Обновите информацию о задаче
+                  Добавьте информацию о результате
                 </h2>
                 <p className="whitespace-normal overflow-hidden max-w-prose break-words">
                   <strong>Описание:</strong>
@@ -371,7 +371,7 @@ function MainContent({ userUUID, userRole }) {
                   />
                 </p>
                 <p className="whitespace-normal overflow-hidden max-w-full">
-                  <strong>Ссылка:</strong>
+                  <strong>Ссылка на решение:</strong>
                   <input
                     type="text"
                     value={userLink}
