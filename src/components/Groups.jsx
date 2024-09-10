@@ -619,7 +619,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       : applyNewFilters(filterUsers(items));
 
   const renderItemsList = () => (
-    <div className="mb-20 pb-24">
+    <div className="flex-1 overflow-auto pb-24">
       <ul className="list-none pl-0">
         {filteredItems.length === 0 ? (
           <p className="text-center">Нет доступных {itemLabel}.</p>
@@ -690,95 +690,53 @@ const GroupsPage = ({ role, adminUUID }) => {
 
   return (
     <div
-      className="mx-auto p-5 rounded-lg shadow-md h-screen text-white font-sans"
+      className="relative h-screen overflow-hidden text-white font-sans"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="flex justify-between mb-5">
-        <button
-          className={`px-4 py-2 rounded-lg ${
-            viewMode === "groups" ? "bg-custom-yellow" : "bg-gray-700"
-          }`}
-          onClick={() => handleViewModeChange("groups")}
-        >
-          Группы
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg ${
-            viewMode === "rating" ? "bg-custom-yellow" : "bg-gray-700"
-          }`}
-          onClick={() => handleViewModeChange("rating")}
-        >
-          Рейтинг
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg ${
-            viewMode === "users" ? "bg-custom-yellow" : "bg-gray-700"
-          }`}
-          onClick={() => handleViewModeChange("users")}
-        >
-          Пользователи
-        </button>
-      </div>
-      {viewMode === "groups" && (
-        <div className="flex flex-col mb-5">
-          <input
-            type="text"
-            placeholder="Поиск по группам"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 p-2 rounded-md mb-4 text-black"
-          />
+      <div className="absolute inset-0 bg-black opacity-90" />
+      <div className="relative h-full overflow-auto p-5 bg-white bg-opacity-80 rounded-lg shadow-md">
+        <div className="flex justify-between mb-5">
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              viewMode === "groups" ? "bg-custom-yellow" : "bg-gray-700"
+            }`}
+            onClick={() => handleViewModeChange("groups")}
+          >
+            Группы
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              viewMode === "rating" ? "bg-custom-yellow" : "bg-gray-700"
+            }`}
+            onClick={() => handleViewModeChange("rating")}
+          >
+            Рейтинг
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              viewMode === "users" ? "bg-custom-yellow" : "bg-gray-700"
+            }`}
+            onClick={() => handleViewModeChange("users")}
+          >
+            Пользователи
+          </button>
         </div>
-      )}
-      {viewMode === "users" && (
-        <div className="flex flex-col mb-5">
-          <input
-            type="text"
-            placeholder="Поиск по пользователям"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 p-2 rounded-md mb-4 text-black"
-          />
-          <div className="flex mb-5">
-            <select
-              id="filter"
-              value={filterType}
-              onChange={NewhandleFilterChange}
-              className="border border-gray-300 p-2 rounded-md text-black"
-            >
-              <option value="none">Фильтр</option>
-              <option value="name_asc">Имя (А - Я)</option>
-              <option value="name_desc">Имя (Я - А)</option>
-              <option value="group_asc">Группа (А - Я)</option>
-              <option value="group_desc">Группа (Я - А)</option>
-              <option value="role_asc">Роль (Пользователи)</option>
-              <option value="role_desc">Роль (Админы)</option>
-            </select>
+        {viewMode === "groups" && (
+          <div className="flex flex-col mb-5">
+            <input
+              type="text"
+              placeholder="Поиск по группам"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+            />
           </div>
-        </div>
-      )}
-      {viewMode === "rating" ? (
-        <div>
-          <h1 className="text-xl font-bold mb-4">
-            Рейтинг пользователей <DownloadButton />
-          </h1>
-          <div className="flex items-center mb-4">
-            <select
-              id="filter"
-              value={filter}
-              onChange={handleFilterChange}
-              className="border border-gray-300 p-2 rounded-md text-black"
-            >
-              <option value="none">Фильтр</option>
-              <option value="ascending">По возрастанию рейтинга</option>
-              <option value="descending">По убыванию рейтинга</option>
-              <option value="alphabetical">По алфавиту имени</option>
-            </select>
-          </div>
+        )}
+        {viewMode === "users" && (
           <div className="flex flex-col mb-5">
             <input
               type="text"
@@ -787,52 +745,102 @@ const GroupsPage = ({ role, adminUUID }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="border border-gray-300 p-2 rounded-md mb-4 text-black"
             />
-          </div>
-          <ul className="space-y-2">
-            {filteredRatingData.map((user) => (
-              <li key={user.uuid} className="flex justify-between items-center">
-                <span>{user.name}</span>
-                <span className="bg-custom-yellow text-white px-2 py-1 rounded">
-                  {Math.ceil(user.average_rating)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        renderItemsList()
-      )}
-      {showDeleteModal && itemToDelete && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-          <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
-            <h2 className="text-lg font-bold mb-4">
-              Удаление {viewMode === "groups" ? "группы" : "пользователя"}
-            </h2>
-            <p className="mb-4">
-              Вы уверены, что хотите удалить{" "}
-              {viewMode === "groups" ? "группу" : "пользователя"} "
-              {itemToDelete.name}"? В таком случае удалятся и связанные задачи.
-            </p>
-            <div className="flex justify-end">
-              <button
-                type="button"
-                className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
-                onClick={confirmDeleteItem}
+            <div className="flex mb-5">
+              <select
+                id="filter"
+                value={filterType}
+                onChange={NewhandleFilterChange}
+                className="border border-gray-300 p-2 rounded-md text-black"
               >
-                Удалить
-              </button>
-
-              <button
-                type="button"
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Отмена
-              </button>
+                <option value="none">Фильтр</option>
+                <option value="name_asc">Имя (А - Я)</option>
+                <option value="name_desc">Имя (Я - А)</option>
+                <option value="group_asc">Группа (А - Я)</option>
+                <option value="group_desc">Группа (Я - А)</option>
+                <option value="role_asc">Роль (Пользователи)</option>
+                <option value="role_desc">Роль (Админы)</option>
+              </select>
             </div>
           </div>
-        </div>
-      )}
+        )}
+        {viewMode === "rating" ? (
+          <div>
+            <h1 className="text-xl font-bold mb-4">
+              Рейтинг пользователей <DownloadButton />
+            </h1>
+            <div className="flex items-center mb-4">
+              <select
+                id="filter"
+                value={filter}
+                onChange={handleFilterChange}
+                className="border border-gray-300 p-2 rounded-md text-black"
+              >
+                <option value="none">Фильтр</option>
+                <option value="ascending">По возрастанию рейтинга</option>
+                <option value="descending">По убыванию рейтинга</option>
+                <option value="alphabetical">По алфавиту имени</option>
+              </select>
+            </div>
+            <div className="flex flex-col mb-5">
+              <input
+                type="text"
+                placeholder="Поиск по пользователям"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md mb-4 text-black"
+              />
+            </div>
+            <ul className="space-y-2">
+              {filteredRatingData.map((user) => (
+                <li
+                  key={user.uuid}
+                  className="flex justify-between items-center"
+                >
+                  <span>{user.name}</span>
+                  <span className="bg-custom-yellow text-white px-2 py-1 rounded">
+                    {Math.ceil(user.average_rating)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          renderItemsList()
+        )}
+
+        {showDeleteModal && itemToDelete && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+            <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
+              <h2 className="text-lg font-bold mb-4">
+                Удаление {viewMode === "groups" ? "группы" : "пользователя"}
+              </h2>
+              <p className="mb-4">
+                Вы уверены, что хотите удалить{" "}
+                {viewMode === "groups" ? "группу" : "пользователя"} "
+                {itemToDelete.name}"? В таком случае удалятся и связанные
+                задачи.
+              </p>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
+                  onClick={confirmDeleteItem}
+                >
+                  Удалить
+                </button>
+
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {showConfirmationModal && isDeletingGroup && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
@@ -867,7 +875,6 @@ const GroupsPage = ({ role, adminUUID }) => {
           </div>
         </div>
       )}
-
       {showEditModal && userToEdit && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
@@ -923,7 +930,6 @@ const GroupsPage = ({ role, adminUUID }) => {
           </div>
         </div>
       )}
-
       {showModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center mb-14">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
@@ -997,7 +1003,6 @@ const GroupsPage = ({ role, adminUUID }) => {
           </div>
         </div>
       )}
-
       {showGroupModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
@@ -1063,7 +1068,6 @@ const GroupsPage = ({ role, adminUUID }) => {
           </div>
         </div>
       )}
-
       {showConfirmModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
@@ -1088,7 +1092,6 @@ const GroupsPage = ({ role, adminUUID }) => {
           </div>
         </div>
       )}
-
       {showUserSelectModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
