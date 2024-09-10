@@ -165,7 +165,7 @@ function MainContent({ userUUID, userRole }) {
   const handleSaveClick = async () => {
     try {
       await axios.patch(`https://taskback.emivn.io/api/v1/tasks/userchange`, {
-        uuid: selectedTask.uuid,
+        uuid: selectedTask.id,
         user_desc: userDesc,
         user_link: userLink,
       });
