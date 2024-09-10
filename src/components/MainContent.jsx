@@ -630,6 +630,33 @@ const MainContent = ({ userRole, userUUID }) => {
                         </div>
                         <div className="mt-4">
                           <label className="block text-sm font-medium">
+                            Комментарий пользователя:
+                          </label>
+                          <p className="whitespace-normal overflow-hidden max-w-full">
+                            {selectedTask.user_desc}
+                          </p>
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
+                            Ссылка от пользователя:
+                          </label>
+                          <p className="whitespace-normal overflow-hidden max-w-full">
+                            {selectedTask.user_link ? (
+                              <a
+                                href={selectedTask.user_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 underline"
+                              >
+                                {selectedTask.user_link}
+                              </a>
+                            ) : (
+                              "Нет ссылки"
+                            )}
+                          </p>
+                        </div>
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium">
                             Оценка (1-100):
                           </label>
                           <input
@@ -690,6 +717,25 @@ const MainContent = ({ userRole, userUUID }) => {
                         <p className="whitespace-normal overflow-hidden max-w-full">
                           <strong>Дедлайн:</strong>{" "}
                           {formatTimestamp(selectedTask.deadline)}
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Комментарий пользователя:</strong>{" "}
+                          {selectedTask.user_desc}
+                        </p>
+                        <p className="whitespace-normal overflow-hidden max-w-full">
+                          <strong>Ссылка от пользователя:</strong>{" "}
+                          {selectedTask.user_link ? (
+                            <a
+                              href={selectedTask.user_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              {selectedTask.user_link}
+                            </a>
+                          ) : (
+                            "Нет ссылки"
+                          )}
                         </p>
                         <p className="whitespace-normal overflow-hidden max-w-full">
                           <strong>Оценка:</strong> {selectedTask.grade}
