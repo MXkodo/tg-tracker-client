@@ -14,6 +14,9 @@ function MainContent({ userUUID, userRole }) {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [userDesc, setUserDesc] = useState("");
+  const [userLink, setUserLink] = useState("");
 
   const getGroupNameByUUID = useCallback(
     (groupUUID) => {
@@ -147,6 +150,36 @@ function MainContent({ userUUID, userRole }) {
   const closeModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
+  };
+  const handleOpenStatusModal = (task) => {
+    setSelectedTask(task);
+    setUserDesc(task.user_desc || "");
+    setUserLink(task.user_link || "");
+    setStatusModalOpen(true);
+  };
+
+  const handleCloseStatusModal = () => {
+    setStatusModalOpen(false);
+    setSelectedTask(null);
+  };
+  const handleSaveClick = async () => {
+    try {
+      await axios.patch(`https://taskback.emivn.io/api/v1/tasks/userchange`, {
+        uuid: selectedTask.uuid,
+        user_desc: userDesc,
+        user_link: userLink,
+      });
+
+      await axios.patch(`https://taskback.emivn.io/api/v1/tasks/status`, {
+        uuid: selectedTask.id,
+        status_id: 4,
+      });
+
+      handleCloseStatusModal();
+      fetchTasks();
+    } catch (error) {
+      console.error("Error saving task:", error);
+    }
   };
 
   const handleSortChange = (e) => {
@@ -289,12 +322,13 @@ function MainContent({ userUUID, userRole }) {
                         className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleAcceptTask(task.id, 4);
+                          handleOpenStatusModal(task);
                         }}
                       >
                         Готово
                       </button>
                     )}
+
                     {task.status_id === 4 && (
                       <button className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600">
                         В проверке
@@ -319,7 +353,52 @@ function MainContent({ userUUID, userRole }) {
           );
         })}
       </div>
-      {modalOpen && selectedTask && (
+      {statusModalOpen && selectedTask && (
+        <div className="modal-overlay" onClick={handleCloseStatusModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+                  Обновите информацию о задаче
+                </h2>
+                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
+                  <strong>Описание:</strong>
+                  <textarea
+                    value={userDesc}
+                    onChange={(e) => setUserDesc(e.target.value)}
+                    rows="4"
+                    className="w-full p-2 mt-2 bg-gray-800 text-white rounded-lg"
+                  />
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Ссылка:</strong>
+                  <input
+                    type="text"
+                    value={userLink}
+                    onChange={(e) => setUserLink(e.target.value)}
+                    className="w-full p-2 mt-2 bg-gray-800 text-white rounded-lg"
+                  />
+                </p>
+                <div className="flex justify-end mt-5">
+                  <button
+                    className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                    onClick={handleSaveClick}
+                  >
+                    Сохранить
+                  </button>
+                  <button
+                    className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                    onClick={handleCloseStatusModal}
+                  >
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {modalOpen && selectedTask && !statusModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
