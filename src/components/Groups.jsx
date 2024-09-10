@@ -619,7 +619,7 @@ const GroupsPage = ({ role, adminUUID }) => {
       : applyNewFilters(filterUsers(items));
 
   const renderItemsList = () => (
-    <div className="mb-16">
+    <div className="mb-16 overflow-auto">
       <ul className="list-none pl-0">
         {filteredItems.length === 0 ? (
           <p className="text-center">Нет доступных {itemLabel}.</p>
