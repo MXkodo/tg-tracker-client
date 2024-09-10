@@ -619,68 +619,70 @@ const GroupsPage = ({ role, adminUUID }) => {
       : applyNewFilters(filterUsers(items));
 
   const renderItemsList = () => (
-    <ul className="list-none pl-0">
-      {filteredItems.length === 0 ? (
-        <p className="text-center">Нет доступных {itemLabel}.</p>
-      ) : (
-        filteredItems.map((item) => (
-          <li
-            key={item.uuid}
-            className={`mt-5 border border-custom-yellow rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
-              activeItem === item.uuid ? "bg-custom-yellow text-black" : ""
-            }`}
-            onClick={(e) => {
-              handleItemClick(item, e);
-            }}
+    <div className="mb-16">
+      <ul className="list-none pl-0">
+        {filteredItems.length === 0 ? (
+          <p className="text-center">Нет доступных {itemLabel}.</p>
+        ) : (
+          filteredItems.map((item) => (
+            <li
+              key={item.uuid}
+              className={`mt-5 border border-custom-yellow rounded-[10px] p-1 mb-1 shadow-md flex items-center justify-between ${
+                activeItem === item.uuid ? "bg-custom-yellow text-black" : ""
+              }`}
+              onClick={(e) => {
+                handleItemClick(item, e);
+              }}
+            >
+              <div className="flex items-center cursor-pointer">
+                <span>{item.name}</span>
+                {viewMode === "users" && item.role === 1 && (
+                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
+                    А
+                  </span>
+                )}
+                {viewMode === "users" && item.role === 2 && (
+                  <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
+                    А
+                  </span>
+                )}
+                {viewMode === "groups" && item.admin_uuid === adminUUID && (
+                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
+                )}
+              </div>
+              <div className="flex items-center">
+                {viewMode === "users" && (
+                  <span className="mr-2 text-sm">
+                    {getGroupNameForUser(item.uuid)}
+                  </span>
+                )}
+                {role === 2 && (
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteItem(item.uuid);
+                    }}
+                  >
+                    Удалить
+                  </button>
+                )}
+              </div>
+            </li>
+          ))
+        )}
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            className="px-4 py-2 bg-custom-yellow text-white rounded-lg"
+            onClick={() => setShowModal(true)}
           >
-            <div className="flex items-center cursor-pointer">
-              <span>{item.name}</span>
-              {viewMode === "users" && item.role === 1 && (
-                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full">
-                  А
-                </span>
-              )}
-              {viewMode === "users" && item.role === 2 && (
-                <span className="ml-2 text-sm bg-red-500 text-black px-2 py-1 rounded-full">
-                  А
-                </span>
-              )}
-              {viewMode === "groups" && item.admin_uuid === adminUUID && (
-                <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
-              )}
-            </div>
-            <div className="flex items-center">
-              {viewMode === "users" && (
-                <span className="mr-2 text-sm">
-                  {getGroupNameForUser(item.uuid)}
-                </span>
-              )}
-              {role === 2 && (
-                <button
-                  className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteItem(item.uuid);
-                  }}
-                >
-                  Удалить
-                </button>
-              )}
-            </div>
-          </li>
-        ))
-      )}
-      <div className="flex justify-end mt-4">
-        <button
-          type="button"
-          className="px-4 py-2 bg-custom-yellow text-white rounded-lg"
-          onClick={() => setShowModal(true)}
-        >
-          Создание{" "}
-          {viewMode === "groups" ? " новой группы" : " нового пользователя"}
-        </button>
-      </div>
-    </ul>
+            Создание{" "}
+            {viewMode === "groups" ? " новой группы" : " нового пользователя"}
+          </button>
+        </div>
+      </ul>
+    </div>
   );
 
   if (isLoading) return renderLoadingAnimation();
