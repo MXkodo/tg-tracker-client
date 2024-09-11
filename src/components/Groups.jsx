@@ -676,7 +676,7 @@ const GroupsPage = ({ role, adminUUID }) => {
                 {viewMode === "groups" && role === 2 && (
                   <>
                     <button
-                      className="px-2 py-1 bg-custom-yellow text-white rounded"
+                      className="mr-2 px-2 py-1 bg-custom-yellow text-white rounded"
                       onClick={(e) => {
                         e.stopPropagation();
                         openEditModal(item);
