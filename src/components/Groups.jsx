@@ -269,6 +269,21 @@ const GroupsPage = ({ role, adminUUID }) => {
       });
   }, []);
 
+  const handleSaveEdit = async () => {
+    if (!currentGroup) return;
+
+    try {
+      await axios.patch("https://taskback.emivn.io/api/v1/groups", {
+        uuid: currentGroup.uuid,
+        new_name: newGroupName,
+      });
+      fetchAllGroups();
+      closeEditModal();
+    } catch (error) {
+      console.error("Не удалось обновить группу:", error);
+    }
+  };
+
   const fetchUsersForAllGroups = useCallback(() => {
     const groupIds = allGroups.map((group) => group.uuid);
 
@@ -383,19 +398,7 @@ const GroupsPage = ({ role, adminUUID }) => {
     setShowGroupEditModal(false);
     setCurrentGroup(null);
   };
-  const handleSaveEdit = async () => {
-    if (!currentGroup) return;
 
-    try {
-      await axios.patch("https://taskback.emivn.io/api/v1/groups", {
-        uuid: currentGroup.uuid,
-        new_name: newGroupName,
-      });
-      closeEditModal();
-    } catch (error) {
-      console.error("Не удалось обновить группу:", error);
-    }
-  };
   const handleCloseModal = () => {
     setShowModal(false);
     setItemName("");
