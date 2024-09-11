@@ -481,7 +481,7 @@ const MainContent = ({ userRole, userUUID }) => {
         {/* Группируем задачи по дате */}
         {Object.entries(groupTasksByDate(tasks)).map(([date, tasksByDate]) => (
           <div key={date}>
-            <h2 className="text-xl font-bold border-t pt-1">{date}</h2>
+            <div className="w-full bg-custom-yellow h-1 my-4"></div>
             {tasksByDate.map((task, index) => (
               <div
                 key={task.id}
