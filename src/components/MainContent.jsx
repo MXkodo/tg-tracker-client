@@ -402,6 +402,18 @@ const MainContent = ({ userRole, userUUID }) => {
 
     setTasks(filteredTasks);
   };
+  const groupTasksByDate = (tasks) => {
+    return tasks.reduce((groups, task) => {
+      const date = formatTimestamp(new Date(task.apperance_timestamp)).split(
+        " "
+      )[0];
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(task);
+      return groups;
+    }, {});
+  };
 
   const handleNameChange = (e) => {
     setTaskName(e.target.value);
@@ -462,82 +474,95 @@ const MainContent = ({ userRole, userUUID }) => {
           </button>
         </div>
 
-        {tasks.map((task, index) => (
-          <div
-            key={task.id}
-            className={`mt-5 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
-              task.returned
-                ? "border-red-500"
-                : "border-[rgba(115,115,115,.31)]"
-            } ${index === tasks.length - 1 ? "mb-5 last-task" : ""}`}
-          >
-            <div className="task-tile" onClick={() => handleEditClick(task)}>
-              <h3>{task.name}</h3>
-              <p>Время отправки: {formatTimestamp(task.apperance_timestamp)}</p>
-              <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-              <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-              <p>Исполнитель: {task.first_name}</p>
-              {task.comment !== "0" && task.comment && (
-                <p>Комментарий: {task.comment}</p>
-              )}
-              {task.status_id === 7 && (
-                <p>Оценка: {task.grade || "Не указана"}</p>
-              )}
-
-              {task.isLoading ? (
-                <div className="loader"></div>
-              ) : (
-                <>
-                  {task.status_id === 4 && (
-                    <button
-                      className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleAcceptTask(task.id, 5);
-                      }}
-                    >
-                      В проверке
-                    </button>
+        {/* Группируем задачи по дате */}
+        {Object.entries(groupTasksByDate(tasks)).map(([date, tasksByDate]) => (
+          <div key={date}>
+            <h2 className="text-xl font-bold mt-8 mb-4 border-t pt-4">
+              {date}
+            </h2>
+            {tasksByDate.map((task, index) => (
+              <div
+                key={task.id}
+                className={`mt-5 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+                  task.returned
+                    ? "border-red-500"
+                    : "border-[rgba(115,115,115,.31)]"
+                } ${index === tasksByDate.length - 1 ? "mb-5 last-task" : ""}`}
+              >
+                <div
+                  className="task-tile"
+                  onClick={() => handleEditClick(task)}
+                >
+                  <h3>{task.name}</h3>
+                  <p>
+                    Время отправки: {formatTimestamp(task.apperance_timestamp)}
+                  </p>
+                  <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
+                  <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+                  <p>Исполнитель: {task.first_name}</p>
+                  {task.comment !== "0" && task.comment && (
+                    <p>Комментарий: {task.comment}</p>
                   )}
-                  {task.status_id === 5 && (
-                    <>
-                      <button
-                        className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setPendingTaskId(task.id);
-                          setSelectedTask(task);
-                          setModalOpen(true);
-                        }}
-                      >
-                        Принята
-                      </button>
+                  {task.status_id === 7 && (
+                    <p>Оценка: {task.grade || "Не указана"}</p>
+                  )}
 
-                      <button
-                        className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          openCommentModal(task.id);
-                        }}
-                      >
-                        Доработка
-                      </button>
+                  {task.isLoading ? (
+                    <div className="loader"></div>
+                  ) : (
+                    <>
+                      {task.status_id === 4 && (
+                        <button
+                          className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleAcceptTask(task.id, 5);
+                          }}
+                        >
+                          В проверке
+                        </button>
+                      )}
+                      {task.status_id === 5 && (
+                        <>
+                          <button
+                            className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setPendingTaskId(task.id);
+                              setSelectedTask(task);
+                              setModalOpen(true);
+                            }}
+                          >
+                            Принята
+                          </button>
+
+                          <button
+                            className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              openCommentModal(task.id);
+                            }}
+                          >
+                            Доработка
+                          </button>
+                        </>
+                      )}
+                      {task.status_id === 8 && (
+                        <button
+                          className="resume-button mr-1 px-1 bg-blue-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-blue-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleResumeTask(task.id);
+                          }}
+                        >
+                          Возобновить
+                        </button>
+                      )}
                     </>
                   )}
-                  {task.status_id === 8 && (
-                    <button
-                      className="resume-button mr-1 px-1 bg-blue-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-blue-600"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleResumeTask(task.id);
-                      }}
-                    >
-                      Возобновить
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
+                </div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
