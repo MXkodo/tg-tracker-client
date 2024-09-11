@@ -674,24 +674,14 @@ const GroupsPage = ({ role, adminUUID }) => {
               </div>
               {viewMode === "groups" && role === 2 && (
                 <>
-                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
                   <button
-                    className="ml-2 px-2 py-1 bg-custom-yellow text-white rounded mr-1"
+                    className="ml-2 px-2 py-1 bg-custom-yellow text-white rounded"
                     onClick={(e) => {
                       e.stopPropagation();
                       openEditModal(item);
                     }}
                   >
                     Редактировать
-                  </button>
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteItem(item.uuid);
-                    }}
-                  >
-                    Удалить
                   </button>
                 </>
               )}
@@ -700,6 +690,17 @@ const GroupsPage = ({ role, adminUUID }) => {
                   <span className="mr-2 text-sm">
                     {getGroupNameForUser(item.uuid)}
                   </span>
+                )}
+                {role === 2 && (
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white rounded delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteItem(item.uuid);
+                    }}
+                  >
+                    Удалить
+                  </button>
                 )}
               </div>
             </li>
