@@ -406,29 +406,20 @@ const MainContent = ({ userRole, userUUID }) => {
     setTasks(filteredTasks);
   };
   const formatDateLabel = (date) => {
-    try {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
 
-      const taskDate = new Date(date);
-      taskDate.setHours(0, 0, 0, 0);
+    const taskDate = new Date(date);
 
-      if (isNaN(taskDate.getTime())) {
-        return "Неизвестная дата";
-      } else if (taskDate.toDateString() === today.toDateString()) {
-        return "Сегодня";
-      } else if (taskDate.toDateString() === tomorrow.toDateString()) {
-        return "Завтра";
-      } else {
-        return taskDate.toISOString().split("T")[0];
-      }
-    } catch (error) {
-      console.error("Ошибка форматирования даты:", error);
-      return "Неизвестная дата";
+    if (taskDate.toDateString() === today.toDateString()) {
+      return "Сегодня";
+    } else if (taskDate.toDateString() === tomorrow.toDateString()) {
+      return "Завтра";
+    } else {
+      return date;
     }
   };
-
   const groupTasksByDate = (tasks) => {
     return tasks.reduce((groups, task) => {
       const date = formatTimestamp(new Date(task.apperance_timestamp)).split(
