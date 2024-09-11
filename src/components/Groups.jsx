@@ -914,14 +914,14 @@ const GroupsPage = ({ role, adminUUID }) => {
         </div>
       )}
       {showGroupEditModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-gray-800 p-5 shadow-md w-80 rounded-[15px]">
             <h2 className="text-xl mb-4">Редактировать группу</h2>
             <input
               type="text"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
-              className="border border-gray-300 p-2 mb-4 w-full"
+              className="border border-custom-yellow p-2 mb-4 w-full"
             />
             <div className="flex justify-end gap-2">
               <button
