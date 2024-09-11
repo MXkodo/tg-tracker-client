@@ -314,7 +314,7 @@ function MainContent({ userUUID, userRole }) {
                           handleAcceptTask(task.id, 3);
                         }}
                       >
-                        Принять
+                        Приступить
                       </button>
                     )}
                     {task.status_id === 3 && (
@@ -325,7 +325,7 @@ function MainContent({ userUUID, userRole }) {
                           handleOpenStatusModal(task);
                         }}
                       >
-                        Готово
+                        Завершить
                       </button>
                     )}
 
@@ -384,7 +384,7 @@ function MainContent({ userUUID, userRole }) {
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={handleSaveClick}
                   >
-                    Сохранить
+                    Готово
                   </button>
                   <button
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
