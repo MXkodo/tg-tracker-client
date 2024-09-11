@@ -405,6 +405,21 @@ const MainContent = ({ userRole, userUUID }) => {
 
     setTasks(filteredTasks);
   };
+  const formatDateLabel = (date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const taskDate = new Date(date);
+
+    if (taskDate.toDateString() === today.toDateString()) {
+      return "Сегодня";
+    } else if (taskDate.toDateString() === tomorrow.toDateString()) {
+      return "Завтра";
+    } else {
+      return date;
+    }
+  };
   const groupTasksByDate = (tasks) => {
     return tasks.reduce((groups, task) => {
       const date = formatTimestamp(new Date(task.apperance_timestamp)).split(
@@ -481,17 +496,18 @@ const MainContent = ({ userRole, userUUID }) => {
         {/* Группируем задачи по дате */}
         {Object.entries(groupTasksByDate(tasks)).map(([date, tasksByDate]) => (
           <div key={date}>
+            {/* Полоска для даты */}
             <div className="w-full bg-custom-yellow h-1 my-4"></div>
 
-            <h2 className="text-xl font-bold mb-2">{date}</h2>
+            <h2 className="text-xl font-bold mb-2">{formatDateLabel(date)}</h2>
             {tasksByDate.map((task, index) => (
               <div
                 key={task.id}
-                className={`mt-2 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+                className={`mt-1 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
                   task.returned
                     ? "border-red-500"
                     : "border-[rgba(115,115,115,.31)]"
-                } ${index === tasksByDate.length - 1 ? "mb-5 last-task" : ""}`}
+                } ${index === tasksByDate.length - 1 ? "mb-2 last-task" : ""}`}
               >
                 <div
                   className="task-tile"
@@ -553,7 +569,7 @@ const MainContent = ({ userRole, userUUID }) => {
                       )}
                       {task.status_id === 8 && (
                         <button
-                          className="resume-button mr-1 px-1 bg-blue-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-blue-600"
+                          className="resume-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-blue-600"
                           onClick={(event) => {
                             event.stopPropagation();
                             handleResumeTask(task.id);
