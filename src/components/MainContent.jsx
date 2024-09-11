@@ -339,12 +339,24 @@ const MainContent = ({ userRole, userUUID }) => {
       case "title":
         sortByTitle();
         break;
-      case "timestamp":
-        sortByTimestamp();
+      case "timestamp-asc":
+        sortByTimestamp(true);
+        break;
+      case "timestamp-desc":
+        sortByTimestamp(false);
         break;
       default:
         break;
     }
+  };
+
+  const sortByTimestamp = (ascending = true) => {
+    const sortedTasks = [...tasks].sort((a, b) => {
+      const timestampA = new Date(a.apperance_timestamp);
+      const timestampB = new Date(b.apperance_timestamp);
+      return ascending ? timestampA - timestampB : timestampB - timestampA;
+    });
+    setTasks(sortedTasks);
   };
 
   const sortByGroup = () => {
@@ -360,15 +372,6 @@ const MainContent = ({ userRole, userUUID }) => {
     const sortedTasks = [...tasks].sort((a, b) =>
       a.name.toLowerCase().localeCompare(b.name.toLowerCase())
     );
-    setTasks(sortedTasks);
-  };
-
-  const sortByTimestamp = () => {
-    const sortedTasks = [...tasks].sort((a, b) => {
-      const timestampA = new Date(a.apperance_timestamp);
-      const timestampB = new Date(b.apperance_timestamp);
-      return timestampB - timestampA;
-    });
     setTasks(sortedTasks);
   };
 
@@ -464,7 +467,8 @@ const MainContent = ({ userRole, userUUID }) => {
           >
             <option value="group">По группе</option>
             <option value="title">По названию</option>
-            <option value="timestamp">По времени</option>
+            <option value="timestamp-asc">По времени (Ближайшие)</option>
+            <option value="timestamp-desc">По времени (Дальние)</option>
           </select>
           <button
             className="icon-button rounded-[10px] ml-2 h-[5vh] bg-custom-yellow border-none cursor-pointer transition-colors duration-300 hover:bg-yellow-700"
