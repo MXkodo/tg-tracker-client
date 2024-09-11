@@ -467,8 +467,8 @@ const MainContent = ({ userRole, userUUID }) => {
           >
             <option value="group">По группе</option>
             <option value="title">По названию</option>
-            <option value="timestamp-asc">По времени (Ближайшие)</option>
-            <option value="timestamp-desc">По времени (Дальние)</option>
+            <option value="timestamp-asc">Ближайшие</option>
+            <option value="timestamp-desc">Дальние</option>
           </select>
           <button
             className="icon-button rounded-[10px] ml-2 h-[5vh] bg-custom-yellow border-none cursor-pointer transition-colors duration-300 hover:bg-yellow-700"
