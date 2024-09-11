@@ -45,6 +45,9 @@ const GroupsPage = ({ role, adminUUID }) => {
   const [filter, setFilter] = useState("none");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("none");
+  const [currentGroup, setCurrentGroup] = useState(null);
+  const [newGroupName, setNewGroupName] = useState("");
+  const [showGroupEditModal, setShowGroupEditModal] = useState(false);
 
   useEffect(() => {
     console.log("viewMode:", viewMode);
@@ -370,7 +373,29 @@ const GroupsPage = ({ role, adminUUID }) => {
       }
     }
   };
+  const openEditModal = (group) => {
+    setCurrentGroup(group);
+    setNewGroupName(group.name);
+    setShowGroupEditModal(true);
+  };
 
+  const closeEditModal = () => {
+    setShowGroupEditModal(false);
+    setCurrentGroup(null);
+  };
+  const handleSaveEdit = async () => {
+    if (!currentGroup) return;
+
+    try {
+      await axios.patch("https://taskback.emivn.io/api/v1/groups", {
+        uuid: currentGroup.uuid,
+        new_name: newGroupName,
+      });
+      closeEditModal();
+    } catch (error) {
+      console.error("Не удалось обновить группу:", error);
+    }
+  };
   const handleCloseModal = () => {
     setShowModal(false);
     setItemName("");
@@ -650,6 +675,20 @@ const GroupsPage = ({ role, adminUUID }) => {
                   <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
                 )}
               </div>
+              {viewMode === "groups" && role === 2 && (
+                <>
+                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
+                  <button
+                    className="ml-2 px-2 py-1 bg-custom-yellow text-white rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEditModal(item);
+                    }}
+                  >
+                    Редактировать
+                  </button>
+                </>
+              )}
               <div className="flex items-center">
                 {viewMode === "users" && (
                   <span className="mr-2 text-sm">
@@ -872,6 +911,33 @@ const GroupsPage = ({ role, adminUUID }) => {
                 onClick={() => setShowConfirmationModal(false)}
               >
                 Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showGroupEditModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <h2 className="text-xl mb-4">Редактировать группу</h2>
+            <input
+              type="text"
+              value={newGroupName}
+              onChange={(e) => setNewGroupName(e.target.value)}
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={handleSaveEdit}
+                className="px-4 py-2 bg-custom-yellow text-white rounded"
+              >
+                Сохранить
+              </button>
+              <button
+                onClick={closeEditModal}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Отменить
               </button>
             </div>
           </div>
