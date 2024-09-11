@@ -277,6 +277,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         uuid: currentGroup.uuid,
         new_name: newGroupName,
       });
+      setViewMode("users");
       setViewMode("groups");
       closeEditModal();
     } catch (error) {
