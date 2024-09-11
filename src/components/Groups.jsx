@@ -671,9 +671,6 @@ const GroupsPage = ({ role, adminUUID }) => {
                     А
                   </span>
                 )}
-                {viewMode === "groups" && item.admin_uuid === adminUUID && (
-                  <span className="ml-2 text-sm bg-custom-yellow text-black px-2 py-1 rounded-full"></span>
-                )}
               </div>
               {viewMode === "groups" && role === 2 && (
                 <>
