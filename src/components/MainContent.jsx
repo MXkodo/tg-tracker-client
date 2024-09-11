@@ -411,15 +411,17 @@ const MainContent = ({ userRole, userUUID }) => {
     tomorrow.setDate(today.getDate() + 1);
 
     const taskDate = new Date(date);
+    taskDate.setHours(0, 0, 0, 0);
 
     if (taskDate.toDateString() === today.toDateString()) {
       return "Сегодня";
     } else if (taskDate.toDateString() === tomorrow.toDateString()) {
       return "Завтра";
     } else {
-      return date;
+      return taskDate.toISOString().split("T")[0];
     }
   };
+
   const groupTasksByDate = (tasks) => {
     return tasks.reduce((groups, task) => {
       const date = formatTimestamp(new Date(task.apperance_timestamp)).split(
