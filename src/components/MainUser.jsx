@@ -56,6 +56,9 @@ function MainContent({ userUUID, userRole }) {
     },
     [getGroupNameByUUID]
   );
+  useEffect(() => {
+    filterTasksBySearchAndStatus(allTasks, searchTerm, activeStatusId);
+  }, [allTasks, searchTerm, activeStatusId, filterTasksBySearchAndStatus]);
 
   const fetchTasks = useCallback(async () => {
     try {
