@@ -485,7 +485,7 @@ const MainContent = ({ userRole, userUUID }) => {
             {tasksByDate.map((task, index) => (
               <div
                 key={task.id}
-                className={`mt-5 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+                className={`border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
                   task.returned
                     ? "border-red-500"
                     : "border-[rgba(115,115,115,.31)]"
