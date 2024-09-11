@@ -277,8 +277,7 @@ const GroupsPage = ({ role, adminUUID }) => {
         uuid: currentGroup.uuid,
         new_name: newGroupName,
       });
-      fetchAllGroups();
-      renderItemsList();
+      setViewMode("groups");
       closeEditModal();
     } catch (error) {
       console.error("Не удалось обновить группу:", error);
