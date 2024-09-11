@@ -11,7 +11,7 @@ function MainContent({ userUUID, userRole }) {
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [activeStatusId, setActiveStatusId] = useState(1);
+  const [activeStatusId, setActiveStatusId] = useState(2);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
