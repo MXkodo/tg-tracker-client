@@ -921,7 +921,7 @@ const GroupsPage = ({ role, adminUUID }) => {
               type="text"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
-              className="border border-custom-yellow p-2 mb-4 w-full"
+              className="border border-gray-300 p-2 rounded-md w-full mb-2 text-black"
             />
             <div className="flex justify-end gap-2">
               <button
