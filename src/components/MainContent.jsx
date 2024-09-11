@@ -481,15 +481,15 @@ const MainContent = ({ userRole, userUUID }) => {
         {/* Группируем задачи по дате */}
         {Object.entries(groupTasksByDate(tasks)).map(([date, tasksByDate]) => (
           <div key={date}>
-            <h2 className="text-xl font-bold mt-4 border-t pt-4">{date}</h2>
+            <h2 className="text-xl font-bold border-t pt-1">{date}</h2>
             {tasksByDate.map((task, index) => (
               <div
                 key={task.id}
-                className={`border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
+                className={`mt-2 border rounded-[17px] p-1 mb-1 bg-gray-800 shadow-md transition-transform duration-200 ease-in-out hover:-translate-y-2 ${
                   task.returned
                     ? "border-red-500"
                     : "border-[rgba(115,115,115,.31)]"
-                } ${index === tasksByDate.length - 1 ? "last-task" : ""}`}
+                } ${index === tasksByDate.length - 1 ? "mb-5 last-task" : ""}`}
               >
                 <div
                   className="task-tile"
