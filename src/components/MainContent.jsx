@@ -392,9 +392,10 @@ const MainContent = ({ userRole, userUUID }) => {
       filteredTasks = filteredTasks.filter((task) => {
         const taskName = task.name || "";
         const groupName = getGroupNameByUUID(task.group_uuid) || "";
+        const lowerSearchTerm = searchTerm.toLowerCase();
         return (
-          taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          groupName.toLowerCase().includes(searchTerm.toLowerCase())
+          taskName.toLowerCase().includes(lowerSearchTerm) ||
+          groupName.toLowerCase().includes(lowerSearchTerm)
         );
       });
     }
