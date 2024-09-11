@@ -489,7 +489,7 @@ const MainContent = ({ userRole, userUUID }) => {
                   task.returned
                     ? "border-red-500"
                     : "border-[rgba(115,115,115,.31)]"
-                } ${index === tasksByDate.length - 1 ? "mb-5 last-task" : ""}`}
+                } ${index === tasksByDate.length - 1 ? "last-task" : ""}`}
               >
                 <div
                   className="task-tile"
