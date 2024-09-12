@@ -298,12 +298,13 @@ function MainContent({ userUUID, userRole }) {
               } ${index === tasks.length - 1 ? "mb-5 last-task" : ""}`}
             >
               <div className="task-tile" onClick={() => handleEditClick(task)}>
-                <h3>{task.name}</h3>
+                <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+                <p>Исполнитель: {task.first_name}</p>
                 <p>
                   Время отправки: {formatTimestamp(task.apperance_timestamp)}
                 </p>
                 <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-                <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+                <h3>{task.name}</h3>
                 {task.status_id === 7 && <p>Оценка: {task.grade}</p>}
                 {task.isLoading ? (
                   <div className="loader"></div>

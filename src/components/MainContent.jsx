@@ -513,13 +513,13 @@ const MainContent = ({ userRole, userUUID }) => {
                   className="task-tile"
                   onClick={() => handleEditClick(task)}
                 >
-                  <h3>{task.name}</h3>
+                  <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
+                  <p>Исполнитель: {task.first_name}</p>
                   <p>
                     Время отправки: {formatTimestamp(task.apperance_timestamp)}
                   </p>
                   <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-                  <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-                  <p>Исполнитель: {task.first_name}</p>
+                  <h3>{task.name}</h3>
                   {task.comment !== "0" && task.comment && (
                     <p>Комментарий: {task.comment}</p>
                   )}
