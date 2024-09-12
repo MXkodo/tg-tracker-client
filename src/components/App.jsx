@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
+import FooterUser from "./FooterUser";
 import AddTaskPage from "./Add";
 import GroupsPage from "./Groups";
 import AuthCheck from "./AuthCheck";
@@ -53,6 +54,7 @@ function App() {
           </Routes>
         </main>
         {userRole !== 0 && <Footer />}
+        {userRole === 0 && <FooterUser />}
       </div>
     </Router>
   );
