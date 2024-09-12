@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import backgroundImage from "../img/Back.png";
 
 const PersonUser = ({ userId, name, username }) => {
   const [groups, setGroups] = useState([]);
@@ -9,12 +10,14 @@ const PersonUser = ({ userId, name, username }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Получение рейтинга пользователя
-        const ratingResponse = await axios.get(`/api/v1/user/rating/${userId}`);
+        const ratingResponse = await axios.get(
+          `https://taskback.emivn.io/api/v1/user/rating/${userId}`
+        );
         setRating(ratingResponse.data.rating);
 
-        // Получение групп пользователя
-        const groupsResponse = await axios.get(`/api/v1/user/${userId}`);
+        const groupsResponse = await axios.get(
+          `https://taskback.emivn.io/api/v1/user/${userId}`
+        );
         setGroups(groupsResponse.data);
 
         setLoading(false);
@@ -28,7 +31,7 @@ const PersonUser = ({ userId, name, username }) => {
   }, [userId]);
 
   const renderLoadingAnimation = () => (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-gray-800">
       <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-5 border-custom-yellow"></div>
     </div>
   );
@@ -39,14 +42,21 @@ const PersonUser = ({ userId, name, username }) => {
 
   if (!name || !username) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-screen bg-custom-yellow">
         <div>User not found</div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div
+      className="flex flex-col flex-grow rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4">Информация о пользователе</h1>
         <div className="mb-4">
