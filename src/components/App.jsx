@@ -7,6 +7,7 @@ import AddTaskPage from "./Add";
 import GroupsPage from "./Groups";
 import AuthCheck from "./AuthCheck";
 import MainUser from "./MainUser";
+import PersonUser from "./PersonUser";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -51,6 +52,7 @@ function App() {
               path="/group"
               element={<GroupsPage role={userRole} adminUUID={userUUID} />}
             />
+            <Route path="/personal" element={<PersonUser />} />
           </Routes>
         </main>
         {userRole !== 0 && <Footer />}
