@@ -50,11 +50,12 @@ const PersonUser = ({ userId, name, username }) => {
 
   return (
     <div
-      className="flex flex-col flex-grow rounded-[17px] overflow-y-auto p-5 box-border mb-4 h-[79vh]"
+      className="flex flex-col flex-grow rounded-[17px] overflow-y-auto p-5 box-border mb-4"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        minHeight: "100vh", // Обеспечиваем полную высоту
       }}
     >
       <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -77,6 +78,8 @@ const PersonUser = ({ userId, name, username }) => {
           <span className="font-semibold">
             Рейтинг: {rating.average_rating}
           </span>
+        </div>
+        <div>
           <span className="font-semibold">
             Оцененные задачи: {rating.task_count}
           </span>
