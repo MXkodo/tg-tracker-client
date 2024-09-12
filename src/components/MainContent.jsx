@@ -519,7 +519,7 @@ const MainContent = ({ userRole, userUUID }) => {
                     Время отправки: {formatTimestamp(task.apperance_timestamp)}
                   </p>
                   <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-                  <h3>{task.name}</h3>
+                  <h3>Тема: {task.name}</h3>
                   {task.comment !== "0" && task.comment && (
                     <p>Комментарий: {task.comment}</p>
                   )}

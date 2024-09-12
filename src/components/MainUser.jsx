@@ -299,12 +299,11 @@ function MainContent({ userUUID, userRole }) {
             >
               <div className="task-tile" onClick={() => handleEditClick(task)}>
                 <p>Имя группы: {getGroupNameByUUID(task.group_uuid)}</p>
-                <p>Исполнитель: {task.first_name}</p>
                 <p>
                   Время отправки: {formatTimestamp(task.apperance_timestamp)}
                 </p>
                 <p>Дедлайн: {formatTimestamp(task.deadline)}</p>
-                <h3>{task.name}</h3>
+                <h3>Тема: {task.name}</h3>
                 {task.status_id === 7 && <p>Оценка: {task.grade}</p>}
                 {task.isLoading ? (
                   <div className="loader"></div>
