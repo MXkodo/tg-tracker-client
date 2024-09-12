@@ -16,7 +16,7 @@ const PersonUser = ({ userId, name, username }) => {
         setRating(ratingResponse.data.rating);
 
         const groupsResponse = await axios.get(
-          `https://taskback.emivn.io/api/v1/user/${userId}`
+          `https://taskback.emivn.io/api/v1/groups/user/${userId}`
         );
         setGroups(groupsResponse.data);
 
