@@ -8,7 +8,7 @@ const FooterUser = () => {
   const navigate = useNavigate();
 
   const handleAddClick = () => {
-    navigate("/peronal");
+    navigate("/personal");
   };
 
   const handleGroupClick = () => {
