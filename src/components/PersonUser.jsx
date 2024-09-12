@@ -13,7 +13,7 @@ const PersonUser = ({ userId, name, username }) => {
         const ratingResponse = await axios.get(
           `https://taskback.emivn.io/api/v1/user/rating/${userId}`
         );
-        setRating(ratingResponse.data.rating);
+        setRating(ratingResponse.data);
 
         const groupsResponse = await axios.get(
           `https://taskback.emivn.io/api/v1/groups/user/${userId}`
@@ -74,7 +74,12 @@ const PersonUser = ({ userId, name, username }) => {
           </ul>
         </div>
         <div>
-          <span className="font-semibold">Рейтинг: {rating}</span>
+          <span className="font-semibold">
+            Рейтинг: {rating.average_rating}
+          </span>
+          <span className="font-semibold">
+            Оцененные задачи: {rating.task_count}
+          </span>
         </div>
       </div>
     </div>
