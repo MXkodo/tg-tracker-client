@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 
-function AuthCheck({ setUserRole, setUserUUID }) {
+function AuthCheck({ setUserRole, setUserUUID, setUserName, setUserUsername }) {
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
       const { WebApp } = window.Telegram;
@@ -19,21 +19,21 @@ function AuthCheck({ setUserRole, setUserUUID }) {
           .then((response) => {
             localStorage.setItem("authChecked", "true");
 
-            const { role, uuid, chat_id } = response.data;
+            const { role, uuid, chat_id, name, username } = response.data;
 
             setUserRole(role);
             setUserUUID(uuid);
+            setUserName(name);
+            setUserUsername(username);
 
             console.log("Received chat_id from server:", chat_id);
             console.log("Chat ID from WebApp:", chatID);
 
-            // Если chat_id в ответе пустой и chatID существует, обновляем chat_id
             if (!chat_id && chatID) {
               console.log("Updating chat ID...");
 
-              // Подготовка данных для запроса
               const dataToSend = {
-                chat_id: chatID, // отправляем как chat_id
+                chat_id: chatID,
               };
 
               console.log("Data to be sent:", dataToSend);
@@ -77,7 +77,7 @@ function AuthCheck({ setUserRole, setUserUUID }) {
         window.Telegram.WebApp.close();
       }
     }
-  }, [setUserRole, setUserUUID]);
+  }, [setUserRole, setUserUUID, setUserName, setUserUsername]);
 
   return null;
 }

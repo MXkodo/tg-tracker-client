@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import axios from "axios";
 
-const PersonUser = () => {
-  const { userId } = useParams();
-  const [userData, setUserData] = useState(null);
+const PersonUser = ({ userId, name, username }) => {
+  const [groups, setGroups] = useState([]);
+  const [rating, setRating] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const mockData = {
-      name: "Иван Иванов",
-      username: "ivan_ivanov",
-      groups: ["Группа 1", "Группа 2"],
-      rating: 4.5,
+    const fetchUserData = async () => {
+      try {
+        // Получение рейтинга пользователя
+        const ratingResponse = await axios.get(`/api/v1/user/rating/${userId}`);
+        setRating(ratingResponse.data.rating);
+
+        // Получение групп пользователя
+        const groupsResponse = await axios.get(`/api/v1/user/${userId}`);
+        setGroups(groupsResponse.data);
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Ошибка при получении данных пользователя:", error);
+        setLoading(false);
+      }
     };
 
-    setTimeout(() => {
-      setUserData(mockData);
-      setLoading(false);
-    }, 1000);
+    fetchUserData();
   }, [userId]);
 
   const renderLoadingAnimation = () => (
@@ -30,10 +37,10 @@ const PersonUser = () => {
     return renderLoadingAnimation();
   }
 
-  if (!userData) {
+  if (!name || !username) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
-        User not found
+        <div>User not found</div>
       </div>
     );
   }
@@ -43,24 +50,21 @@ const PersonUser = () => {
       <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4">Информация о пользователе</h1>
         <div className="mb-4">
-          <span className="font-semibold">Имя:</span>
-          <p>{userData.name}</p>
+          <span className="font-semibold">Имя: {name}</span>
         </div>
         <div className="mb-4">
-          <span className="font-semibold">Юзернейм:</span>
-          <p>{userData.username}</p>
+          <span className="font-semibold">Юзернейм: {username}</span>
         </div>
         <div className="mb-4">
           <span className="font-semibold">Группы:</span>
           <ul className="list-disc list-inside ml-4">
-            {userData.groups.map((group, index) => (
-              <li key={index}>{group}</li>
+            {groups.map((group, index) => (
+              <li key={index}>{group.name}</li>
             ))}
           </ul>
         </div>
         <div>
-          <span className="font-semibold">Рейтинг:</span>
-          <p>{userData.rating}</p>
+          <span className="font-semibold">Рейтинг: {rating}</span>
         </div>
       </div>
     </div>

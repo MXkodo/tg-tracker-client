@@ -12,6 +12,8 @@ import PersonUser from "./PersonUser";
 function App() {
   const [userRole, setUserRole] = useState(null);
   const [userUUID, setUserUUID] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userUsername, setUserUsername] = useState("");
 
   useEffect(() => {
     console.log("Current userRole:", userRole);
@@ -28,7 +30,12 @@ function App() {
     <Router>
       <div className="app">
         <main>
-          <AuthCheck setUserRole={setUserRole} setUserUUID={setUserUUID} />
+          <AuthCheck
+            setUserRole={setUserRole}
+            setUserUUID={setUserUUID}
+            setUserName={setUserName}
+            setUserUsername={setUserUsername}
+          />
           <Routes>
             <Route
               path="/"
@@ -52,7 +59,20 @@ function App() {
               path="/group"
               element={<GroupsPage role={userRole} adminUUID={userUUID} />}
             />
-            <Route path="/personal" element={<PersonUser />} />
+            <Route
+              path="/personal"
+              element={
+                userUUID ? (
+                  <PersonUser
+                    userId={userUUID}
+                    name={userName}
+                    username={userUsername}
+                  />
+                ) : (
+                  renderLoadingAnimation()
+                )
+              }
+            />
           </Routes>
         </main>
         {userRole !== 0 && <Footer />}
