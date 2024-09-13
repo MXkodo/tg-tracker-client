@@ -537,6 +537,9 @@ const MainContent = ({ userRole, userUUID }) => {
           <select
             className="sort-dropdown rounded-[15px] ml-2 h-[5vh] bg-custom-yellow border-none cursor-pointer text-white font-semibold transition-colors duration-300"
             onChange={handleSortChange}
+            style={{
+              textAlignLast: "center",
+            }}
           >
             <option value="group">По группе</option>
             <option value="title">По названию</option>
