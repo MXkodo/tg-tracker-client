@@ -915,16 +915,14 @@ const MainContent = ({ userRole, userUUID }) => {
                         </p>
 
                         <div className="flex justify-end mt-5">
-                          {editMode &&
-                            selectedTask &&
-                            selectedTask.status_id === 1 && (
-                              <button
-                                className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
-                                onClick={handleSave}
-                              >
-                                Сохранить
-                              </button>
-                            )}
+                          {selectedTask && selectedTask.status_id === 1 && (
+                            <button
+                              className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                              onClick={handleSave}
+                            >
+                              Сохранить
+                            </button>
+                          )}
                           <button
                             className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                             onClick={closeModal}
