@@ -847,6 +847,7 @@ const MainContent = ({ userRole, userUUID }) => {
                           <button
                             className="needs-work-button ml-2 px-5 py-2 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
                             onClick={() => {
+                              closeModal();
                               openCommentModal(selectedTask.id);
                             }}
                           >
@@ -856,7 +857,7 @@ const MainContent = ({ userRole, userUUID }) => {
                             className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                             onClick={closeModal}
                           >
-                            Выйти из задачи
+                            Выйти
                           </button>
                         </div>
                       </>
