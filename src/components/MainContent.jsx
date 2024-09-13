@@ -619,7 +619,7 @@ const MainContent = ({ userRole, userUUID }) => {
                             handleAcceptTask(task.id, 5);
                           }}
                         >
-                          В проверке
+                          К проверке
                         </button>
                       )}
                       {task.status_id === 5 && (
@@ -751,7 +751,7 @@ const MainContent = ({ userRole, userUUID }) => {
               <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
                 {selectedTask && (
                   <>
-                    {pendingTaskId ? (
+                    {pendingTaskId && selectedTask.status_id === 5 ? (
                       <>
                         <h2 className="text-xl font-bold">Оцените задачу</h2>
                         <div className="mt-4">
@@ -842,7 +842,7 @@ const MainContent = ({ userRole, userUUID }) => {
                             className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                             onClick={handleSaveGrade}
                           >
-                            Сохранить
+                            Принять
                           </button>
                           <button
                             className="needs-work-button ml-2 px-5 py-2 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
