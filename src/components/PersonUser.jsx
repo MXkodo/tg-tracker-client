@@ -76,7 +76,7 @@ const PersonUser = ({ userId, name, username }) => {
         </div>
         <div>
           <span className="font-semibold">
-            Рейтинг: {rating.average_rating}
+            Рейтинг: {Math.ceil(rating.average_rating)}
           </span>
         </div>
         <div>
