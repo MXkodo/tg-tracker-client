@@ -29,10 +29,6 @@ const MainContent = ({ userRole, userUUID }) => {
     fetchGroups();
   }, [activeStatusId]);
   useEffect(() => {
-    setActiveStatusId("timestamp-asc");
-  }, []);
-
-  useEffect(() => {
     console.log("Inside MainContent");
     console.log("userRole in MainContent:", userRole);
     console.log("userUUID in MainContent:", userUUID);
@@ -650,6 +646,17 @@ const MainContent = ({ userRole, userUUID }) => {
                             Доработка
                           </button>
                         </>
+                      )}
+                      {task.status_id === 6 && task.user_uuid === userUUID && (
+                        <button
+                          className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleAcceptTask(task.id, 3);
+                          }}
+                        >
+                          Принять
+                        </button>
                       )}
                       {task.status_id === 8 && (
                         <button
