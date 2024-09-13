@@ -633,17 +633,7 @@ const MainContent = ({ userRole, userUUID }) => {
                               setModalOpen(true);
                             }}
                           >
-                            Принята
-                          </button>
-
-                          <button
-                            className="needs-work-button mr-1 px-1 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              openCommentModal(task.id);
-                            }}
-                          >
-                            Доработка
+                            Проверить
                           </button>
                         </>
                       )}
@@ -855,10 +845,18 @@ const MainContent = ({ userRole, userUUID }) => {
                             Сохранить
                           </button>
                           <button
+                            className="needs-work-button ml-2 px-5 py-2 bg-orange-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-orange-700"
+                            onClick={() => {
+                              openCommentModal(selectedTask.id);
+                            }}
+                          >
+                            Доработка
+                          </button>
+                          <button
                             className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                             onClick={closeModal}
                           >
-                            Закрыть
+                            Выйти из задачи
                           </button>
                         </div>
                       </>
