@@ -14,7 +14,7 @@ const MainContent = ({ userRole, userUUID }) => {
   const [activeStatusId, setActiveStatusId] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  //const [editMode, setEditMode] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [rating, setRating] = useState(1);
@@ -174,14 +174,14 @@ const MainContent = ({ userRole, userUUID }) => {
     setSelectedTask(task);
     setTaskName(task.name);
     setTaskDescription(task.description);
-    setEditMode(true);
+    //setEditMode(true);
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
-    setEditMode(false);
+    //setEditMode(false);
   };
 
   const openCommentModal = (taskId) => {
@@ -438,12 +438,12 @@ const MainContent = ({ userRole, userUUID }) => {
 
   const handleNameChange = (e) => {
     setTaskName(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
+    //setEditMode(true); // Включить режим редактирования при изменении
   };
 
   const handleDescriptionChange = (e) => {
     setTaskDescription(e.target.value);
-    setEditMode(true); // Включить режим редактирования при изменении
+    //setEditMode(true); // Включить режим редактирования при изменении
   };
   const handleCloseStatusModal = () => {
     setStatusModalOpen(false);
@@ -863,7 +863,6 @@ const MainContent = ({ userRole, userUUID }) => {
                             value={taskName}
                             onChange={handleNameChange}
                             className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
-                            disabled={!editMode}
                           />
                         </p>
                         <p className="whitespace-normal overflow-hidden max-w-prose break-words">
@@ -873,7 +872,6 @@ const MainContent = ({ userRole, userUUID }) => {
                             onChange={handleDescriptionChange}
                             className="ml-2 p-1 rounded border border-gray-600 bg-gray-800"
                             rows="4"
-                            disabled={!editMode}
                           />
                         </p>
                         <p className="whitespace-normal overflow-hidden max-w-full">
