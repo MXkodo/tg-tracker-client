@@ -21,6 +21,9 @@ const MainContent = ({ userRole, userUUID }) => {
   const [pendingTaskId, setPendingTaskId] = useState(null);
   const [comment, setComment] = useState("");
   const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [userDesc, setUserDesc] = useState("");
+  const [userLink, setUserLink] = useState("");
 
   useEffect(() => {
     fetchGroups();
@@ -442,7 +445,62 @@ const MainContent = ({ userRole, userUUID }) => {
     setTaskDescription(e.target.value);
     setEditMode(true); // Включить режим редактирования при изменении
   };
+  const handleCloseStatusModal = () => {
+    setStatusModalOpen(false);
+    setSelectedTask(null);
+  };
+  const fetchTasks = async () => {
+    try {
+      let url = "";
 
+      if (userRole === 1) {
+        if (!isValidUUID(userUUID)) {
+          throw new Error("Invalid UUID format.");
+        }
+        url = `https://taskback.emivn.io/api/v1/tasks/${userUUID}`;
+      } else {
+        url = "https://taskback.emivn.io/api/v1/tasks";
+      }
+      console.log("Fetching from adminUUID:", userUUID);
+      console.log("Fetching from userRole:", userRole);
+      console.log("Fetching from URL:", url);
+      const response = await axios.get(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "1",
+        },
+      });
+
+      setAllTasks(response.data || []);
+      filterTasksByStatus(response.data, activeStatusId);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+  const handleSaveClick = async () => {
+    try {
+      await axios.patch(`https://taskback.emivn.io/api/v1/tasks/userchange`, {
+        id: selectedTask.id,
+        user_desc: userDesc,
+        user_link: userLink,
+      });
+
+      await axios.patch(`https://taskback.emivn.io/api/v1/tasks/status`, {
+        uuid: selectedTask.id,
+        status_id: 4,
+      });
+
+      handleCloseStatusModal();
+      fetchTasks();
+    } catch (error) {
+      console.error("Error saving task:", error);
+    }
+  };
+  const handleOpenStatusModal = (task) => {
+    setSelectedTask(task);
+    setUserDesc(task.user_desc || "");
+    setUserLink(task.user_link || "");
+    setStatusModalOpen(true);
+  };
   return (
     <div className="flex flex-col min-h-screen">
       <header>
@@ -531,6 +589,28 @@ const MainContent = ({ userRole, userUUID }) => {
                     <div className="loader"></div>
                   ) : (
                     <>
+                      {task.status_id === 2 && task.user_uuid === userUUID && (
+                        <button
+                          className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleAcceptTask(task.id, 3);
+                          }}
+                        >
+                          Приступить
+                        </button>
+                      )}
+                      {task.status_id === 3 && task.user_uuid === userUUID && (
+                        <button
+                          className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenStatusModal(task);
+                          }}
+                        >
+                          Завершить
+                        </button>
+                      )}
                       {task.status_id === 4 && (
                         <button
                           className="accept-button mr-1 px-1 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
@@ -618,7 +698,51 @@ const MainContent = ({ userRole, userUUID }) => {
           </div>
         </div>
       )}
-
+      {statusModalOpen && selectedTask && (
+        <div className="modal-overlay" onClick={handleCloseStatusModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-zinc-900 p-5 rounded-lg shadow-lg max-w-4xl max-h-full overflow-auto text-white">
+                <h2 className="text-xl font-bold whitespace-normal overflow-hidden max-w-full">
+                  Добавьте информацию о результате
+                </h2>
+                <p className="whitespace-normal overflow-hidden max-w-prose break-words">
+                  <strong>Описание:</strong>
+                  <textarea
+                    value={userDesc}
+                    onChange={(e) => setUserDesc(e.target.value)}
+                    rows="4"
+                    className="w-full p-2 mt-2 bg-gray-800 text-white rounded-lg"
+                  />
+                </p>
+                <p className="whitespace-normal overflow-hidden max-w-full">
+                  <strong>Ссылка на решение:</strong>
+                  <input
+                    type="text"
+                    value={userLink}
+                    onChange={(e) => setUserLink(e.target.value)}
+                    className="w-full p-2 mt-2 bg-gray-800 text-white rounded-lg"
+                  />
+                </p>
+                <div className="flex justify-end mt-5">
+                  <button
+                    className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                    onClick={handleSaveClick}
+                  >
+                    Готово
+                  </button>
+                  <button
+                    className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
+                    onClick={handleCloseStatusModal}
+                  >
+                    Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {modalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
