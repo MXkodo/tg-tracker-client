@@ -29,6 +29,10 @@ const MainContent = ({ userRole, userUUID }) => {
     fetchGroups();
   }, [activeStatusId]);
   useEffect(() => {
+    setActiveStatusId("timestamp-asc");
+  }, []);
+
+  useEffect(() => {
     console.log("Inside MainContent");
     console.log("userRole in MainContent:", userRole);
     console.log("userUUID in MainContent:", userUUID);
