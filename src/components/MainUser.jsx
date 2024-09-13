@@ -317,7 +317,7 @@ function MainContent({ userUUID, userRole }) {
                           handleAcceptTask(task.id, 3);
                         }}
                       >
-                        Приступить
+                        Приступить к выполнению
                       </button>
                     )}
                     {task.status_id === 3 && (
@@ -387,13 +387,13 @@ function MainContent({ userUUID, userRole }) {
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={handleSaveClick}
                   >
-                    Готово
+                    Сохранитьи отправить
                   </button>
                   <button
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={handleCloseStatusModal}
                   >
-                    Закрыть
+                    Назад
                   </button>
                 </div>
               </div>
@@ -428,7 +428,7 @@ function MainContent({ userUUID, userRole }) {
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={closeModal}
                   >
-                    Закрыть
+                    Назад
                   </button>
                 </div>
               </div>

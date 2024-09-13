@@ -597,7 +597,7 @@ const MainContent = ({ userRole, userUUID }) => {
                             handleAcceptTask(task.id, 3);
                           }}
                         >
-                          Приступить
+                          Приступить к выполнению
                         </button>
                       )}
                       {task.status_id === 3 && task.user_uuid === userUUID && (
@@ -691,7 +691,7 @@ const MainContent = ({ userRole, userUUID }) => {
                     className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                     onClick={closeCommentModal}
                   >
-                    Закрыть
+                    Назад
                   </button>
                 </div>
               </div>
@@ -730,13 +730,13 @@ const MainContent = ({ userRole, userUUID }) => {
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={handleSaveClick}
                   >
-                    Готово
+                    Сохранить и отправить
                   </button>
                   <button
                     className="ml-2 px-5 py-2 bg-custom-yellow border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-yellow-600"
                     onClick={handleCloseStatusModal}
                   >
-                    Закрыть
+                    Назад
                   </button>
                 </div>
               </div>
@@ -935,7 +935,7 @@ const MainContent = ({ userRole, userUUID }) => {
                             className="ml-2 px-5 py-2 bg-red-500 border-none rounded-lg cursor-pointer text-white font-semibold transition-colors duration-300 hover:bg-red-600"
                             onClick={closeModal}
                           >
-                            Закрыть
+                            Назад
                           </button>
                         </div>
                       </>
